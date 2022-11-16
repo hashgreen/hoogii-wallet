@@ -8,40 +8,6 @@ Hoogii Wallet is committed to creating the most practical and easy-to-use crypto
 <br>
 <br>
 
-## Usage
-
-- **Safely Manage Your Digital Asset**
-    
-    With Hoogii Wallet, you can send and recieve XCH/CATs/NFT(in the future updates) with customize fees easily and safely on Chia blockchian.
-    
-    ![Untitled](https://hoogii.app/img/features/asset.png)
-    
-- **Check Your Activities At A Glance**
-    
-    Hoogii Wallet will make sure to record all of your digital asset management on Chia blockchain, and you can find transaction details in your Hoogii Wallet at any time.
-    
-    ![Untitled](https://hoogii.app/img/features/activities.png)
-    
-- **Conveniently Manage Different Addresses**
-    
-    Set nicknames for addresses you frequently trade with to manage your digital assets on Chia blockchain in the easiest way.
-    
-    ![Untitled](https://hoogii.app/img/features/address_book.png)
-    
-- **Display Block Farm Record**
-    
-    In future updates, Hoogii Wallet will display block farmed activities while the address gets the block farmed prices.
-    
-- **Links Directly With Chia's First AMM & Dapps**
-    
-    In future updates, users can transact with first AMM and Dapps on Chia blockchain directly within Hoogii Wallet.
-    
-- **Deposit USDS By Credit Card Or Other Payments**
-    
-    In future updates, you will be able to deposit USDS within Hoogii Wallet by using credit cards or other payment methods.
-<br>
-<br>
-
 ## Installation
 
 Install Hoogii Wallet on Google Chrome extension：[Install here](https://chrome.google.com/webstore/detail/hoogii-wallet/jljjeghmeihjegifdhbghcoihdiegkkl)
