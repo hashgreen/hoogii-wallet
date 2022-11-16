@@ -1,5 +1,7 @@
 # Hoogii Wallet
 
+[![GitHub license](https://img.shields.io/github/license/hashgreen/hoogii-wallet)](https://github.com/hashgreen/hoogii-wallet/blob/main/LICENSE)
+
 ## Introduce
 
 Hoogii Wallet is committed to creating the most practical and easy-to-use crypto wallet on Chia Network. With Hoogii Wallet, you will be able to easily manage your assets on Chia Network.
