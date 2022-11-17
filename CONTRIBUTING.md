@@ -53,7 +53,14 @@ gitGraph
 
 ## Coding Style
 
-TODO
+### Names
+- Use PascalCase for type names.
+- Do not use I as a prefix for interface names.
+- Use PascalCase for enum values.
+- Use camelCase for function names.
+- Use camelCase for property names and local variables.
+- Do not use _ as a prefix for private properties.
+- Use whole words in names when possible.
 
 ## Commit Signature
 
