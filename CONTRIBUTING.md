@@ -64,7 +64,7 @@ gitGraph
 
 ## Commit Signature
 
-TODO
+Using GPG, SSH, or S/MIME, you can sign tags and commits locally. These tags or commits are marked as verified on GitHub so other people can be confident that the changes come from a trusted source.
 
 ## Commit Message
 
