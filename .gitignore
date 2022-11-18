@@ -254,5 +254,28 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,linux,visualstudiocode,intellij+all,vim,nextjs,react
 
-## Custom
-!docs/img/out
+
+# testing
+/coverage
+
+# env
+.env*
+!.env.example
+
+# production
+/build
+/dist
+dist.*
+
+
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.vscode
+#extension package
+release_*.zip
+
+reports
+._.DS_Store
+
