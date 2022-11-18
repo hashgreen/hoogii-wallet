@@ -66,6 +66,9 @@ gitGraph
 
 Using GPG, SSH, or S/MIME, you can sign tags and commits locally. These tags or commits are marked as verified on GitHub so other people can be confident that the changes come from a trusted source.
 
+
+[How to setup commit signature](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification)
+
 ## Commit Message
 
 ### Commit Message Format
