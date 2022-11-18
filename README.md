@@ -13,33 +13,33 @@ Hoogii Wallet is committed to creating the most practical and easy-to-use crypto
 ## Usage
 
 - **Safely Manage Your Digital Asset**
-    
+
     With Hoogii Wallet, you can send and recieve XCH/CATs/NFT(in the future updates) with customize fees easily and safely on Chia blockchian.
-    
+
     ![Untitled](https://hoogii.app/img/features/asset.png)
-    
+
 - **Check Your Activities At A Glance**
-    
+
     Hoogii Wallet will make sure to record all of your digital asset management on Chia blockchain, and you can find transaction details in your Hoogii Wallet at any time.
-    
+
     ![Untitled](https://hoogii.app/img/features/activities.png)
-    
+
 - **Conveniently Manage Different Addresses**
-    
+
     Set nicknames for addresses you frequently trade with to manage your digital assets on Chia blockchain in the easiest way.
-    
+
     ![Untitled](https://hoogii.app/img/features/address_book.png)
-    
+
 - **Display Block Farm Record**
-    
+
     In future updates, Hoogii Wallet will display block farmed activities while the address gets the block farmed prices.
-    
+
 - **Links Directly With Chia's First AMM & Dapps**
-    
+
     In future updates, users can transact with first AMM and Dapps on Chia blockchain directly within Hoogii Wallet.
-    
+
 - **Deposit USDS By Credit Card Or Other Payments**
-    
+
     In future updates, you will be able to deposit USDS within Hoogii Wallet by using credit cards or other payment methods.
 <br>
 <br>
@@ -77,10 +77,11 @@ The following guideline with use yarn.
     ❯ yarn --version
     1.22.18
     ```
+
 <br>
 <br>
 
-## Develop
+## Development builds
 
 - **Install**
 
@@ -90,38 +91,21 @@ The following guideline with use yarn.
     yarn install
     ```
 
-- **Start development server**
+- **Configure environments**
 
-    ```bash
-    yarn dev
-    ```
+- If you are using nvm (recommended) running nvm use will automatically choose the right node version for you.
+- Install `Yarn`
+- Install dependencies: `yarn install`
+- Copy the .env.example file to .env.extension
 
-- **Create production build**
+- **Development builds**
 
-    ```bash
-    yarn build
-    ```
+    yarn dev:extension
+    install unpack `/dist` folder from chrome browser in developer mode
 
-- **Upgrade package version & Add tag to publish new version**
+- **Building locally**
 
-    ```bash
-    yarn prerelease && git push && git push --tags  
-    ```
-
-- **Show help**
-
-```shell
-make help
-```
-
-- **Patch version**
-
-```shell
-make patch
-# npm version patch --preid=dev
-
-git push && git push --tags
-```
+   Build the project to the `/dist/` folder with `yarn build`
 
 ```mermaid
 graph TB
