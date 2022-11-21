@@ -1,0 +1,198 @@
+/* TODO: replace url with web project created by hashgreen */
+@import url('https://use.typekit.net/url6xfc.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html,
+    body {
+        @apply p-0 m-0 font-sans;
+    }
+    ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+    }
+    html.dark {
+        --color-primary-500: 113 110 255; /* #716EFF */
+        --color-primary-200: 193 114 255; /* #C172FF */
+        --color-primary-100: 206 214 255; /* #CED6FF */
+        --color-secondary: 14 31 77; /* #0E1F4D */
+        --color-active: 110 255 203; /* #6EFFCB */
+        --color-text: 95 104 129; /* #5F6881 */
+        --color-error: 255 92 111; /* #FF5C6F */
+        --color-status-send: 255 88 188; /* #FF58BC */
+        --color-status-coinbase: 255 218 124; /* #FFDA7C */
+        --color-status-receive: 0 199 204; /* #00C7CC */
+        --color-status-contract: 113 110 255; /* #716EFF */
+        --color-status-pending: 0, 0, 0, 0.2; /* #000000 */
+        --color-status-cancel: 69 68 90; /* #45445A */
+        --color-dark-scale-900: 0 0 0; /* #000000 */
+        --color-dark-scale-100: 255 255 255; /* #FFFFFF */
+        --color-skeleton: 95, 104, 129, 0.2; /* #5F6881 */
+
+        input {
+            color-scheme: dark;
+        }
+    }
+
+    #root,
+    #popup {
+        --tooltip-offset: 11px;
+        --tooltip-bg: #ced6ff;
+        @apply border-none w-[400px] h-[600px] overflow-hidden text-dark-scale-100 text-body1;
+    }
+    #tabs {
+        @apply w-screen min-h-screen text-dark-scale-100 text-body1 bg-main bg-cover;
+    }
+    input[type='search']::-webkit-search-cancel-button {
+        @apply w-3 h-3 appearance-none bg-close;
+    }
+    input[type='checkbox'] {
+        @apply w-[15px] h-[15px] m-0 bg-none bg-cover appearance-none border border-primary-100 rounded checked:bg-checked checked:border-none;
+    }
+    input[type='radio'] {
+        @apply z-0 w-4 h-4 border rounded-full appearance-none flex-center border-primary-100 checked:border-dark-scale-100 checked:before:bg-dark-scale-100;
+        &::before {
+            @apply content-[''] z-10 block absolute w-2.5 h-2.5 rounded-[inherit] scale-0 transition-transform duration-100 ease-in-out bg-primary-100;
+        }
+        &:checked::before {
+            @apply scale-100;
+        }
+    }
+}
+@layer utilities {
+    /* Full */
+    .full {
+        @apply w-full h-full;
+    }
+    .absolute-full {
+        @apply absolute top-0 bottom-0 left-0 right-0;
+    }
+    .fixed-full {
+        @apply fixed top-0 bottom-0 left-0 right-0;
+    }
+    /* Position */
+    .flex-center {
+        @apply flex items-center justify-center;
+    }
+    .flex-row-center {
+        @apply flex items-center;
+    }
+    .flex-col-center {
+        @apply flex flex-col items-center;
+    }
+    .absolute-center {
+        @apply absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2;
+    }
+    .fixed-center {
+        @apply fixed -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2;
+    }
+    /* Bg */
+    .bg-CTA_landing {
+        background: linear-gradient(90deg, #50ffd5 -27.75%, #716eff 91.35%);
+    }
+    .bg-CTA_main {
+        background: linear-gradient(90deg, #716eff 0%, #c172ff 100%);
+    }
+    .bg-box {
+        background: #292b50;
+    }
+    .bg-popup {
+        @apply rounded-[20px] bg-black/80 z-50 ring-2 ring-primary;
+    }
+    .bg-overlay {
+        @apply bg-black/40;
+    }
+    .bg-hover {
+        @apply relative after:content-[''] after:bg-dark-scale-100/20 after:z-10 after:absolute-full after:rounded-[inherit];
+    }
+    .bg-disable {
+        @apply relative after:content-[''] after:bg-dark-scale-900/20 after:z-10 after:absolute-full after:rounded-[inherit];
+    }
+    .bg-status-coinbase {
+        background: linear-gradient(204.58deg, #ffda7c 0%, #ff4d00 84.31%);
+    }
+}
+
+@layer components {
+    /* btn - sizes */
+    .btn {
+        @apply relative h-7 min-w-[100px] rounded-sm py-2.5 px-5 whitespace-nowrap leading-none flex-center text-button3 capitalize
+            hover:[&:not(:disabled)]:bg-hover disabled:[&:not(.btn-outline)]:bg-disable;
+    }
+    .btn-outline {
+        @apply disabled:opacity-60;
+    }
+    .btn-large {
+        @apply h-10 px-10 text-button1;
+    }
+    /* btn - colors */
+    .btn-CTA_landing {
+        @apply relative text-dark-scale-100 z-0
+            before:content-[''] before:-z-10 before:absolute before:inset-0 before:rounded-[inherit] before:p-[1px]
+            before:bg-CTA_landing;
+        &.btn-outline::before {
+            -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+    }
+    .btn-CTA_main {
+        @apply text-button2 bg-CTA_main rounded-lg min-w-0 px-3 py-1.5 gap-1 text-dark-scale-100;
+    }
+
+    .input {
+        @apply outline-none rounded h-10 w-full px-4 py-[13px] 
+            bg-box border-[1px] border-primary/70 text-body3 placeholder:text-text 
+            hover:border-primary focus:border-2 focus:text-primary-100 invalid:input-error;
+    }
+    .input-landing {
+        @apply px-3 py-2 font-bold text-center border-transparent rounded-sm bg-secondary hover:border-active focus:border-active;
+    }
+    .input-mnemonics {
+        @apply px-3 py-2 font-bold text-center rounded-sm h-7 border-primary-100 hover:border-primary-100 bg-secondary focus:border-active read-only:border-none;
+    }
+    .input-error {
+        @apply !border-error;
+    }
+
+    .tooltip {
+        @apply z-50 after:hidden;
+        &:hover {
+            @apply hover:tooltip-open;
+        }
+    }
+    .tooltip-open {
+        @apply relative after:content-[attr(data-tip)] after:pointer-events-none after:block
+            after:bg-[color:var(--tooltip-bg)] after:text-secondary after:px-3 after:py-2 after:rounded-sm after:text-body3
+            after:absolute after:-translate-x-1/2 after:left-1/2 after:top-[calc(100%+var(--tooltip-offset,0px))]
+            before:content-[''] before:w-2 before:aspect-square before:bg-[color:var(--tooltip-bg)]
+            before:absolute before:rotate-45 before:-translate-x-1/2 before:left-1/2 before:top-[calc(100%+var(--tooltip-offset,0px))] before:-translate-y-1/2;
+    }
+
+    .avatar {
+        @apply relative w-8 rounded-full aspect-square hover:bg-hover after:w-full;
+        /* before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:p-[3px]
+            before:bg-gradient-to-b before:from-primary before:to-primary/0;
+        &::before {
+            -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        &:hover {
+            @apply after:content-[''] after:bg-hover after:z-10 after:absolute-full after:rounded-[inherit];
+        } */
+    }
+    .loading {
+        @apply bg-cover bg-loading animate-spin;
+    }
+    .skeleton {
+        @apply bg-skeleton animate-pulse;
+    }
+    .skeleton-text {
+        @apply rounded h-3;
+    }
+}

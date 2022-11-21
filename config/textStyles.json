@@ -1,0 +1,72 @@
+[
+    {
+        "key": "headline1",
+        "fontWeight": "bold",
+        "fontSize": "28px"
+    },
+    {
+        "key": "headline2",
+        "fontWeight": "semibold",
+        "fontSize": "24px"
+    },
+    {
+        "key": "headline3",
+        "fontWeight": "semibold",
+        "fontSize": "20px"
+    },
+    {
+        "key": "headline4",
+        "fontWeight": "medium",
+        "fontSize": "16px"
+    },
+    {
+        "key": "subtitle1",
+        "fontWeight": "semibold",
+        "fontSize": "16px"
+    },
+    {
+        "key": "subtitle2",
+        "fontWeight": "semibold",
+        "fontSize": "14px"
+    },
+    {
+        "key": "body1",
+        "fontWeight": "medium",
+        "fontSize": "16px"
+    },
+    {
+        "key": "body2",
+        "fontWeight": "medium",
+        "fontSize": "14px"
+    },
+    {
+        "key": "body3",
+        "fontWeight": "normal",
+        "fontSize": "12px"
+    },
+    {
+        "key": "button1",
+        "fontWeight": "bold",
+        "fontSize": "16px"
+    },
+    {
+        "key": "button2",
+        "fontWeight": "bold",
+        "fontSize": "14px"
+    },
+    {
+        "key": "button3",
+        "fontWeight": "bold",
+        "fontSize": "12px"
+    },
+    {
+        "key": "caption",
+        "fontWeight": "normal",
+        "fontSize": "12px"
+    },
+    {
+        "key": "others",
+        "fontWeight": "normal",
+        "fontSize": "10px"
+    }
+]
