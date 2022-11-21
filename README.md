@@ -2,127 +2,129 @@
 
 [![GitHub license](https://img.shields.io/github/license/hashgreen/hoogii-wallet)](https://github.com/hashgreen/hoogii-wallet/blob/main/LICENSE)
 
-## Introduce
+*"Hoogii"*
 
-Hoogii Wallet is committed to creating the most practical and easy-to-use crypto wallet on Chia Network. With Hoogii Wallet, you will be able to easily manage your assets on Chia Network.
+Some say it sounds like "fortune" in Hokkien (*hù-kuì*, 富貴); some others think it sounds similar to "partner" in Mandarin (*huo-ji*, 伙計).
 
-![Untitled](https://hoogii.app/img/meta.png)
-<br>
-<br>
+Hoogii Wallet is simply a wallet committed to creating the most practical and easy-to-use crypto wallet on Chia Blockchain. 
+With Hoogii Wallet, you will be able to easily manage your assets on Chia Network.
 
-## Usage
+<p align="center">
+  <img width="100%" src="https://hoogii.app/img/meta.png">
+</p>
 
-- **Safely Manage Your Digital Asset**
+## Features
 
-    With Hoogii Wallet, you can send and recieve XCH/CATs/NFT(in the future updates) with customize fees easily and safely on Chia blockchian.
+### Safely Manage Your Digital Asset
 
-    ![Untitled](https://hoogii.app/img/features/asset.png)
+With Hoogii Wallet, you can send and receive Chia (XCH) / Chia Asset Tokens (CATs) or NFT (coming soon!) with customizable fees easily and safely on Chia Blockchain.
 
-- **Check Your Activities At A Glance**
+<p align="center">
+  <img width="384px" src="https://hoogii.app/img/features/asset.png">
+</p>
 
-    Hoogii Wallet will make sure to record all of your digital asset management on Chia blockchain, and you can find transaction details in your Hoogii Wallet at any time.
+### Check Your Activities at a Glance
 
-    ![Untitled](https://hoogii.app/img/features/activities.png)
+Hoogii Wallet will make sure to record all of your digital assets on Chia Blockchain, and you can find all the transaction details in your Hoogii Wallet at any time.
 
-- **Conveniently Manage Different Addresses**
+<p align="center">
+  <img width="384px" src="https://hoogii.app/img/features/activities.png">
+</p>
 
-    Set nicknames for addresses you frequently trade with to manage your digital assets on Chia blockchain in the easiest way.
+### Conveniently Manage Different Addresses
 
-    ![Untitled](https://hoogii.app/img/features/address_book.png)
+Set nicknames for addresses you frequently trade with to manage your digital assets on Chia Blockchain in the easiest way.
 
-- **Display Block Farm Record**
+<p align="center">
+  <img width="384px" src="https://hoogii.app/img/features/address_book.png">
+</p>
 
-    In future updates, Hoogii Wallet will display block farmed activities while the address gets the block farmed prices.
+### Display Won Blocks for Chia Farms
 
-- **Links Directly With Chia's First AMM & Dapps**
+If you are a Chia farmer, then you come to the right place! Hoogii Wallet displays all your won blocks from your Chia farms so you never miss the chance to brag to your friends!
 
-    In future updates, users can transact with first AMM and Dapps on Chia blockchain directly within Hoogii Wallet.
+### Links Directly With Chia's First AMM & dApps
 
-- **Deposit USDS By Credit Card Or Other Payments**
+In future updates, users can transact with the first AMM and other dApps on Chia Blockchain directly within Hoogii Wallet.
 
-    In future updates, you will be able to deposit USDS within Hoogii Wallet by using credit cards or other payment methods.
-<br>
-<br>
+### Deposit USDS via Credit Card or Other Payments 
 
-## Installation
+In future updates, you will be able to deposit USDS ([Stably USD](https://coinmarketcap.com/currencies/stableusd/)) within Hoogii Wallet using credit cards or other payment methods.
 
-Install Hoogii Wallet on Google Chrome extension：[Install here](https://chrome.google.com/webstore/detail/hoogii-wallet/jljjeghmeihjegifdhbghcoihdiegkkl)
-<br>
-<br>
 
-## Contributing
+## Package Installation
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.Please make sure to update tests as appropriate.
-<br>
-<br>
+Install Hoogii Wallet on [Chrome Web Store](https://chrome.google.com/webstore/detail/hoogii-wallet/jljjeghmeihjegifdhbghcoihdiegkkl).
 
-## Requirements
+## For Developers
 
-For development, you will only need Node.js installed on your environement.
-Recommand to use `yarn` as package management (not mandatory).
-The following guideline with use yarn.
+### Prerequisites
 
-- **Node**
+For development, you will only need Node.js installed on your environment.
+The recommended package manager is `yarn`, and please follow the instructions below to set up.
 
-    [Node](http://nodejs.org/) is really easy to install & now include [NPM](https://npmjs.org/).
-    You should be able to run the following command after the installation procedure
-    below.
+- Node
+
+    [Node.js](http://nodejs.org/) is easy to install along with [NPM](https://npmjs.org/).
+    You should be able to check the version after the installation procedure.
 
     ```bash
     $ node --version
     v16.15.1
-
     $ npm --version
     8.11.0
-    ❯ yarn --version
+    $ yarn --version
     1.22.18
     ```
 
-<br>
-<br>
+### Development
 
-## Develop
+To build and run Hoogii Wallet from source, please follow the instructions.
 
-- **Install**
+- Clone this repository
 
-    ```bash
-    git clone git@github.com:hashgreen/hoogii-wallet.git
-    cd hoogii-wallet
+    ```sh
+    git clone git@github.com:hashgreen/hoogii-wallet.git && cd hoogii-wallet
     yarn install
     ```
 
-- **Start development server**
+- Start development server
 
-    ```bash
+    ```sh
     yarn dev
     ```
 
-- **Create production build**
+- Create production build
 
-    ```bash
+    ```sh
     yarn build
     ```
 
-- **Upgrade package version & Add tag to publish new version**
+- Upgrade package version & Add tag to publish new version
 
-    ```bash
+    ```sh
     yarn prerelease && git push && git push --tags  
     ```
 
-- **Show help**
+- Show help
 
-```shell
-make help
-```
+    ```sh
+    make help
+    ```
 
-- **Patch version**
+- Patch version
 
-```shell
-make patch
-# npm version patch --preid=dev
+    ```sh
+    make patch
+    # npm version patch --preid=dev
 
-git push && git push --tags
-```
+    git push && git push --tags
+    ```
+
+### Technical Details
+
+Below are a few core concepts in the development of Hoogii Wallet.
+Please be patient and we'll come back to drop in some more technical insights and discussions (wink)!
 
 ```mermaid
 graph TB
@@ -138,18 +140,16 @@ flowchart LR
     chrome.runtime.sendMessage<-->chrome.runtime.onMessage
 ```
 
-<br>
-<br>
+### Contributing
 
-## Important Links
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change and make sure to update tests as appropriate.
+
+## Links
 
 - [Landing Page](https://hoogii.app/)
 - [Discord](https://discord.com/invite/eQkGXgprvn)
 - [Twitter](https://twitter.com/Hoogii_app)
 - [Medium](https://hoogii-app.medium.com/)
-
-<br>
-<br>
 
 ## License
 
