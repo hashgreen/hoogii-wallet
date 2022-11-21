@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check source code
+      uses: actions/checkout@v3
+    - name: Setup node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'npm'
+    - name: Install dependencies
+      run: |
+        yarn install
+    - name: Set up git
+      run:  |
+        git config user.name "GitHub Actions Bot"
+        git config user.email "Devops <devops@hashgreen.net>"
+    - name: Package
+      run: |
+        make package
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "release_*.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
