@@ -57,7 +57,15 @@ export const callGetTxByPuzzleHash = (params: {
 export const callGetAblyAccessToken = (formData) =>
     request.post('/auth', formData)
 /** -------------------------- Jarvan addon API END -------------------------- */
-export const getMarkets = () =>
+/** -------------------------- Zed API -------------------------- */
+export const callGetMarkets = () =>
     request.get<AxiosResponse<IMarket[]>>(
         'https://testnet10.hash.green/api/v1/markets'
     )
+
+/** -------------------------- Zed API END -------------------------- */
+
+/** -------------------------- Spacescan API -------------------------- */
+export const callGetExchangeRate = (assetId: string) =>
+    request.get(`https://api2.spacescan.io/v0.1/xch/cat/${assetId}`)
+/** -------------------------- Spacescan API END -------------------------- */
