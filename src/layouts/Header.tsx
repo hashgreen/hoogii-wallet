@@ -26,13 +26,10 @@ const Header = ({ className }: IProps) => {
     const [open, setOpen] = useState(false)
     const {
         walletStore: { chain, lock, address, puzzleHash, name, locked },
-        assetsStore: { XCH, balances },
+        assetsStore: { XCH, getBalanceByPuzzleHash },
     } = rootStore
     const shortenAddress = useMemo(() => shortenHash(address), [address])
-    const xchBalance = useMemo(
-        () => mojoToXch(balances['0x' + puzzleHash]?.toString() ?? '0'),
-        [balances, puzzleHash]
-    )
+    const xchBalance = mojoToXch(getBalanceByPuzzleHash('0x' + puzzleHash))
 
     return (
         <nav

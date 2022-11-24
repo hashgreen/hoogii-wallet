@@ -1,6 +1,6 @@
 import Decimal from 'decimal.js-light'
 import { observer } from 'mobx-react-lite'
-import { lazy, useState } from 'react'
+import { lazy, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
@@ -33,10 +33,26 @@ const Home = ({ initialTab = 0 }: IProps) => {
 
     const {
         walletStore: { puzzleHash, isAblyConnected },
-        assetsStore: { XCH, balances, updateBalance, isFetching },
+        assetsStore: {
+            XCH,
+            balancesData,
+            getBalanceByPuzzleHash,
+            exchangeRateData,
+            updateBalance,
+            exchangeRateCode,
+            getExchangeRate,
+        },
     } = rootStore
 
-    const xchBalance = mojoToXch((balances['0x' + puzzleHash] ?? 0)?.toString())
+    const xchBalance = mojoToXch(getBalanceByPuzzleHash('0x' + puzzleHash))
+
+    const xch2usds = exchangeRateData.data
+        ? (1 / Number(exchangeRateData.data.price_xch)).toFixed(2).toString()
+        : ''
+
+    useEffect(() => {
+        getExchangeRate()
+    }, [])
 
     return (
         <div className="relative flex flex-col h-full bg-main">
@@ -53,7 +69,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
                 <div className="overflow-auto container">
                     <div className="justify-between mt-3 mb-6 flex-row-center">
                         <div className="flex flex-col gap-0.5">
-                            {isFetching ? (
+                            {balancesData.isFetching ? (
                                 <div className="skeleton skeleton-text w-[180px]"></div>
                             ) : (
                                 <div
@@ -72,12 +88,11 @@ const Home = ({ initialTab = 0 }: IProps) => {
                                     </span>
                                 </div>
                             )}
-
-                            {/* TODO: add balance in fiat back */}
-                            {/*
                             <span className="font-medium text-body2 text-primary-100">
-                                0.00$
-                            </span> */}
+                                {exchangeRateData.isFetching
+                                    ? '---'
+                                    : `${xch2usds} ${exchangeRateCode}`}
+                            </span>
                         </div>
                         <Link to="/transfer" className="btn btn-CTA_main">
                             {t('btn-send')} <SendIcon className="w-3 h-3" />

@@ -13,7 +13,12 @@ const Info = ({ query }: { query: string }) => {
 
     const {
         walletStore: { puzzleHash },
-        assetsStore: { assets, balances, assetIdToPuzzleHash, isFetching },
+        assetsStore: {
+            assets,
+            assetIdToPuzzleHash,
+            balancesData,
+            getBalanceByPuzzleHash,
+        },
     } = rootStore
 
     const filteredAssets = useMemo(
@@ -24,7 +29,7 @@ const Info = ({ query }: { query: string }) => {
     return (
         <>
             <span className="ml-3 font-medium capitalize text-body3 text-primary-100">
-                {isFetching ? (
+                {balancesData.isFetching ? (
                     <div className="skeleton skeleton-text w-10"></div>
                 ) : (
                     t('count-asset', {
@@ -32,7 +37,7 @@ const Info = ({ query }: { query: string }) => {
                     })
                 )}
             </span>
-            {isFetching
+            {balancesData.isFetching
                 ? [...Array(5)].map((_, index) => (
                       <LoadingAssetItem key={`LoadingAssetItem${index}`} />
                   ))
@@ -49,9 +54,9 @@ const Info = ({ query }: { query: string }) => {
                               balance={() => {
                                   if (isXCH) {
                                       const result = mojoToXch(
-                                          (
-                                              balances['0x' + puzzleHash] ?? 0
-                                          )?.toString()
+                                          getBalanceByPuzzleHash(
+                                              '0x' + puzzleHash
+                                          )
                                       )
                                       return result ? (
                                           result.toFixed(
@@ -64,9 +69,9 @@ const Info = ({ query }: { query: string }) => {
                                       )
                                   } else {
                                       return mojoToCat(
-                                          balances[
+                                          getBalanceByPuzzleHash(
                                               assetIdToPuzzleHash(assetId)
-                                          ]?.toString() ?? '0'
+                                          )
                                       ).toFixed(3, Decimal.ROUND_DOWN)
                                   }
                               }}

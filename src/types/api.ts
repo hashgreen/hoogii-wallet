@@ -34,3 +34,15 @@ export interface IMarket extends IBase {
     info_ccy_name: string
     is_new: boolean
 }
+export interface IExchangeRate extends IBase {
+    asset_id: string
+    asset_name: string
+    symbol: string
+    price_usd: string
+    price_xch: string
+}
+
+export interface IFetchData<T> {
+    isFetching: boolean
+    data: T
+}

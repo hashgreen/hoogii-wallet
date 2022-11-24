@@ -11,23 +11,31 @@ import {
 import {
     callGetBalance,
     callGetBalanceByPuzzleHashes,
-    getMarkets,
+    callGetExchangeRate,
+    callGetMarkets,
 } from '~/api/api'
 import { db, IAsset } from '~/db'
-import { ICryptocurrency } from '~/types/api'
+import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
 import { ChainEnum } from '~/types/chia'
 import { CAT } from '~/utils/CAT'
 import { Wallet } from '~/utils/Wallet'
 import defaultCATs from '~config/defaultCATs.json'
 
 import WalletStore from './WalletStore'
-
 class AssetsStore {
     walletStore: WalletStore
     availableAssets: ICryptocurrency[] = []
     existedAssets: IAsset[] = []
-    balances: { [key: string]: number } = {}
-    isFetching: boolean = true
+
+    balancesData: IFetchData<{ [key: string]: number }> = {
+        isFetching: true,
+        data: {},
+    }
+
+    exchangeRateData: IFetchData<IExchangeRate | null> = {
+        isFetching: true,
+        data: null,
+    }
 
     constructor(walletStore: WalletStore) {
         makeAutoObservable(this)
@@ -37,7 +45,7 @@ class AssetsStore {
         onBecomeUnobserved(this, 'existedAssets', this.unsubscribeExistedAssets)
         onBecomeObserved(this, 'availableAssets', async () => {
             try {
-                const res = await getMarkets()
+                const res = await callGetMarkets()
                 const markets = res.data.data
                 const assets = markets.map(
                     (market) => market[market.info_ccy_name] as ICryptocurrency
@@ -62,6 +70,10 @@ class AssetsStore {
 
     get assets() {
         return [this.XCH, ...this.existedAssets]
+    }
+
+    get exchangeRateCode() {
+        return this.existedAssets[0]?.code === 'USDS' ? 'USD' : this.XCH.code
     }
 
     static addDefaultAsset = () => {
@@ -100,23 +112,31 @@ class AssetsStore {
             return []
         }
         try {
+            this.balancesData.isFetching = true
+
             const res = await callGetBalanceByPuzzleHashes({
                 puzzleHashes,
             })
 
-            runInAction(() => {
-                this.balances = {
-                    ...this.balances,
-                    ...res.data.data,
-                }
-                this.isFetching = false
-            })
+            const data = await res.data.data
 
-            return res.data.data
+            runInAction(async () => {
+                this.balancesData.isFetching = false
+                this.balancesData.data = {
+                    ...this.balancesData.data,
+                    ...data,
+                }
+            })
         } catch (error) {
-            this.isFetching = false
+            runInAction(() => {
+                this.balancesData.isFetching = false
+            })
             console.error(error)
         }
+    }
+
+    getBalanceByPuzzleHash = (puzzleHash: string) => {
+        return (this.balancesData.data?.[puzzleHash] ?? 0)?.toString() ?? '0'
     }
 
     getXCHBalance = async () => {
@@ -143,6 +163,28 @@ class AssetsStore {
         return balances
     }
 
+    getExchangeRate = async () => {
+        try {
+            this.exchangeRateData.isFetching = true
+
+            const { data } = await callGetExchangeRate(
+                this.existedAssets[0].assetId
+            )
+
+            runInAction(() => {
+                this.exchangeRateData.isFetching = false
+                this.exchangeRateData.data = data.cat[0]
+            })
+        } catch (error) {
+            runInAction(() => {
+                this.exchangeRateData.isFetching = false
+                this.exchangeRateData.data = null
+            })
+
+            console.error(error)
+        }
+    }
+
     updateBalance = async (data): Promise<void> => {
         const assetId: string = data.metadata.assetId
         const puzzle_hash = assetId
@@ -151,8 +193,9 @@ class AssetsStore {
         const balanceData = await callGetBalance({
             puzzle_hash,
         })
+
         runInAction(() => {
-            this.balances[puzzle_hash] = balanceData.data.data
+            this.balancesData.data[puzzle_hash] = balanceData.data.data
         })
     }
 
