@@ -82,7 +82,7 @@ To build and run Hoogii Wallet from source, please follow the instructions.
 
 - Configure environments
 
-    Copy the .env.example file to .env.extension
+    Copy the .env.example file to .env.extension at project root
 
 - Clone this repository
 
