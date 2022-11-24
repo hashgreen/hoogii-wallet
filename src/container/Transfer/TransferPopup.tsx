@@ -25,6 +25,7 @@ const TransferPopup = ({
     address,
     asset,
     amount,
+    memo,
     close,
 }: IProps & IBaseForm) => {
     const { t } = useTranslation()
@@ -46,6 +47,8 @@ const TransferPopup = ({
         },
     })
     const fee = watch('fee')
+
+    console.log('memo', memo)
 
     useEffect(() => {
         setFocus('fee')

@@ -25,6 +25,7 @@
     "btn-reset_wallet": "Reset Wallet",
     "search-assets-placeholder": "Search Name, asset ID, etc",
     "input-send-amount-placeholder": "Enter Amount",
+    "input-send-memo-placeholder": "Enter Memo",
     "search-address_book-placeholder": "Search Address, User name, etc",
     "input-import_custom_token-code-placeholder": "Token Name (name it as you wish)",
     "input-import_custom_token-asset_id-placeholder": "asset ID",

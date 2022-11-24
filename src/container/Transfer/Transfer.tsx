@@ -20,6 +20,7 @@ export interface IForm {
     address: IAddress
     asset: IAsset
     amount: string
+    memo: string
 }
 
 const Transfer = () => {
@@ -42,6 +43,7 @@ const Transfer = () => {
             .required(),
         asset: joi.object().required(),
         amount: joi.string().required(),
+        memo: joi.string().required(),
     })
     const {
         register,
@@ -59,6 +61,7 @@ const Transfer = () => {
     const address = watch('address')
     const asset = watch('asset')
     const amount = watch('amount')
+    const memo = watch('memo')
 
     useEffect(() => {
         setFocus('address')
@@ -161,6 +164,20 @@ const Transfer = () => {
                             })}
                         />
                     </div>
+                    <hr className="my-5 w-full h-px border-primary/30 " />
+                    <input
+                        type="text"
+                        inputMode="text"
+                        autoComplete="off"
+                        className="input"
+                        disabled={!asset}
+                        placeholder={t('input-send-memo-placeholder')}
+                        {...register('memo', {
+                            onChange: (e) => {
+                                setValue('memo', e.target.value)
+                            },
+                        })}
+                    />
                 </div>
                 <div className="flex justify-between gap-4 child:w-full">
                     <BackLink className="btn btn-secondary">
@@ -180,6 +197,7 @@ const Transfer = () => {
                     address={address}
                     asset={asset}
                     amount={amount}
+                    memo={memo}
                     close={() => setOpen(false)}
                 />
             )}
