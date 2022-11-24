@@ -6,7 +6,7 @@
 
 Some say it sounds like "fortune" in Hokkien (*hù-kuì*, 富貴); some others think it sounds similar to "partner" in Mandarin (*huo-ji*, 伙計).
 
-Hoogii Wallet is simply a wallet committed to creating the most practical and easy-to-use crypto wallet on Chia Blockchain. 
+Hoogii Wallet is simply a wallet committed to creating the most practical and easy-to-use crypto wallet on Chia Blockchain.
 With Hoogii Wallet, you will be able to easily manage your assets on Chia Network.
 
 <p align="center">
@@ -47,10 +47,9 @@ If you are a Chia farmer, then you come to the right place! Hoogii Wallet displa
 
 In future updates, users can transact with the first AMM and other dApps on Chia Blockchain directly within Hoogii Wallet.
 
-### Deposit USDS via Credit Card or Other Payments 
+### Deposit USDS via Credit Card or Other Payments
 
 In future updates, you will be able to deposit USDS ([Stably USD](https://coinmarketcap.com/currencies/stableusd/)) within Hoogii Wallet using credit cards or other payment methods.
-
 
 ## Package Installation
 
@@ -80,6 +79,10 @@ The recommended package manager is `yarn`, and please follow the instructions be
 ### Development
 
 To build and run Hoogii Wallet from source, please follow the instructions.
+
+- Configure environments
+
+    Copy the .env.example file to .env.extension at project root
 
 - Clone this repository
 
@@ -120,6 +123,20 @@ To build and run Hoogii Wallet from source, please follow the instructions.
 
     git push && git push --tags
     ```
+
+- Build the project to the ./dist/ folder with yarn build.
+
+    ```sh
+    yarn build
+    ```
+
+- Start development server
+
+    ```sh
+    yarn dev:extension
+    ```
+
+    install unpack `/dist` folder from chrome browser in developer mode
 
 ### Technical Details
 
