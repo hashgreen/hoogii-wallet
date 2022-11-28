@@ -99,6 +99,7 @@
     "transaction-to": "to",
     "transaction-from": "from",
     "transaction-detail": "transaction ID",
+    "transaction-memo": "memo",
     "transaction-farming-rewards": "Farming Rewards",
     "transaction-fee": "Fee: {{fee}} {{code}}",
     "setting-title": "setting",

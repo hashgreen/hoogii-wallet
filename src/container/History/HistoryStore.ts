@@ -119,8 +119,8 @@ class HistoryStore {
         }
     }
 
-    formatHistory = (history) =>
-        history?.map(
+    formatHistory = (history) => {
+        return history?.map(
             ({
                 cname,
                 fee,
@@ -145,12 +145,14 @@ class HistoryStore {
                 createdAt: new Date(created_at),
                 txId: name,
                 amount,
+                memo: '', // TODO
                 action:
                     ('0x' + this.walletStore.puzzleHash === from_puzzle_hash
                         ? 'send'
                         : 'receive') || '',
             })
         )
+    }
 
     updateData = (dataKey: string, value: any): void => {
         runInAction(() => {

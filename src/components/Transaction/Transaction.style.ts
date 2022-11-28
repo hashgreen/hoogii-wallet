@@ -11,10 +11,10 @@ export const Collapse = styled.div`
         height: 0;
     }
     .collapse-content {
-        height: 0;
-        transition: height 0.5s ease;
+        max-height: 0;
+        transition: max-height 0.5s ease;
     }
     .collapse-content.open {
-        height: 100px;
+        max-height: 400px;
     }
 `

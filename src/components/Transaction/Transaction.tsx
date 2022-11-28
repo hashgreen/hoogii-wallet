@@ -31,6 +31,7 @@ const statusText = {
 
 const Transaction = ({
     amount,
+    memo,
     assetId,
     receiver,
     sender,
@@ -197,16 +198,20 @@ const Transaction = ({
                                 <CopyIcon className="w-3 h-3" />
                             </CopyTooltip>
                         )}
-                        <div className="flex justify-between mt-4 text-caption">
-                            <span className="capitalize text-primary-100">
-                                {t('transaction-detail')}
-                            </span>
+                        <div className="mt-4 text-caption capitalize">
+                            <span>{t('transaction-detail')}</span>
                         </div>
                     </>
                 )}
 
                 <div className="mt-1 text-tertiary" title={txId}>
                     {shortenHash(txId)}
+                </div>
+                <div className="pt-3 text-caption">
+                    <span className="capitalize">{t('transaction-memo')}</span>
+                    <div className="mt-1 text-tertiary">
+                        <span>memo</span>
+                    </div>
                 </div>
             </div>
         </Collapse>

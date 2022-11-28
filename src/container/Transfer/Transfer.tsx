@@ -43,7 +43,7 @@ const Transfer = () => {
             .required(),
         asset: joi.object().required(),
         amount: joi.string().required(),
-        memo: joi.string().required(),
+        memo: joi.string(),
     })
     const {
         register,
