@@ -71,6 +71,7 @@ export class CAT extends Program {
         wallet,
         assetId,
         amount,
+        memo,
         targetAddress,
         spendableCoinList,
     }): Promise<CoinSpend[]> => {
@@ -100,19 +101,29 @@ export class CAT extends Program {
         const puzzlehash = Program.fromBytes(
             addressInfo(targetAddress).hash
         ).toHex()
+
+        const encoder = new TextEncoder()
+        const memos: Uint8Array[] =
+            memo.length === 0 ? [] : [encoder.encode(memo)]
+
+        const memosWithHint = [addressInfo(targetAddress).hash, ...memos]
+
         interface primary {
             puzzlehash: string
             amount: bigint
+            memos: Uint8Array[]
         }
         const primaryList: primary[] = []
         primaryList.push({
             puzzlehash,
             amount: spendAmount,
+            memos: memosWithHint,
         })
         if (Number(change) > 0) {
             primaryList.push({
                 puzzlehash: sanitizeHex(wallet.hashHex()),
                 amount: change,
+                memos: [],
             })
         }
 
@@ -121,6 +132,9 @@ export class CAT extends Program {
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
+                Program.fromList(
+                    primary.memos.map((memo) => Program.fromBytes(memo))
+                ),
             ])
         )
         const createCoinAnnouncementMsg = hash256(

@@ -16,7 +16,7 @@ import Decimal from 'decimal.js-light'
 import { callGetBalance } from '~/api/api'
 import { addressToPuzzleHash } from '~/utils/signature'
 
-import {  xchToMojo } from './CoinConverter'
+import { xchToMojo } from './CoinConverter'
 import CoinSelect from './CoinSelect'
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
@@ -202,7 +202,9 @@ export class Wallet extends Program {
     ): bigint {
         const blob = hash256(concatBytes(publicKey.toBytes(), hiddenPuzzleHash))
         const result = bytesToBigInt(blob, 'big', true)
-        return result > 0n ? result % groupOrder : (result % groupOrder) + groupOrder
+        return result > 0n
+            ? result % groupOrder
+            : (result % groupOrder) + groupOrder
     }
 
     public static derivePrivateKeyPath(
@@ -258,6 +260,7 @@ export class Wallet extends Program {
     static generateXCHSpendList = async ({
         puzzleReveal,
         amount,
+        memo,
         fee,
         address,
         targetAddress,
@@ -265,6 +268,7 @@ export class Wallet extends Program {
     }: {
         puzzleReveal: string
         amount: string
+        memo: string
         fee: string
         address: string
         targetAddress: string
@@ -293,6 +297,7 @@ export class Wallet extends Program {
         interface primary {
             puzzle_hash: string
             amount: bigint
+            memos: string[]
         }
         const primaryList: primary[] = []
 
@@ -302,12 +307,14 @@ export class Wallet extends Program {
                     addressInfo(targetAddress).hash
                 ).toHex(),
                 amount: BigInt(xchToMojo(amount).toString()),
+                memos: [],
             })
         }
 
         primaryList.push({
             puzzle_hash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
             amount: change,
+            memos: [],
         })
 
         const conditionList: Program[] = primaryList.map((primary) => {
@@ -317,6 +324,7 @@ export class Wallet extends Program {
                 Program.fromBigInt(primary.amount),
             ])
         })
+
         conditionList.push(
             Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.RESERVE_FEE)),
