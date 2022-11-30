@@ -297,7 +297,7 @@ export class Wallet extends Program {
         interface primary {
             puzzle_hash: string
             amount: bigint
-            memos: string[]
+            // memos: string[]
         }
         const primaryList: primary[] = []
 
@@ -307,14 +307,14 @@ export class Wallet extends Program {
                     addressInfo(targetAddress).hash
                 ).toHex(),
                 amount: BigInt(xchToMojo(amount).toString()),
-                memos: [],
+                // memos: [],
             })
         }
 
         primaryList.push({
             puzzle_hash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
             amount: change,
-            memos: [],
+            // memos: [],
         })
 
         const conditionList: Program[] = primaryList.map((primary) => {

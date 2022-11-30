@@ -111,19 +111,19 @@ export class CAT extends Program {
         interface primary {
             puzzlehash: string
             amount: bigint
-            memos: Uint8Array[]
+            // memos: Uint8Array[]
         }
         const primaryList: primary[] = []
         primaryList.push({
             puzzlehash,
             amount: spendAmount,
-            memos: memosWithHint,
+            // memos: memosWithHint,
         })
         if (Number(change) > 0) {
             primaryList.push({
                 puzzlehash: sanitizeHex(wallet.hashHex()),
                 amount: change,
-                memos: [],
+                //   memos: [],
             })
         }
 
@@ -132,11 +132,12 @@ export class CAT extends Program {
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
-                Program.fromList(
-                    primary.memos.map((memo) => Program.fromBytes(memo))
-                ),
+                // Program.fromList(
+                //     primary.memos.map((memo) => Program.fromBytes(memo))
+                // ),
             ])
         )
+
         const createCoinAnnouncementMsg = hash256(
             concatBytes(...coinList.map((coin) => CAT.coinName(coin)))
         )

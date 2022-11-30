@@ -48,8 +48,6 @@ const TransferPopup = ({
     })
     const fee = watch('fee')
 
-    console.log('memo', memo)
-
     useEffect(() => {
         setFocus('fee')
     }, [])
