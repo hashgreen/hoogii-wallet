@@ -207,12 +207,14 @@ const Transaction = ({
                 <div className="mt-1 text-tertiary" title={txId}>
                     {shortenHash(txId)}
                 </div>
+                {/* NOTE : hide until metadata has memo
                 <div className="pt-3 text-caption">
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
                         <span>memo</span>
                     </div>
-                </div>
+                </div> 
+                */}
             </div>
         </Collapse>
     )
