@@ -31,7 +31,7 @@ const statusText = {
 
 const Transaction = ({
     amount,
-    memo,
+    memos,
     assetId,
     receiver,
     sender,
@@ -207,14 +207,19 @@ const Transaction = ({
                 <div className="mt-1 text-tertiary" title={txId}>
                     {shortenHash(txId)}
                 </div>
-                {/* NOTE : hide until metadata has memo
                 <div className="pt-3 text-caption">
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
-                        <span>memo</span>
+                        {memos?.map((memo, index) => (
+                            <span
+                                className="break-words"
+                                key={`${index}-${memo}`}
+                            >
+                                {`${memo} `}
+                            </span>
+                        ))}
                     </div>
-                </div> 
-                */}
+                </div>
             </div>
         </Collapse>
     )

@@ -294,10 +294,12 @@ export class Wallet extends Program {
 
         const [firstCoin, ...restCoinList] = coinList
 
+        const memos: Uint8Array[] = memo.length === 0 ? [] : [fromHex(memo)]
+
         interface primary {
             puzzle_hash: string
             amount: bigint
-            // memos: string[]
+            memos?: Uint8Array[]
         }
         const primaryList: primary[] = []
 
@@ -307,14 +309,14 @@ export class Wallet extends Program {
                     addressInfo(targetAddress).hash
                 ).toHex(),
                 amount: BigInt(xchToMojo(amount).toString()),
-                // memos: [],
+                memos: [...memos],
             })
         }
 
         primaryList.push({
             puzzle_hash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
             amount: change,
-            // memos: [],
+            memos: [...memos],
         })
 
         const conditionList: Program[] = primaryList.map((primary) => {
@@ -322,6 +324,15 @@ export class Wallet extends Program {
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzle_hash),
                 Program.fromBigInt(primary.amount),
+                ...(primary.memos && primary.memos.length > 0
+                    ? [
+                          Program.fromList(
+                              primary.memos.map((memo) =>
+                                  Program.fromBytes(memo)
+                              )
+                          ),
+                      ]
+                    : []),
             ])
         })
 

@@ -119,10 +119,8 @@ class HistoryStore {
         }
     }
 
-    formatHistory = (history) => {
-        console.log('history', history)
-
-        return history?.map(
+    formatHistory = (history) =>
+        history?.map(
             ({
                 cname,
                 fee,
@@ -155,7 +153,6 @@ class HistoryStore {
                         : 'receive') || '',
             })
         )
-    }
 
     updateData = (dataKey: string, value: any): void => {
         runInAction(() => {
