@@ -102,28 +102,26 @@ export class CAT extends Program {
             addressInfo(targetAddress).hash
         ).toHex()
 
-        const encoder = new TextEncoder()
-        const memos: Uint8Array[] =
-            memo.length === 0 ? [] : [encoder.encode(memo)]
+        const memos: Uint8Array[] = memo.length === 0 ? [] : [fromHex(memo)]
 
-        const memosWithHint = [addressInfo(targetAddress).hash, ...memos]
+        // NOTE : only have one amount and puzzle hash, so just append puzzlehash and memos
+        const memosWithHint = [fromHex(puzzlehash), ...memos]
 
         interface primary {
             puzzlehash: string
             amount: bigint
-            // memos: Uint8Array[]
+            memos?: Uint8Array[]
         }
         const primaryList: primary[] = []
         primaryList.push({
             puzzlehash,
             amount: spendAmount,
-            // memos: memosWithHint,
+            memos: memosWithHint,
         })
         if (Number(change) > 0) {
             primaryList.push({
                 puzzlehash: sanitizeHex(wallet.hashHex()),
                 amount: change,
-                //   memos: [],
             })
         }
 
@@ -132,9 +130,15 @@ export class CAT extends Program {
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
-                // Program.fromList(
-                //     primary.memos.map((memo) => Program.fromBytes(memo))
-                // ),
+                ...(primary.memos
+                    ? [
+                          Program.fromList(
+                              primary.memos.map((memo) =>
+                                  Program.fromBytes(memo)
+                              )
+                          ),
+                      ]
+                    : []),
             ])
         )
 

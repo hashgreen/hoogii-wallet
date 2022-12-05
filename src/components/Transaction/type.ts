@@ -19,7 +19,7 @@ export interface ITransaction {
     txId: string
     action: string
     status: ITxStatus
-    memo: string
+    memos: string[]
 }
 export enum ITxStatus {
     TX_STATUS_UNSPECIFIED = 0,
