@@ -70,8 +70,6 @@ const Transaction = ({
             : ''
     )
 
-    console.log(decodedMemos)
-
     return (
         <Collapse
             className={classNames(
