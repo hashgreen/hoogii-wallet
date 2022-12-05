@@ -294,7 +294,12 @@ export class Wallet extends Program {
 
         const [firstCoin, ...restCoinList] = coinList
 
-        const memos: Uint8Array[] = memo.length === 0 ? [] : [fromHex(memo)]
+        const memoHex = memo
+            .split('')
+            .map((c) => c.charCodeAt(0).toString(16).padStart(2, '0'))
+            .join('')
+
+        const memos: Uint8Array[] = memo.length === 0 ? [] : [fromHex(memoHex)]
 
         interface primary {
             puzzle_hash: string

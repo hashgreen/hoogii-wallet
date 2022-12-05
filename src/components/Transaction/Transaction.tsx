@@ -56,6 +56,22 @@ const Transaction = ({
     const isTransfer =
         txType === ITxType.TX_TYPE_CAT_TRANSFER ||
         txType === ITxType.TX_TYPE_STANDARD_TRANSFER
+
+    const filteredMemo =
+        memos && txType === ITxType.TX_TYPE_CAT_TRANSFER ? memos.slice(1) : []
+
+    const decodedMemos = filteredMemo.map((memo) =>
+        memo !== null
+            ? memo
+                  ?.slice(2)
+                  ?.match(/.{2}/g)
+                  ?.map((s) => String.fromCharCode(parseInt(s, 16)))
+                  ?.join('')
+            : ''
+    )
+
+    console.log(decodedMemos)
+
     return (
         <Collapse
             className={classNames(
@@ -210,14 +226,17 @@ const Transaction = ({
                 <div className="pt-3 text-caption">
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
-                        {memos?.map((memo, index) => (
-                            <span
-                                className="break-words"
-                                key={`${index}-${memo}`}
-                            >
-                                {`${memo} `}
-                            </span>
-                        ))}
+                        {decodedMemos?.map(
+                            (memo, index) =>
+                                memo && (
+                                    <span
+                                        className="break-words"
+                                        key={`${index}-${memo}`}
+                                    >
+                                        {`${memo.toString()} `}
+                                    </span>
+                                )
+                        )}
                     </div>
                 </div>
             </div>
