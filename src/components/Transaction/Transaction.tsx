@@ -1,3 +1,4 @@
+import { sanitizeHex } from '@rigidity/chia'
 import classNames from 'classnames'
 import { format } from 'date-fns'
 import { observer } from 'mobx-react-lite'
@@ -63,15 +64,16 @@ const Transaction = ({
             ? memos.slice(1)
             : memos
 
-    const decodedMemos = filteredMemo.map((memo) =>
-        memo !== null
-            ? memo
-                  ?.slice(2)
-                  ?.match(/.{2}/g)
-                  ?.map((s) => String.fromCharCode(parseInt(s, 16)))
-                  ?.join('')
-            : ''
-    )
+    const decodedMemos = filteredMemo
+        ? filteredMemo.map((memo) =>
+              memo
+                  ? sanitizeHex(memo)
+                        ?.match(/.{2}/g)
+                        ?.map((s) => String.fromCharCode(parseInt(s, 16)))
+                        ?.join('')
+                  : ''
+          )
+        : []
 
     return (
         <Collapse
