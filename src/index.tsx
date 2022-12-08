@@ -4,6 +4,7 @@ import './index.css'
 import { Buffer } from 'buffer'
 import ReactDOM from 'react-dom'
 import ReactGA from 'react-ga4'
+import { ToastContainer } from 'react-toastify'
 
 import Components from '~/container/Components'
 
@@ -20,6 +21,7 @@ ReactDOM.render(
     <>
         <App />
         {import.meta.env.VITE_BUILD_TARGET !== 'extension' && <Components />}
+        <ToastContainer />
     </>,
     document.getElementById('root')
 )
