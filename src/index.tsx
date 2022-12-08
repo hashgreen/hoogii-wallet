@@ -1,3 +1,4 @@
+import 'react-toastify/dist/ReactToastify.css'
 import '~/utils/i18n'
 import './index.css'
 
