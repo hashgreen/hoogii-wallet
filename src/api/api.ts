@@ -2,10 +2,11 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
 import { IMarket } from '~/types/api'
+import { getErrorMessage } from '~/utils/errorMessage'
 
 const request = axios.create({
     baseURL: import.meta.env.VITE_API_BASEURL,
-    timeout: 30 * 1000,
+    timeout: 1,
 })
 /** -------------------------- Full Node API -------------------------- */
 
@@ -19,16 +20,15 @@ export async function apiErrorToastHandler<T, D>(
     } catch (error: any) {
         const resError: AxiosError = error
         if (isShowToast) {
-            console.log('res', resError?.response?.data)
-            toast.error(resError?.response?.data, {
+            const message = getErrorMessage(resError?.response?.status)
+            toast.error(message, {
                 position: 'bottom-center',
-                autoClose: 5000,
+                autoClose: 2500,
                 hideProgressBar: true,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-                theme: 'colored',
             })
         }
         throw resError?.response
