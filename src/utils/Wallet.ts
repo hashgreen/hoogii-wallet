@@ -31,6 +31,12 @@ export interface Derivation {
     readonly index: number
 }
 
+export interface Primary {
+    puzzlehash: string
+    amount: bigint
+    memos?: string[]
+}
+
 export class Wallet extends Program {
     public readonly publicKey: JacobianPoint
     public readonly derivation: Derivation
@@ -294,46 +300,34 @@ export class Wallet extends Program {
 
         const [firstCoin, ...restCoinList] = coinList
 
-        const memoHex = memo
-            .split('')
-            .map((c) => c.charCodeAt(0).toString(16).padStart(2, '0'))
-            .join('')
-
-        const memos: Uint8Array[] = memo.length === 0 ? [] : [fromHex(memoHex)]
-
-        interface primary {
-            puzzle_hash: string
-            amount: bigint
-            memos?: Uint8Array[]
-        }
-        const primaryList: primary[] = []
+        const primaryList: Primary[] = []
 
         if (new Decimal(amount).comparedTo(0) === 1) {
             primaryList.push({
-                puzzle_hash: Program.fromBytes(
+                puzzlehash: Program.fromBytes(
                     addressInfo(targetAddress).hash
                 ).toHex(),
                 amount: BigInt(xchToMojo(amount).toString()),
-                memos: [...memos],
+                memos: [memo],
             })
         }
 
         primaryList.push({
-            puzzle_hash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
+            puzzlehash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
             amount: change,
-            memos: [...memos],
+            memos: [memo],
         })
 
         const conditionList: Program[] = primaryList.map((primary) => {
             return Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
-                Program.fromHex(primary.puzzle_hash),
+                Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
-                ...(primary.memos && primary.memos.length > 0
+                ...(primary.memos
                     ? [
                           Program.fromList(
                               primary.memos.map((memo) =>
-                                  Program.fromBytes(memo)
+                                  Program.fromText(memo)
                               )
                           ),
                       ]
@@ -356,6 +350,7 @@ export class Wallet extends Program {
                 ...primaryList.map((primary) =>
                     this.coinName({
                         ...primary,
+                        puzzle_hash: primary.puzzlehash,
                         amount: Number(primary.amount),
                         parent_coin_info:
                             Program.fromBytes(origin_info).toString(),

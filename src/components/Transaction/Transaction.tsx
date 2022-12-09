@@ -64,17 +64,6 @@ const Transaction = ({
             ? memos.slice(1)
             : memos
 
-    const decodedMemos = filteredMemo
-        ? filteredMemo.map((memo) =>
-              memo
-                  ? sanitizeHex(memo)
-                        ?.match(/.{2}/g)
-                        ?.map((s) => String.fromCharCode(parseInt(s, 16)))
-                        ?.join('')
-                  : ''
-          )
-        : []
-
     return (
         <Collapse
             className={classNames(
@@ -229,7 +218,7 @@ const Transaction = ({
                 <div className="pt-3 text-caption">
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
-                        {decodedMemos?.map(
+                        {filteredMemo?.map(
                             (memo, index) =>
                                 memo && (
                                     <span

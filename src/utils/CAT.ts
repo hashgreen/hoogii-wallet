@@ -16,7 +16,7 @@ import { catToMojo } from '~/utils/CoinConverter'
 
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
-import { Wallet } from './Wallet'
+import { Primary, Wallet } from './Wallet'
 
 export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
@@ -102,25 +102,11 @@ export class CAT extends Program {
             addressInfo(targetAddress).hash
         ).toHex()
 
-        const memoHex = memo
-            .split('')
-            .map((c) => c.charCodeAt(0).toString(16).padStart(2, '0'))
-            .join('')
-        const memos: Uint8Array[] = memo.length === 0 ? [] : [fromHex(memoHex)]
-
-        // NOTE : only have one amount and puzzle hash, so just append puzzlehash and memos
-        const memosWithHint = [fromHex(puzzlehash), ...memos]
-
-        interface primary {
-            puzzlehash: string
-            amount: bigint
-            memos?: Uint8Array[]
-        }
-        const primaryList: primary[] = []
+        const primaryList: Primary[] = []
         primaryList.push({
             puzzlehash,
             amount: spendAmount,
-            memos: memosWithHint,
+            memos: [puzzlehash.toString(), memo],
         })
         if (Number(change) > 0) {
             primaryList.push({
@@ -138,7 +124,7 @@ export class CAT extends Program {
                     ? [
                           Program.fromList(
                               primary.memos.map((memo) =>
-                                  Program.fromBytes(memo)
+                                  Program.fromText(memo)
                               )
                           ),
                       ]
