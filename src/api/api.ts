@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
 import { IMarket } from '~/types/api'
@@ -6,16 +6,16 @@ import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
 
 const request = axios.create({
     baseURL: import.meta.env.VITE_API_BASEURL,
-    timeout: 1,
+    timeout: 60 * 1000,
 })
 /** -------------------------- Full Node API -------------------------- */
 
-export async function apiErrorToastHandler<T, D>(
-    request: Promise<AxiosResponse<T, D>>,
+export async function apiHandler<T = any>(
+    params: AxiosRequestConfig,
     isShowToast: Boolean = true
-): Promise<AxiosResponse<T, D>> {
+): Promise<AxiosResponse<T>> {
     try {
-        const res = await request
+        const res = await request.request<T>({ ...params })
         return res
     } catch (error: any) {
         const resError: AxiosError = error
@@ -23,7 +23,7 @@ export async function apiErrorToastHandler<T, D>(
             const message = getErrorMessage(resError?.response?.status)
             toast.error(message, {
                 ...ToastOption,
-                toastId: resError?.response?.status?.toString() ?? 'None',
+                toastId: String(resError?.response?.status),
             })
         }
         throw resError?.response
@@ -38,33 +38,51 @@ interface GetBalanceRes {
 /**
  * callPushTransaction [Post]
  */
-export const getCoinRecordsByName = (params) =>
-    apiErrorToastHandler(request.post('/rpc/get_coin_record_by_name', params))
-export const getPuzzleAndSolution = (params) =>
-    apiErrorToastHandler(request.post('/rpc/get_puzzle_and_solution', params))
+export const getCoinRecordsByName = (params: AxiosRequestConfig) =>
+    apiHandler({
+        url: '/rpc/get_coin_record_by_name',
+        method: 'post',
+        ...params,
+    })
+export const getPuzzleAndSolution = (params: AxiosRequestConfig) =>
+    apiHandler({
+        url: '/rpc/get_puzzle_and_solution',
+        method: 'post',
+        ...params,
+    })
+
 /** -------------------------- Full Node API  END-------------------------- */
 /** -------------------------- Jarvan addon API -------------------------- */
 
-export const sendTx = (params, isShowToast: Boolean = false) =>
-    apiErrorToastHandler(request.post('/addon/push_tx', params), isShowToast)
+export const sendTx = (
+    params: AxiosRequestConfig,
+    isShowToast: Boolean = false
+) =>
+    apiHandler({ url: '/addon/push_tx', method: 'get', ...params }, isShowToast)
 export const getSpendableCoins = (params: { puzzle_hash: string }) =>
-    apiErrorToastHandler(
-        request.get('/addon/get_coin_records_by_puzzle_hash', { params })
-    )
+    apiHandler({
+        url: '/addon/get_coin_records_by_puzzle_hash',
+        method: 'get',
+        params,
+    })
 export const callGetBalance = (params: { puzzle_hash: string }) =>
-    apiErrorToastHandler(
-        request.get<GetBalanceRes>('/addon/get_balance', { params })
-    )
+    apiHandler<GetBalanceRes>({
+        url: '/addon/get_balance',
+        method: 'get',
+        params,
+    })
+
 export const callGetBalanceByPuzzleHashes = ({
     puzzleHashes,
 }: {
     puzzleHashes: string[]
 }) =>
-    apiErrorToastHandler(
-        request.get('/addon/get_balance_by_puzzle_hashes', {
-            params: { puzzle_hashes: puzzleHashes.join(',') },
-        })
-    )
+    apiHandler({
+        url: '/addon/get_balance_by_puzzle_hashes',
+        method: 'get',
+        params: { puzzle_hashes: puzzleHashes.join(',') },
+    })
+
 export const callGetTxByPuzzleHash = (params: {
     puzzle_hash: string
     type?: string
@@ -72,28 +90,35 @@ export const callGetTxByPuzzleHash = (params: {
     size?: number
     status?: number
 }) =>
-    apiErrorToastHandler(
-        request.get('/addon/get_tx_by_puzzle_hash', { params })
-    )
+    apiHandler({
+        url: '/addon/get_tx_by_puzzle_hash',
+        method: 'get',
+        params,
+    })
+
 /**
  * callGetAblyAccessToken [Post]
  */
 export const callGetAblyAccessToken = (formData) =>
-    apiErrorToastHandler(request.post('/auth', formData))
+    apiHandler({
+        url: '/auth',
+        method: 'post',
+        data: formData,
+    })
 /** -------------------------- Jarvan addon API END -------------------------- */
 /** -------------------------- Zed API -------------------------- */
 export const callGetMarkets = () =>
-    apiErrorToastHandler(
-        request.get<AxiosResponse<IMarket[]>>(
-            'https://testnet10.hash.green/api/v1/markets'
-        )
-    )
+    apiHandler<AxiosResponse<IMarket[]>>({
+        url: 'https://testnet10.hash.green/api/v1/markets',
+        method: 'get',
+    })
 
 /** -------------------------- Zed API END -------------------------- */
 
 /** -------------------------- Spacescan API -------------------------- */
 export const callGetExchangeRate = (assetId: string) =>
-    apiErrorToastHandler(
-        request.get(`https://api2.spacescan.io/v0.1/xch/cat/${assetId}`)
-    )
+    apiHandler({
+        url: `https://api2.spacescan.io/v0.1/xch/cat/${assetId}`,
+        method: 'get',
+    })
 /** -------------------------- Spacescan API END -------------------------- */
