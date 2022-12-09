@@ -1,7 +1,9 @@
+import { ToastOptions } from 'react-toastify'
+
 const BLOCKCHAIN_ERROR_MESSAGE = 'Failed to connect to blockchain'
 const DATABASE_ERROR_MESSAGE = 'Failed to connect to database'
-const API_ERROR_MESSAGE = 'Failed to connect to api'
-const API_TIME_OUT = 'Api time out'
+const API_ERROR_MESSAGE = 'Api error'
+const API_TIME_OUT = 'Connection timed out'
 export const errorCodes = {
     // BLOCKCHAIN ERROR
     50010: BLOCKCHAIN_ERROR_MESSAGE,
@@ -32,4 +34,22 @@ export const getErrorMessage = (errorCode: string | number | undefined) => {
     const message = errorCodes[String(errorCodes)] || API_ERROR_MESSAGE
 
     return `${errorCode} ${message}`
+}
+
+export const ToastOption: ToastOptions = {
+    position: 'bottom-right',
+    autoClose: 2500,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    pauseOnFocusLoss: false,
+    style: {
+        width: 360,
+        marginBottom: 20,
+        marginLeft: 20,
+        borderRadius: 8,
+        minHeight: 30,
+    },
 }

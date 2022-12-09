@@ -2,6 +2,7 @@ import { configureAbly } from '@ably-labs/react-hooks'
 import { observer } from 'mobx-react-lite'
 import { Suspense, useEffect } from 'react'
 import { RouterProvider } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
 import { callGetAblyAccessToken } from '~/api/api'
 import LoadingComponent from '~/components/Loading'
@@ -52,6 +53,7 @@ const App = () => {
                 router={memoryRouter}
                 fallbackElement={<LoadingComponent className="bg-main" />}
             />
+            <ToastContainer />
         </Suspense>
     )
 }
