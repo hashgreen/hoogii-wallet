@@ -6,7 +6,7 @@ import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
 
 const request = axios.create({
     baseURL: import.meta.env.VITE_API_BASEURL,
-    timeout: 60 * 1000,
+    timeout: 1,
 })
 /** -------------------------- Full Node API -------------------------- */
 
@@ -23,7 +23,7 @@ export async function apiErrorToastHandler<T, D>(
             const message = getErrorMessage(resError?.response?.status)
             toast.error(message, {
                 ...ToastOption,
-                toastId: String(resError?.response?.status),
+                toastId: resError?.response?.status?.toString() ?? 'None',
             })
         }
         throw resError?.response
