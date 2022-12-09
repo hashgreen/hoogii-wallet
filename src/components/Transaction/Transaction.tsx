@@ -225,7 +225,7 @@ const Transaction = ({
                                         className="break-words"
                                         key={`${index}-${memo}`}
                                     >
-                                        {`${memo.toString()} `}
+                                        {`${memo} `}
                                     </span>
                                 )
                         )}
