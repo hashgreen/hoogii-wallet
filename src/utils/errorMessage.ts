@@ -1,4 +1,4 @@
-import { ToastOptions } from 'react-toastify'
+import { Slide, toast, ToastOptions } from 'react-toastify'
 
 const BLOCKCHAIN_ERROR_MESSAGE = 'Failed to connect to blockchain'
 const DATABASE_ERROR_MESSAGE = 'Failed to connect to database'
@@ -35,21 +35,22 @@ export const getErrorMessage = (errorCode: string | number | undefined) => {
 
     return `${errorCode} ${message}`
 }
-
 export const ToastOption: ToastOptions = {
-    position: 'bottom-right',
-    autoClose: 2500,
+    // position: 'bottom-right',
+    autoClose: 1000,
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
     pauseOnFocusLoss: false,
+    transition: Slide,
+    position: toast.POSITION.BOTTOM_CENTER,
     style: {
         width: 360,
         marginBottom: 20,
         marginLeft: 20,
-        borderRadius: 8,
+        borderRadius: 4,
         minHeight: 30,
     },
 }
