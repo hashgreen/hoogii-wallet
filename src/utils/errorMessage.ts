@@ -29,14 +29,13 @@ export const errorCodes = {
     50027: DATABASE_ERROR_MESSAGE,
 }
 
-export const getErrorMessage = (errorCode: string | number | undefined) => {
-    if (!errorCode) return API_TIME_OUT
-    const message = errorCodes[String(errorCodes)] || API_ERROR_MESSAGE
+export const getErrorMessage = (errorKey: number | undefined) => {
+    if (!errorKey) return API_TIME_OUT
+    const message = errorCodes[errorKey] || API_ERROR_MESSAGE
 
-    return `${errorCode} ${message}`
+    return `${errorKey} ${message}`
 }
 export const ToastOption: ToastOptions = {
-    // position: 'bottom-right',
     autoClose: 1000,
     hideProgressBar: true,
     closeOnClick: true,
