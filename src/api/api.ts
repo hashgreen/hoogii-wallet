@@ -20,10 +20,10 @@ export async function apiHandler<T = any>(
     } catch (error: any) {
         const resError: AxiosError = error
         if (isShowToast) {
-            const message = getErrorMessage(resError?.response?.status)
+            const message = getErrorMessage(resError?.response?.data?.status)
             toast.error(message, {
                 ...ToastOption,
-                toastId: String(resError?.response?.status),
+                toastId: String(resError?.response?.data?.status),
             })
         }
         throw resError?.response
