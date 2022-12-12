@@ -20,13 +20,13 @@ export async function apiHandler<T = any>(
     } catch (error: any) {
         const resError: AxiosError = error
         if (isShowToast) {
-            const message = getErrorMessage(resError?.response?.data?.status)
+            const message = getErrorMessage(resError?.response?.data?.code)
             toast.error(message, {
                 ...ToastOption,
-                toastId: String(resError?.response?.data?.status),
+                toastId: String(resError?.response?.data?.code),
             })
         }
-        throw resError?.response
+        throw resError
     }
 }
 interface GetBalanceRes {
@@ -62,18 +62,30 @@ export const sendTx = (
         { url: '/addon/push_tx', method: 'post', ...params },
         isShowToast
     )
-export const getSpendableCoins = (params: { puzzle_hash: string }) =>
-    apiHandler({
-        url: '/addon/get_coin_records_by_puzzle_hash',
-        method: 'get',
-        params,
-    })
-export const callGetBalance = (params: { puzzle_hash: string }) =>
-    apiHandler<GetBalanceRes>({
-        url: '/addon/get_balance',
-        method: 'get',
-        params,
-    })
+export const getSpendableCoins = (
+    params: { puzzle_hash: string },
+    isShowToast: Boolean = false
+) =>
+    apiHandler(
+        {
+            url: '/addon/get_coin_records_by_puzzle_hash',
+            method: 'get',
+            params,
+        },
+        isShowToast
+    )
+export const callGetBalance = (
+    params: { puzzle_hash: string },
+    isShowToast: Boolean = true
+) =>
+    apiHandler<GetBalanceRes>(
+        {
+            url: '/addon/get_balance',
+            method: 'get',
+            params,
+        },
+        isShowToast
+    )
 
 export const callGetBalanceByPuzzleHashes = ({
     puzzleHashes,
