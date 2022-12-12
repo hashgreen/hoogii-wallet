@@ -16,7 +16,7 @@ import Decimal from 'decimal.js-light'
 import { callGetBalance } from '~/api/api'
 import { addressToPuzzleHash } from '~/utils/signature'
 
-import {  xchToMojo } from './CoinConverter'
+import { xchToMojo } from './CoinConverter'
 import CoinSelect from './CoinSelect'
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
@@ -202,7 +202,9 @@ export class Wallet extends Program {
     ): bigint {
         const blob = hash256(concatBytes(publicKey.toBytes(), hiddenPuzzleHash))
         const result = bytesToBigInt(blob, 'big', true)
-        return result > 0n ? result % groupOrder : (result % groupOrder) + groupOrder
+        return result > 0n
+            ? result % groupOrder
+            : (result % groupOrder) + groupOrder
     }
 
     public static derivePrivateKeyPath(
@@ -273,9 +275,12 @@ export class Wallet extends Program {
         const spendAmount = BigInt(
             xchToMojo(amount).add(xchToMojo(fee)).toString()
         )
-        const balance = await callGetBalance({
-            puzzle_hash: addressToPuzzleHash(address),
-        })
+        const balance = await callGetBalance(
+            {
+                puzzle_hash: addressToPuzzleHash(address),
+            },
+            false
+        )
         if (balance.data.data < spendAmount) {
             throw new Error("You don't have enough balance to send")
         }

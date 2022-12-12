@@ -17,8 +17,8 @@ export async function apiHandler<T = any>(
     try {
         const res = await request.request<T>({ ...params })
         return res
-    } catch (error: any) {
-        const resError: AxiosError = error
+    } catch (error) {
+        const resError = error as AxiosError
         if (isShowToast) {
             const message = getErrorMessage(resError)
             toast.error(message, {
