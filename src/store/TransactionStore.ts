@@ -1,7 +1,6 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Coin } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
-import { mnemonicToSeedAsync } from 'bip39-web'
 import { makeAutoObservable } from 'mobx'
 
 import { getSpendableCoins, sendTx } from '~/api/api'
@@ -73,7 +72,7 @@ class TransactionStore {
 
         const spendBundle = new SpendBundle(XCHspendsList, XCHsignatures)
 
-        await sendTx({ spend_bundle: spendBundle.getObj() })
+        await sendTx({ data: { spend_bundle: spendBundle.getObj() } })
     }
 
     sendCATTx = async (
@@ -154,7 +153,9 @@ class TransactionStore {
         )
 
         await sendTx({
-            spend_bundle: spendBundle.getObj(),
+            data: {
+                spend_bundle: spendBundle.getObj(),
+            },
         })
     }
 }
