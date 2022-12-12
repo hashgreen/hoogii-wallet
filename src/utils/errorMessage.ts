@@ -36,7 +36,7 @@ export const getErrorMessage = (errorKey: number | undefined) => {
     return `${errorKey} ${message}`
 }
 export const ToastOption: ToastOptions = {
-    autoClose: 1000,
+    autoClose: 2500,
     hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: true,
