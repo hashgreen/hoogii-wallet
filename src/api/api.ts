@@ -58,7 +58,10 @@ export const sendTx = (
     params: AxiosRequestConfig,
     isShowToast: Boolean = false
 ) =>
-    apiHandler({ url: '/addon/push_tx', method: 'get', ...params }, isShowToast)
+    apiHandler(
+        { url: '/addon/push_tx', method: 'post', ...params },
+        isShowToast
+    )
 export const getSpendableCoins = (params: { puzzle_hash: string }) =>
     apiHandler({
         url: '/addon/get_coin_records_by_puzzle_hash',
