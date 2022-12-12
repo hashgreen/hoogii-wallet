@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios'
 import { Slide, toast, ToastOptions } from 'react-toastify'
 
 const BLOCKCHAIN_ERROR_MESSAGE = 'Failed to connect to blockchain'
@@ -29,11 +30,17 @@ export const errorCodes = {
     50027: DATABASE_ERROR_MESSAGE,
 }
 
-export const getErrorMessage = (errorKey: number | undefined) => {
-    if (!errorKey) return API_TIME_OUT
-    const message = errorCodes[errorKey] || API_ERROR_MESSAGE
+export const getErrorMessage = (error: AxiosError) => {
+    const errorKey = error?.response?.data?.code
+    if (errorKey) {
+        const message = errorCodes[errorKey] || API_ERROR_MESSAGE
+        return `${errorKey} ${message}`
+    }
 
-    return `${errorKey} ${message}`
+    if (error?.response?.status) {
+        return `${error?.response?.status} ${API_ERROR_MESSAGE}`
+    }
+    return API_TIME_OUT
 }
 export const ToastOption: ToastOptions = {
     autoClose: 2500,
