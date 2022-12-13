@@ -7,7 +7,7 @@ import {
 } from 'react'
 import { Link, Outlet, useOutletContext } from 'react-router-dom'
 
-import CloseIcon from '~icons/hoogii/close.jsx'
+import BackIcon from '~icons/hoogii/back.jsx'
 
 import Header from './Header'
 
@@ -29,9 +29,9 @@ const ClosablePage = ({
             <Link
                 to={backTo as any}
                 onClick={back}
-                className="absolute right-0 -translate-y-1/2 top-1/2"
+                className="absolute left-0 -translate-y-1/2 top-1/2"
             >
-                <CloseIcon className="w-5 h-5" />
+                <BackIcon className="w-5 h-5" />
             </Link>
         </div>
         <div className="flex flex-col overflow-hidden pt-7 grow">
