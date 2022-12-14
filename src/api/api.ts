@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
-import { IMarket } from '~/types/api'
+import { IMarket, RequestConfig } from '~/types/api'
 import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
 
 const request = axios.create({
@@ -12,14 +12,14 @@ const request = axios.create({
 
 export async function apiHandler<T = any>(
     params: AxiosRequestConfig,
-    isShowToast: boolean = true
+    config: RequestConfig = { isShowToast: true }
 ): Promise<AxiosResponse<T>> {
     try {
         const res = await request.request<T>({ ...params })
         return res
     } catch (error) {
         const resError = error as AxiosError
-        if (isShowToast) {
+        if (config.isShowToast) {
             const message = getErrorMessage(resError)
             toast.error(message, {
                 ...ToastOption,
@@ -52,19 +52,16 @@ export const getPuzzleAndSolution = (params: AxiosRequestConfig) =>
     })
 
 /** -------------------------- Full Node API  END-------------------------- */
-/** -------------------------- Jarvan addon API -------------------------- */
+/** -----------------------
+ * --- Jarvan addon API -------------------------- */
 
 export const sendTx = (
     params: AxiosRequestConfig,
-    isShowToast: boolean = false
-) =>
-    apiHandler(
-        { url: '/addon/push_tx', method: 'post', ...params },
-        isShowToast
-    )
+    config: RequestConfig = { isShowToast: false }
+) => apiHandler({ url: '/addon/push_tx', method: 'post', ...params }, config)
 export const getSpendableCoins = (
     params: { puzzle_hash: string },
-    isShowToast: boolean = false
+    config: RequestConfig = { isShowToast: false }
 ) =>
     apiHandler(
         {
@@ -72,11 +69,11 @@ export const getSpendableCoins = (
             method: 'get',
             params,
         },
-        isShowToast
+        config
     )
 export const callGetBalance = (
     params: { puzzle_hash: string },
-    isShowToast: boolean = true
+    config: RequestConfig = { isShowToast: true }
 ) =>
     apiHandler<GetBalanceRes>(
         {
@@ -84,7 +81,7 @@ export const callGetBalance = (
             method: 'get',
             params,
         },
-        isShowToast
+        config
     )
 
 export const callGetBalanceByPuzzleHashes = ({

@@ -279,7 +279,7 @@ export class Wallet extends Program {
             {
                 puzzle_hash: addressToPuzzleHash(address),
             },
-            false
+            { isShowToast: false }
         )
         if (balance.data.data < spendAmount) {
             throw new Error("You don't have enough balance to send")

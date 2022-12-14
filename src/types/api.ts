@@ -4,6 +4,10 @@ export interface IResponseData<T> {
     msg: string
 }
 
+export interface RequestConfig {
+    isShowToast: boolean
+}
+
 interface IBase {
     created_at: string
     updated_at: string
