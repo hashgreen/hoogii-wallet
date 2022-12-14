@@ -23,7 +23,7 @@ export async function apiHandler<T = any>(
             const message = getErrorMessage(resError)
             toast.error(message, {
                 ...ToastOption,
-                toastId: String(resError?.response?.data?.code),
+                toastId: resError?.response?.data?.code?.toString() ?? 'none',
             })
         }
         throw resError
