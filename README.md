@@ -106,7 +106,7 @@ To build and run Hoogii Wallet from source, please follow the instructions.
 - Upgrade package version & Add tag to publish new version
 
     ```sh
-    yarn prerelease && git push && git push --tags  
+    yarn prerelease && git push && git push origin <tag_name>  
     ```
 
 - Show help
