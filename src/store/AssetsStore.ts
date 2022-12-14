@@ -118,7 +118,7 @@ class AssetsStore {
                 puzzleHashes,
             })
 
-            const data = await res.data.data
+            const data = res?.data?.data
 
             runInAction(async () => {
                 this.balancesData.isFetching = false
