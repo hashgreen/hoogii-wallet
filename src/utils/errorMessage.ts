@@ -1,44 +1,19 @@
 import { AxiosError } from 'axios'
 import { Slide, toast, ToastOptions } from 'react-toastify'
 
-const BLOCKCHAIN_ERROR_MESSAGE = 'Failed to connect to blockchain'
-const DATABASE_ERROR_MESSAGE = 'Failed to connect to database'
 const API_ERROR_MESSAGE = 'Api error'
 const API_TIME_OUT = 'Connection timed out'
-export const errorCodes = {
-    // BLOCKCHAIN ERROR
-    50010: BLOCKCHAIN_ERROR_MESSAGE,
-    50011: BLOCKCHAIN_ERROR_MESSAGE,
-    50012: BLOCKCHAIN_ERROR_MESSAGE,
-    50013: BLOCKCHAIN_ERROR_MESSAGE,
-    50014: BLOCKCHAIN_ERROR_MESSAGE,
-    50018: BLOCKCHAIN_ERROR_MESSAGE,
-    50022: BLOCKCHAIN_ERROR_MESSAGE,
-    50023: BLOCKCHAIN_ERROR_MESSAGE,
-    50025: BLOCKCHAIN_ERROR_MESSAGE,
-    50028: BLOCKCHAIN_ERROR_MESSAGE,
-    50029: BLOCKCHAIN_ERROR_MESSAGE,
-    // DATABASE ERROR
-    50016: DATABASE_ERROR_MESSAGE,
-    50015: DATABASE_ERROR_MESSAGE,
-    50017: DATABASE_ERROR_MESSAGE,
-    50019: DATABASE_ERROR_MESSAGE,
-    50020: DATABASE_ERROR_MESSAGE,
-    50021: DATABASE_ERROR_MESSAGE,
-    50024: DATABASE_ERROR_MESSAGE,
-    50026: DATABASE_ERROR_MESSAGE,
-    50027: DATABASE_ERROR_MESSAGE,
-}
 
 export const getErrorMessage = (error: AxiosError) => {
     const errorKey = error?.response?.data?.code
-    if (errorKey) {
-        const message = errorCodes[errorKey] || API_ERROR_MESSAGE
+    const message = error?.response?.data?.msg
+    // use backend error code
+    if (errorKey && message) {
         return `${errorKey} ${message}`
     }
 
     if (error?.response?.status) {
-        return `${error?.response?.status} ${API_ERROR_MESSAGE}`
+        return `${error?.response?.status} ${message || API_ERROR_MESSAGE}`
     }
     return API_TIME_OUT
 }
