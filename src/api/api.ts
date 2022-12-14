@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
-import { IMarket } from '~/types/api'
+import { IMarket, RequestConfig } from '~/types/api'
 import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
 
 const request = axios.create({
@@ -12,21 +12,21 @@ const request = axios.create({
 
 export async function apiHandler<T = any>(
     params: AxiosRequestConfig,
-    isShowToast: Boolean = true
+    config: RequestConfig = { isShowToast: true }
 ): Promise<AxiosResponse<T>> {
     try {
         const res = await request.request<T>({ ...params })
         return res
-    } catch (error: any) {
-        const resError: AxiosError = error
-        if (isShowToast) {
-            const message = getErrorMessage(resError?.response?.data?.status)
+    } catch (error) {
+        const resError = error as AxiosError
+        if (config.isShowToast) {
+            const message = getErrorMessage(resError)
             toast.error(message, {
                 ...ToastOption,
-                toastId: String(resError?.response?.data?.status),
+                toastId: resError?.response?.data?.code?.toString() ?? 'none',
             })
         }
-        throw resError?.response
+        throw resError
     }
 }
 interface GetBalanceRes {
@@ -52,25 +52,37 @@ export const getPuzzleAndSolution = (params: AxiosRequestConfig) =>
     })
 
 /** -------------------------- Full Node API  END-------------------------- */
-/** -------------------------- Jarvan addon API -------------------------- */
+/** -----------------------
+ * --- Jarvan addon API -------------------------- */
 
 export const sendTx = (
     params: AxiosRequestConfig,
-    isShowToast: Boolean = false
+    config: RequestConfig = { isShowToast: false }
+) => apiHandler({ url: '/addon/push_tx', method: 'post', ...params }, config)
+export const getSpendableCoins = (
+    params: { puzzle_hash: string },
+    config: RequestConfig = { isShowToast: false }
 ) =>
-    apiHandler({ url: '/addon/push_tx', method: 'get', ...params }, isShowToast)
-export const getSpendableCoins = (params: { puzzle_hash: string }) =>
-    apiHandler({
-        url: '/addon/get_coin_records_by_puzzle_hash',
-        method: 'get',
-        params,
-    })
-export const callGetBalance = (params: { puzzle_hash: string }) =>
-    apiHandler<GetBalanceRes>({
-        url: '/addon/get_balance',
-        method: 'get',
-        params,
-    })
+    apiHandler(
+        {
+            url: '/addon/get_coin_records_by_puzzle_hash',
+            method: 'get',
+            params,
+        },
+        config
+    )
+export const callGetBalance = (
+    params: { puzzle_hash: string },
+    config: RequestConfig = { isShowToast: true }
+) =>
+    apiHandler<GetBalanceRes>(
+        {
+            url: '/addon/get_balance',
+            method: 'get',
+            params,
+        },
+        config
+    )
 
 export const callGetBalanceByPuzzleHashes = ({
     puzzleHashes,

@@ -283,9 +283,12 @@ export class Wallet extends Program {
         const spendAmount = BigInt(
             xchToMojo(amount).add(xchToMojo(fee)).toString()
         )
-        const balance = await callGetBalance({
-            puzzle_hash: addressToPuzzleHash(address),
-        })
+        const balance = await callGetBalance(
+            {
+                puzzle_hash: addressToPuzzleHash(address),
+            },
+            { isShowToast: false }
+        )
         if (balance.data.data < spendAmount) {
             throw new Error("You don't have enough balance to send")
         }
