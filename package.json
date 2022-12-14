@@ -1,6 +1,6 @@
 {
     "name": "my-chrome-extension",
-    "version": "0.0.9-dev.6",
+    "version": "0.0.9-dev.7",
     "private": true,
     "scripts": {
         "dev": "vite --port 3000",
