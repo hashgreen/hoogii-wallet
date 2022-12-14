@@ -218,17 +218,14 @@ const Transaction = ({
                 <div className="pt-3 text-caption">
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
-                        {filteredMemo?.map(
-                            (memo, index) =>
-                                memo && (
-                                    <span
-                                        className="break-words"
-                                        key={`${index}-${memo}`}
-                                    >
-                                        {`${memo} `}
-                                    </span>
-                                )
-                        )}
+                        {filteredMemo?.map((memo, index) => (
+                            <span
+                                className="break-words"
+                                key={`${index}-${memo}`}
+                            >
+                                {`${memo} `}
+                            </span>
+                        ))}
                     </div>
                 </div>
             </div>
