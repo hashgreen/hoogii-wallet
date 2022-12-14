@@ -1,7 +1,6 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Coin } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
-import { mnemonicToSeedAsync } from 'bip39-web'
 import { makeAutoObservable } from 'mobx'
 
 import { getSpendableCoins, sendTx } from '~/api/api'
@@ -41,6 +40,7 @@ class TransactionStore {
     sendXCHTx = async (
         targetAddress: string,
         amount: string,
+        memo: string,
         fee: string
     ): Promise<void> => {
         const { seed, address } = this.walletStore
@@ -54,6 +54,7 @@ class TransactionStore {
         const XCHspendsList = await Wallet.generateXCHSpendList({
             puzzleReveal,
             amount,
+            memo,
             fee,
             address,
             targetAddress,
@@ -80,6 +81,7 @@ class TransactionStore {
         targetAddress: string,
         asset: IAsset,
         amount: string,
+        memo: string,
         fee: string
     ): Promise<void> => {
         const { seed, address } = this.walletStore
@@ -105,6 +107,7 @@ class TransactionStore {
             wallet,
             assetId,
             amount,
+            memo,
             targetAddress,
             spendableCoinList: spendableCATList,
         })
@@ -126,9 +129,10 @@ class TransactionStore {
                 addressToPuzzleHash(address)
             )
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                fee,
                 puzzleReveal,
                 amount: '0',
+                memo,
+                fee,
                 address,
                 targetAddress: address,
                 spendableCoinList,

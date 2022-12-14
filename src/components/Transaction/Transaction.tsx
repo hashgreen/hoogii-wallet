@@ -1,3 +1,4 @@
+import { sanitizeHex } from '@rigidity/chia'
 import classNames from 'classnames'
 import { format } from 'date-fns'
 import { observer } from 'mobx-react-lite'
@@ -31,6 +32,7 @@ const statusText = {
 
 const Transaction = ({
     amount,
+    memos,
     assetId,
     receiver,
     sender,
@@ -55,6 +57,13 @@ const Transaction = ({
     const isTransfer =
         txType === ITxType.TX_TYPE_CAT_TRANSFER ||
         txType === ITxType.TX_TYPE_STANDARD_TRANSFER
+
+    // NOTE : if the tx is cat transfer, then the first memo is puzzlehash, so do not show it
+    const filteredMemo =
+        memos && txType === ITxType.TX_TYPE_CAT_TRANSFER
+            ? memos.slice(1)
+            : memos
+
     return (
         <Collapse
             className={classNames(
@@ -197,16 +206,27 @@ const Transaction = ({
                                 <CopyIcon className="w-3 h-3" />
                             </CopyTooltip>
                         )}
-                        <div className="flex justify-between mt-4 text-caption">
-                            <span className="capitalize text-primary-100">
-                                {t('transaction-detail')}
-                            </span>
+                        <div className="mt-4 text-caption capitalize">
+                            <span>{t('transaction-detail')}</span>
                         </div>
                     </>
                 )}
 
                 <div className="mt-1 text-tertiary" title={txId}>
                     {shortenHash(txId)}
+                </div>
+                <div className="pt-3 text-caption">
+                    <span className="capitalize">{t('transaction-memo')}</span>
+                    <div className="mt-1 text-tertiary">
+                        {filteredMemo?.map((memo, index) => (
+                            <span
+                                className="break-words"
+                                key={`${index}-${memo}`}
+                            >
+                                {`${memo} `}
+                            </span>
+                        ))}
+                    </div>
                 </div>
             </div>
         </Collapse>

@@ -16,7 +16,7 @@ import Decimal from 'decimal.js-light'
 import { callGetBalance } from '~/api/api'
 import { addressToPuzzleHash } from '~/utils/signature'
 
-import {  xchToMojo } from './CoinConverter'
+import { xchToMojo } from './CoinConverter'
 import CoinSelect from './CoinSelect'
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
@@ -29,6 +29,12 @@ const groupOrder =
 export interface Derivation {
     readonly hardened: boolean
     readonly index: number
+}
+
+export interface Primary {
+    puzzlehash: string
+    amount: bigint
+    memos?: string[]
 }
 
 export class Wallet extends Program {
@@ -202,7 +208,9 @@ export class Wallet extends Program {
     ): bigint {
         const blob = hash256(concatBytes(publicKey.toBytes(), hiddenPuzzleHash))
         const result = bytesToBigInt(blob, 'big', true)
-        return result > 0n ? result % groupOrder : (result % groupOrder) + groupOrder
+        return result > 0n
+            ? result % groupOrder
+            : (result % groupOrder) + groupOrder
     }
 
     public static derivePrivateKeyPath(
@@ -258,6 +266,7 @@ export class Wallet extends Program {
     static generateXCHSpendList = async ({
         puzzleReveal,
         amount,
+        memo,
         fee,
         address,
         targetAddress,
@@ -265,6 +274,7 @@ export class Wallet extends Program {
     }: {
         puzzleReveal: string
         amount: string
+        memo: string
         fee: string
         address: string
         targetAddress: string
@@ -290,33 +300,41 @@ export class Wallet extends Program {
 
         const [firstCoin, ...restCoinList] = coinList
 
-        interface primary {
-            puzzle_hash: string
-            amount: bigint
-        }
-        const primaryList: primary[] = []
+        const primaryList: Primary[] = []
 
         if (new Decimal(amount).comparedTo(0) === 1) {
             primaryList.push({
-                puzzle_hash: Program.fromBytes(
+                puzzlehash: Program.fromBytes(
                     addressInfo(targetAddress).hash
                 ).toHex(),
                 amount: BigInt(xchToMojo(amount).toString()),
+                memos: [memo],
             })
         }
 
         primaryList.push({
-            puzzle_hash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
+            puzzlehash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
             amount: change,
+            memos: [memo],
         })
 
         const conditionList: Program[] = primaryList.map((primary) => {
             return Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
-                Program.fromHex(primary.puzzle_hash),
+                Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
+                ...(primary.memos
+                    ? [
+                          Program.fromList(
+                              primary.memos.map((memo) =>
+                                  Program.fromText(memo)
+                              )
+                          ),
+                      ]
+                    : []),
             ])
         })
+
         conditionList.push(
             Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.RESERVE_FEE)),
@@ -332,6 +350,7 @@ export class Wallet extends Program {
                 ...primaryList.map((primary) =>
                     this.coinName({
                         ...primary,
+                        puzzle_hash: primary.puzzlehash,
                         amount: Number(primary.amount),
                         parent_coin_info:
                             Program.fromBytes(origin_info).toString(),
