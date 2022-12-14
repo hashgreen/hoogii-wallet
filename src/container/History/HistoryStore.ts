@@ -133,6 +133,7 @@ class HistoryStore {
                     asset_id,
                     to_puzzle_hashes,
                     from_puzzle_hash,
+                    memos,
                 },
             }): ITransaction => ({
                 assetId: asset_id,
@@ -145,6 +146,7 @@ class HistoryStore {
                 createdAt: new Date(created_at),
                 txId: name,
                 amount,
+                memos,
                 action:
                     ('0x' + this.walletStore.puzzleHash === from_puzzle_hash
                         ? 'send'

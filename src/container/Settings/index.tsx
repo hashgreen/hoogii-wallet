@@ -43,17 +43,17 @@ const Settings = () => {
     }, [theme, setTheme])
 
     return (
-        <div className="flex flex-col overflow-hidden pt-7 grow">
+        <div className="flex flex-col overflow-hidden grow">
             {isDev && (
                 <div>
-                    <span className="mb-2 capitalize text-body3 text-primary-100">
+                    <span className="capitalize text-body3 text-primary-100">
                         {t('setting-language')}
                     </span>
                     <Listbox
                         value={language}
                         onChange={setLanguage}
                         as="div"
-                        className="relative"
+                        className="relative mt-2 mb-5"
                     >
                         <Listbox.Button
                             className={({ open }) =>
@@ -69,9 +69,9 @@ const Settings = () => {
                                 <>
                                     {language.title}
                                     {open ? (
-                                        <UpIcon className="w-3 h-3 text-active" />
+                                        <UpIcon className="w-4 h-4 text-active" />
                                     ) : (
-                                        <BottomIcon className="w-3 h-3 text-active" />
+                                        <BottomIcon className="w-4 h-4 text-active" />
                                     )}
                                 </>
                             )}
@@ -99,28 +99,28 @@ const Settings = () => {
             )}
             {isDev && (
                 <div>
-                    <span className="mb-2 capitalize text-body3 text-primary-100">
+                    <span className="capitalize text-body3 text-primary-100">
                         {t('setting-mode')}
                     </span>
                     <button
-                        className="btn h-[30px] bg-white/5 hover:bg-white/20 px-3 py-2 min-w-0 rounded text-button3 flex-row-center gap-2 capitalize"
+                        className="btn h-[30px] bg-white/5 hover:bg-white/20 mt-2 px-3 py-2 min-w-0 rounded text-button3 flex-row-center gap-2 capitalize"
                         onClick={toggleTheme}
                     >
                         {theme === 'dark' ? (
                             <>
                                 {t('setting-mode-dark')}
-                                <DarkIcon className="w-3 h-3" />
+                                <DarkIcon className="w-4 h-4" />
                             </>
                         ) : (
                             <>
                                 {t('setting-mode-light')}
-                                <LightIcon className="w-3 h-3" />
+                                <LightIcon className="w-4 h-4" />
                             </>
                         )}
                     </button>
                 </div>
             )}
-            {isDev && <hr className="border-primary/30" />}
+            {isDev && <hr className="border-primary/30 my-5" />}
             <ul>
                 {[
                     {
@@ -143,7 +143,7 @@ const Settings = () => {
                             className="justify-between flex-row-center py-2.5 capitalize"
                         >
                             {item.title}
-                            <RightIcon className="w-3 h-3 text-active" />
+                            <RightIcon className="w-4 h-4 text-active" />
                         </Link>
                     </li>
                 ))}

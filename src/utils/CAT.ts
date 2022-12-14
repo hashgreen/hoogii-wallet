@@ -16,7 +16,7 @@ import { catToMojo } from '~/utils/CoinConverter'
 
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
-import { Wallet } from './Wallet'
+import { Primary, Wallet } from './Wallet'
 
 export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
@@ -75,6 +75,7 @@ export class CAT extends Program {
         wallet,
         assetId,
         amount,
+        memo,
         targetAddress,
         spendableCoinList,
     }): Promise<CoinSpend[]> => {
@@ -104,14 +105,12 @@ export class CAT extends Program {
         const puzzlehash = Program.fromBytes(
             addressInfo(targetAddress).hash
         ).toHex()
-        interface primary {
-            puzzlehash: string
-            amount: bigint
-        }
-        const primaryList: primary[] = []
+
+        const primaryList: Primary[] = []
         primaryList.push({
             puzzlehash,
             amount: spendAmount,
+            memos: [puzzlehash.toString(), memo],
         })
         if (Number(change) > 0) {
             primaryList.push({
@@ -125,8 +124,18 @@ export class CAT extends Program {
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
+                ...(primary.memos
+                    ? [
+                          Program.fromList(
+                              primary.memos.map((memo) =>
+                                  Program.fromText(memo)
+                              )
+                          ),
+                      ]
+                    : []),
             ])
         )
+
         const createCoinAnnouncementMsg = hash256(
             concatBytes(...coinList.map((coin) => CAT.coinName(coin)))
         )

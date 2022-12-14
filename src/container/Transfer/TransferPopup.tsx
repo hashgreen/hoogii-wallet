@@ -25,6 +25,7 @@ const TransferPopup = ({
     address,
     asset,
     amount,
+    memo,
     close,
 }: IProps & IBaseForm) => {
     const { t } = useTranslation()
@@ -58,9 +59,9 @@ const TransferPopup = ({
     const onSubmit = async (data: IForm) => {
         const { fee } = data
         if (asset?.assetId === 'XCH') {
-            await sendXCHTx?.(address.address, amount, fee)
+            await sendXCHTx?.(address.address, amount, memo, fee)
         } else {
-            await sendCATTx?.(address.address, asset, amount, fee)
+            await sendCATTx?.(address.address, asset, amount, memo, fee)
         }
     }
 
