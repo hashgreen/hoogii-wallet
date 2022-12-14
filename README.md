@@ -113,7 +113,8 @@ To build and run Hoogii Wallet from source, please follow the instructions.
 
     ```sh
     make help
-    ```
+
+```
 
 - Patch version
 

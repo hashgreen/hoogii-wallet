@@ -96,7 +96,7 @@ const Components = () => {
                                                 <div className="w-16 h-16 loading"></div>
                                             </Group>
                                             <Group title="Dropdown">
-                                                <Transaction
+                                                {/* <Transaction
                                                     status={
                                                         ITxStatus.TX_STATUS_UNSPECIFIED
                                                     }
@@ -116,7 +116,7 @@ const Components = () => {
                                                     }
                                                     cname={'Hoogii'}
                                                     assetId={'XCH'}
-                                                />
+                                                /> */}
                                             </Group>
                                             <Group title="Checkbox">
                                                 <input type="checkbox" />
