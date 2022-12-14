@@ -12,7 +12,7 @@ const request = axios.create({
 
 export async function apiHandler<T = any>(
     params: AxiosRequestConfig,
-    isShowToast: Boolean = true
+    isShowToast: boolean = true
 ): Promise<AxiosResponse<T>> {
     try {
         const res = await request.request<T>({ ...params })
@@ -56,7 +56,7 @@ export const getPuzzleAndSolution = (params: AxiosRequestConfig) =>
 
 export const sendTx = (
     params: AxiosRequestConfig,
-    isShowToast: Boolean = false
+    isShowToast: boolean = false
 ) =>
     apiHandler(
         { url: '/addon/push_tx', method: 'post', ...params },
@@ -64,7 +64,7 @@ export const sendTx = (
     )
 export const getSpendableCoins = (
     params: { puzzle_hash: string },
-    isShowToast: Boolean = false
+    isShowToast: boolean = false
 ) =>
     apiHandler(
         {
@@ -76,7 +76,7 @@ export const getSpendableCoins = (
     )
 export const callGetBalance = (
     params: { puzzle_hash: string },
-    isShowToast: Boolean = true
+    isShowToast: boolean = true
 ) =>
     apiHandler<GetBalanceRes>(
         {
