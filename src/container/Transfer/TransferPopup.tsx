@@ -85,7 +85,6 @@ const TransferPopup = ({
                         onSubmit={(e) =>
                             handleSubmit(onSubmit)(e).catch((error) => {
                                 setSubmitError(error as Error)
-                                close()
                             })
                         }
                         className="flex flex-col gap-10 grow"

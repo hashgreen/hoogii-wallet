@@ -1,17 +1,18 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Coin } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
+import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
 import { getSpendableCoins, sendTx } from '~/api/api'
 import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
+import { getErrorMessage } from '~/utils/errorMessage'
 import { addressToPuzzleHash, getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
 import { Wallet } from '~/utils/Wallet'
 
 import WalletStore from './WalletStore'
-
 const agg_sig_me_additional_data =
     'ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2'
 
@@ -28,13 +29,17 @@ class TransactionStore {
     }
 
     coinList = async (puzzle_hash: string): Promise<Coin[]> => {
-        const res = await getSpendableCoins({
-            puzzle_hash,
-        })
-        return res?.data?.data.map((record) => ({
-            ...record.coin,
-            amount: record.coin.amount || 0,
-        }))
+        try {
+            const res = await getSpendableCoins({
+                puzzle_hash,
+            })
+            return res?.data?.data.map((record) => ({
+                ...record.coin,
+                amount: record.coin.amount || 0,
+            }))
+        } catch (error) {
+            throw new Error(getErrorMessage(error as AxiosError))
+        }
     }
 
     sendXCHTx = async (
@@ -73,8 +78,13 @@ class TransactionStore {
         )
 
         const spendBundle = new SpendBundle(XCHspendsList, XCHsignatures)
-
-        await sendTx({ spend_bundle: spendBundle.getObj() })
+        try {
+            await sendTx({
+                data: { spend_bundle: spendBundle.getObj() },
+            })
+        } catch (error) {
+            throw new Error(getErrorMessage(error as AxiosError))
+        }
     }
 
     sendCATTx = async (
@@ -156,10 +166,15 @@ class TransactionStore {
             spendList,
             AugSchemeMPL.aggregate(signatureList)
         )
-
-        await sendTx({
-            spend_bundle: spendBundle.getObj(),
-        })
+        try {
+            await sendTx({
+                data: {
+                    spend_bundle: spendBundle.getObj(),
+                },
+            })
+        } catch (error) {
+            throw new Error(getErrorMessage(error as AxiosError))
+        }
     }
 }
 

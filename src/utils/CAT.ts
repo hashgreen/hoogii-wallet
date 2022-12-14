@@ -40,7 +40,9 @@ export class CAT extends Program {
 
     static getLineageProof = async (childCoin: Coin): Promise<Program> => {
         const parentCoinRecord = await getCoinRecordsByName({
-            name: childCoin.parent_coin_info,
+            data: {
+                name: childCoin.parent_coin_info,
+            },
         })
 
         const {
@@ -48,8 +50,10 @@ export class CAT extends Program {
         } = parentCoinRecord.data
         const coinID = CAT.coinName(coin)
         const puzzleAndSolutionRecord = await getPuzzleAndSolution({
-            coin_id: Program.fromBytes(coinID).toHex(),
-            height: Number(spent_block_index),
+            data: {
+                coin_id: Program.fromBytes(coinID).toHex(),
+                height: Number(spent_block_index),
+            },
         })
         const {
             data: {
