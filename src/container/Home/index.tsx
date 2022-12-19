@@ -47,7 +47,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
     const xchBalance = mojoToXch(getBalanceByPuzzleHash('0x' + puzzleHash))
 
     const xch2usds =
-        chain?.id === ChainEnum.Testnet // if the chain is testnet, the it always get 0
+        chain?.id === ChainEnum.Testnet // display 0 on testnet
             ? '0'
             : exchangeRateData?.data?.price_xch
             ? (1 / Number(exchangeRateData.data.price_xch))

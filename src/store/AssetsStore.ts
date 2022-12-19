@@ -164,7 +164,7 @@ class AssetsStore {
             this.exchangeRateData.isFetching = true
 
             const { data } = await callGetExchangeRate(
-                '6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589' // USDS assetId
+                defaultCATs.find((cat) => cat.code === 'USDS')?.assetId ?? '' // USDS assetId
             )
 
             runInAction(() => {
