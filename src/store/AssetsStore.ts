@@ -72,10 +72,6 @@ class AssetsStore {
         return [this.XCH, ...this.existedAssets]
     }
 
-    get exchangeRateCode() {
-        return this.existedAssets[0]?.code === 'USDS' ? 'USD' : this.XCH.code
-    }
-
     static addDefaultAsset = () => {
         defaultCATs.forEach(({ assetId, code, iconUrl }) =>
             db.assets.add({
@@ -168,7 +164,7 @@ class AssetsStore {
             this.exchangeRateData.isFetching = true
 
             const { data } = await callGetExchangeRate(
-                this.existedAssets[0].assetId
+                defaultCATs.find((cat) => cat.code === 'USDS')?.assetId ?? '' // USDS assetId
             )
 
             runInAction(() => {

@@ -315,10 +315,10 @@ export class Wallet extends Program {
             })
         }
 
+        // memo is unnecessary for change
         primaryList.push({
             puzzlehash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
-            amount: change,
-            memos: [memo],
+            amount: change, // memo is unnecessary for change
         })
 
         const conditionList: Program[] = primaryList.map((primary) => {

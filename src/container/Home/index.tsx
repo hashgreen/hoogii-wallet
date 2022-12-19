@@ -9,6 +9,7 @@ import SearchBar from '~/components/SearchBar'
 import Tabs from '~/components/Tabs'
 import Header from '~/layouts/Header'
 import rootStore from '~/store'
+import { ChainEnum } from '~/types/chia'
 import { enumArray } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
 import SendIcon from '~icons/hoogii/activity-send.jsx'
@@ -32,23 +33,27 @@ const Home = ({ initialTab = 0 }: IProps) => {
     const [query, setQuery] = useState('')
 
     const {
-        walletStore: { puzzleHash, isAblyConnected },
+        walletStore: { puzzleHash, isAblyConnected, chain },
         assetsStore: {
             XCH,
             balancesData,
             getBalanceByPuzzleHash,
             exchangeRateData,
             updateBalance,
-            exchangeRateCode,
             getExchangeRate,
         },
     } = rootStore
 
     const xchBalance = mojoToXch(getBalanceByPuzzleHash('0x' + puzzleHash))
 
-    const xch2usds = exchangeRateData.data
-        ? (1 / Number(exchangeRateData.data.price_xch)).toFixed(2).toString()
-        : ''
+    const xch2usds =
+        chain?.id === ChainEnum.Testnet // display 0 on testnet
+            ? '0'
+            : exchangeRateData?.data?.price_xch
+            ? (1 / Number(exchangeRateData.data.price_xch))
+                  .toFixed(2)
+                  .toString()
+            : ''
 
     useEffect(() => {
         getExchangeRate()
@@ -91,7 +96,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
                             <span className="font-medium text-body2 text-primary-100">
                                 {exchangeRateData.isFetching
                                     ? '---'
-                                    : `${xch2usds} ${exchangeRateCode}`}
+                                    : `${xch2usds} USD`}
                             </span>
                         </div>
                         <Link to="/transfer" className="btn btn-CTA_main">
