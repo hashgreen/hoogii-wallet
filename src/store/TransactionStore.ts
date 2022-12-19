@@ -141,7 +141,7 @@ class TransactionStore {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzleReveal,
                 amount: '0',
-                memo,
+                memo: '', // fee no need memo
                 fee,
                 address,
                 targetAddress: address,
