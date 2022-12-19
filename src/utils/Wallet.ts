@@ -315,7 +315,7 @@ export class Wallet extends Program {
             })
         }
 
-        // change no need memo
+        // memo is unnecessary for change
         primaryList.push({
             puzzlehash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
             amount: change,
