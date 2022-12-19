@@ -72,8 +72,11 @@ class AssetsStore {
         return [this.XCH, ...this.existedAssets]
     }
 
-    get exchangeRateCode() {
-        return this.existedAssets[0]?.code === 'USDS' ? 'USD' : this.XCH.code
+    get USDSAsset() {
+        return (
+            this.existedAssets.find((asset) => asset.code === 'USDS') ??
+            this.existedAssets[0]
+        )
     }
 
     static addDefaultAsset = () => {
@@ -167,9 +170,7 @@ class AssetsStore {
         try {
             this.exchangeRateData.isFetching = true
 
-            const { data } = await callGetExchangeRate(
-                this.existedAssets[0].assetId
-            )
+            const { data } = await callGetExchangeRate(this.USDSAsset.assetId)
 
             runInAction(() => {
                 this.exchangeRateData.isFetching = false
