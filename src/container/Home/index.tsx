@@ -49,7 +49,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
     const xch2usds =
         chain?.id === ChainEnum.Testnet // if the chain is testnet, the it always get 0
             ? '0'
-            : exchangeRateData.data
+            : exchangeRateData?.data?.price_xch
             ? (1 / Number(exchangeRateData.data.price_xch))
                   .toFixed(2)
                   .toString()
