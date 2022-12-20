@@ -22,35 +22,9 @@ const Locked = () => {
             origin: chrome.runtime.getURL(''),
             method: MethodEnum.RESET_PASSWORD,
         })
+
         window.close()
     }
-
-    // return (
-    //     <form
-    //         onSubmit={async (e) => {
-    //             e.preventDefault()
-    //             const isValid = await checkPassword(password)
-    //             if (!isValid) setError(t('error-password-incorrect'))
-    //         }}
-    //     >
-    //         Locked
-    //         <input
-    //             type="password"
-    //             placeholder={t('input-password-placeholder')}
-    //             value={password}
-    //             onChange={(e) => setPassword(e.target.value)}
-    //             className={classNames('input', error && 'input-error')}
-    //         />
-    //         {error && (
-    //             <div className="mt-2 font-medium text-center text-caption text-error">
-    //                 {error}
-    //             </div>
-    //         )}
-    //         <button type="submit" className="btn btn-CTA_landing">
-    //             Unlock
-    //         </button>
-    //     </form>
-    // )
 
     return (
         <PublicRouteLayout back={false}>
@@ -60,7 +34,7 @@ const Locked = () => {
                     const isValid = await checkPassword(password)
                     if (!isValid) setError(t('error-password-incorrect'))
                 }}
-                className="h-full pt-[116px] pb-12 flex-col-center"
+                className="h-full pt-[116px] pb-12 flex-col-center scroll-di"
             >
                 <HaloImg src="/images/img_welcome.png" alt="welcome back" />
                 <span className="mt-2 text-center text-body1 text-primary-100">

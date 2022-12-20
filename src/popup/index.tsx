@@ -9,7 +9,6 @@ import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import { MethodEnum, PopupEnum } from '~/types/extension'
 
 import controller from './controller'
-import Layout from './layout'
 import Enable from './pages/enable'
 import Locked from './pages/locked'
 import Refuse from './pages/refuse'
