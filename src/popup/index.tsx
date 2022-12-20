@@ -39,7 +39,7 @@ const App = observer(() => {
 
     return (
         <Routes>
-            <Route element={<Layout />}>
+            <Route>
                 {locked && <Route index element={<Locked />} />}
                 {request && (
                     <>
