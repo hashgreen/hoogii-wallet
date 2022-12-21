@@ -16,11 +16,11 @@ export const apiEndpointSets: {
     [key in ChainEnum]: IApiEndpointSet
 } = {
     '0x01': {
-        jarvan: 'https://stg-jarvan.hash.green/api/v1',
+        jarvan: 'https://prod-jarvan.hash.green/',
         zed: 'https://testnet10.hash.green/api/v1',
     },
     '0x02': {
-        jarvan: 'https://uat-jarvan.hash.green/api/v1',
+        jarvan: 'https://stg-jarvan.hash.green/api/v1',
         zed: 'https://testnet10.hash.green/api/v1',
     },
 } as const
