@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ConnectedSiteItem } from '~/components/Item'
-import { db, IConnectedSite } from '~/db'
+import { IConnectedSite } from '~/db'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 import connectableSites from '~config/connectableSites.json'
