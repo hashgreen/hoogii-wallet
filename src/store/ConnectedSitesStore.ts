@@ -1,18 +1,21 @@
 import { liveQuery } from 'dexie'
 import { makeAutoObservable, onBecomeUnobserved } from 'mobx'
 
-import { db, IConnectedSite } from '~/db'
+import { IConnectedSite } from '~/db'
+import walletStore from '~/store/WalletStore'
 
 class ConnectedSitesStore {
     connectedSites: IConnectedSite[] = []
 
     unsubscribeConnectedSites = () => {}
     subscribeConnectedSites = () => {
-        const observable = liveQuery(() => db.connectedSites.toArray())
-        const subscription = observable.subscribe({
-            next: (result) => (this.connectedSites = result),
-        })
-        this.unsubscribeConnectedSites = () => subscription.unsubscribe()
+        // const observable = liveQuery(() =>
+        //     walletStore.db.connectedSites.toArray()
+        // )
+        // const subscription = observable.subscribe({
+        //     next: (result) => (this.connectedSites = result),
+        // })
+        // this.unsubscribeConnectedSites = () => subscription.unsubscribe()
     }
 
     constructor() {

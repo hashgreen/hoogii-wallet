@@ -1,4 +1,7 @@
+import { chains } from '~/utils/constants'
+
 import { isExtension } from '.'
+
 export const setStorage = async <T extends { [key: string]: any } = any>(
     item: T
 ): Promise<void> => {
@@ -53,4 +56,9 @@ export const clearStorage = async (): Promise<void> => {
     } else {
         localStorage.clear()
     }
+}
+export const retrieveChain = async () => {
+    const chainId = await getStorage<string>('chainId')
+    const chain = chains.find((item) => item.id === chainId) ?? chains[1]
+    return chain
 }

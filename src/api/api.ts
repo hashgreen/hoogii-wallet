@@ -2,12 +2,10 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
 import { IMarket, RequestConfig } from '~/types/api'
+import { apiEndpointSets } from '~/utils/constants'
 import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
+import { getStorage } from '~/utils/extension/storage'
 
-const request = axios.create({
-    baseURL: import.meta.env.VITE_API_BASEURL,
-    timeout: 60 * 1000,
-})
 /** -------------------------- Full Node API -------------------------- */
 
 export async function apiHandler<T = any>(
@@ -15,6 +13,12 @@ export async function apiHandler<T = any>(
     config: RequestConfig = { isShowToast: true }
 ): Promise<AxiosResponse<T>> {
     try {
+        const chainId: string = await getStorage<string>('chainId')
+        const apiEndpoint = apiEndpointSets[chainId || '0x01'].jarvan
+        const request = axios.create({
+            baseURL: apiEndpoint,
+            timeout: 60 * 1000,
+        })
         const res = await request.request<T>({ ...params })
         return res
     } catch (error) {

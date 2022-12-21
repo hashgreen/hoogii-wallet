@@ -6,13 +6,16 @@ import {
     makeAutoObservable,
     onBecomeObserved,
     onBecomeUnobserved,
+    reaction,
     runInAction,
 } from 'mobx'
 
 import { getDataFromMemory, lock, savePassword } from '~/api/extension'
 import { unlock } from '~/api/extension/webpage'
-import { db, IAddress, IConnectedSite } from '~/db'
-import { IChain } from '~/types/chia'
+import { IAddress, IConnectedSite, WalletDexie } from '~/db'
+import { walletTo0x02 } from '~/db/migrations'
+import rootStore from '~/store'
+import { ChainEnum, IChain } from '~/types/chia'
 import { bcryptHash, bcryptVerify } from '~/utils'
 import { bytesToString, decrypt, encrypt } from '~/utils/encryption'
 import { retrieveChain, retrieveSeed } from '~/utils/extension'
@@ -28,6 +31,7 @@ class WalletStore {
     isAblyConnected = false
     locked: boolean = false
     mnemonicLength = 24
+    db: WalletDexie = new WalletDexie(ChainEnum.Testnet)
     name?: string
     password: string = ''
     chain?: IChain
@@ -52,7 +56,7 @@ class WalletStore {
 
     unsubscribeAddresses = () => {}
     subscribeAddresses = () => {
-        const observable = liveQuery(() => db.addresses.toArray())
+        const observable = liveQuery(() => this.db.addresses.toArray())
         const subscription = observable.subscribe({
             next: (result) => (this.addresses = result),
         })
@@ -61,7 +65,7 @@ class WalletStore {
 
     unsubscribeConnectedSites = () => {}
     subscribeConnectedSites = () => {
-        const observable = liveQuery(() => db.connectedSites.toArray())
+        const observable = liveQuery(() => this.db.connectedSites.toArray())
         const subscription = observable.subscribe({
             next: (result) => (this.connectedSites = result),
         })
@@ -84,6 +88,18 @@ class WalletStore {
                 this.generateAddress(this.seed)
             }
         })
+        reaction(
+            () => this.chain,
+            async (chain) => {
+                if (chain) {
+                    await this.dbMigration(chain)
+                    runInAction(() => {
+                        this.db = new WalletDexie(chain.id)
+                    })
+                    rootStore.assetsStore.addDefaultAsset()
+                }
+            }
+        )
     }
 
     init = async () => {
@@ -118,6 +134,16 @@ class WalletStore {
         return { seed, locked }
     }
 
+    dbMigration = async (chain: IChain) => {
+        switch (chain.id) {
+            case ChainEnum.Testnet:
+                await walletTo0x02(chain)
+                break
+            default:
+                break
+        }
+    }
+
     generateAddress = async (seed: Uint8Array): Promise<void> => {
         if (!this.chain) return
         runInAction(() => {
@@ -130,7 +156,7 @@ class WalletStore {
 
     logout = async () => {
         await clearStorage()
-        await db.delete()
+        await this.db.delete()
         if (chrome.runtime) {
             chrome.runtime.reload()
         } else {

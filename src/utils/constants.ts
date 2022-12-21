@@ -1,4 +1,4 @@
-import { ChainEnum, IChain } from '~/types/chia'
+import { ChainEnum, IApiEndpointSet, IChain } from '~/types/chia'
 
 export const chains: readonly IChain[] = [
     {
@@ -12,3 +12,15 @@ export const chains: readonly IChain[] = [
         prefix: 'txch',
     },
 ] as const
+export const apiEndpointSets: {
+    [key in ChainEnum]: IApiEndpointSet
+} = {
+    '0x01': {
+        jarvan: 'https://stg-jarvan.hash.green/api/v1',
+        zed: 'https://testnet10.hash.green/api/v1',
+    },
+    '0x02': {
+        jarvan: 'https://uat-jarvan.hash.green/api/v1',
+        zed: 'https://testnet10.hash.green/api/v1',
+    },
+} as const

@@ -8,3 +8,7 @@ export interface IChain {
     id: ChainEnum
     prefix: string
 }
+export interface IApiEndpointSet {
+    jarvan: string
+    zed: string
+}

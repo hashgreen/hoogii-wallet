@@ -1,4 +1,4 @@
-import { db } from '~/db'
+import rootStore from '~/store'
 import { APIError, MethodEnum } from '~/types/extension'
 
 import { IPopupPageProps } from '../types'
@@ -35,7 +35,7 @@ const Enable = ({
                 <button
                     className="btn btn-CTA_landing"
                     onClick={async () => {
-                        await db.connectedSites.add({
+                        await rootStore.walletStore.db.connectedSites.add({
                             name: request.origin,
                             url: request.origin,
                         })

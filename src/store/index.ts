@@ -10,13 +10,17 @@ export class RootStore {
     assetsStore: AssetsStore
     historyStore: HistoryStore
     transactionStore: TransactionStore
+
     constructor() {
         makeAutoObservable(this)
+
         this.walletStore = new WalletStore()
         this.transactionStore = new TransactionStore(this.walletStore)
         this.assetsStore = new AssetsStore(this.walletStore)
         this.historyStore = new HistoryStore(this.walletStore)
     }
+
+   
 }
 
 const rootStore = new RootStore()

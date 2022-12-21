@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 
 import { AssetItem } from '~/components/Item'
 import SearchBar from '~/components/SearchBar'
-import { db } from '~/db'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
@@ -44,7 +43,7 @@ function ImportCAT() {
 
     const importSelected = useCallback(() => {
         selected.forEach(({ asset_id, code, icon_url }) =>
-            db.assets.add({
+            rootStore.walletStore.db.assets.add({
                 assetId: asset_id,
                 code,
                 iconUrl: icon_url,

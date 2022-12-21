@@ -14,7 +14,8 @@ import {
     callGetExchangeRate,
     callGetMarkets,
 } from '~/api/api'
-import { db, IAsset } from '~/db'
+import { IAsset } from '~/db'
+import rootStore from '~/store'
 import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
 import { ChainEnum } from '~/types/chia'
 import { CAT } from '~/utils/CAT'
@@ -72,9 +73,9 @@ class AssetsStore {
         return [this.XCH, ...this.existedAssets]
     }
 
-    static addDefaultAsset = () => {
+    addDefaultAsset = () => {
         defaultCATs.forEach(({ assetId, code, iconUrl }) =>
-            db.assets.add({
+            rootStore.walletStore.db.assets.add({
                 assetId,
                 code,
                 iconUrl,
@@ -83,7 +84,7 @@ class AssetsStore {
     }
 
     retrieveExistedAssets = async () => {
-        const assets = await db.assets.toArray()
+        const assets = await rootStore.walletStore.db.assets.toArray()
         runInAction(() => {
             this.existedAssets = assets
         })
@@ -92,7 +93,9 @@ class AssetsStore {
 
     unsubscribeExistedAssets = () => {}
     subscribeExistedAssets = () => {
-        const observable = liveQuery(() => db.assets.toArray())
+        const observable = liveQuery(() =>
+            rootStore.walletStore.db.assets.toArray()
+        )
         const subscription = observable.subscribe({
             next: (result) => {
                 runInAction(() => {

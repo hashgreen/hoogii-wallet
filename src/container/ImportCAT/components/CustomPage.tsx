@@ -6,9 +6,9 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+
 // import AssetIcon from '~/components/AssetIcon'
 import ErrorMessage from '~/components/ErrorMessage'
-import { db } from '~/db'
 import rootStore from '~/store'
 
 interface IForm {
@@ -55,7 +55,7 @@ const CustomPage = () => {
     const onSubmit = async (data, e) => {
         e.preventDefault()
         const { assetId, code } = data
-        await db.assets.add({
+        await rootStore.walletStore.db.assets.add({
             assetId,
             code,
             iconUrl: '',

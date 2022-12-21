@@ -27,11 +27,12 @@ const ConnectedSites = () => {
     )
 
     const connectSite = async (site: IConnectedSite) => {
-        await db.connectedSites.add(site)
+        await rootStore.walletStore.db.connectedSites.add(site)
     }
 
     const disconnectSite = async (site: IConnectedSite) => {
-        site.id && (await db.connectedSites.delete(site.id))
+        site.id &&
+            (await rootStore.walletStore.db.connectedSites.delete(site.id))
     }
 
     return (
