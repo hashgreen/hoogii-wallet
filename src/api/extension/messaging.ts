@@ -134,7 +134,7 @@ class Messaging {
             const favicon = document.querySelector(
                 'link[rel="icon"]'
             ) as HTMLLinkElement
-            const iconUrl = favicon.href
+            const iconUrl = favicon?.href
             const origin = window.origin
             window.postMessage({
                 id: requestId,

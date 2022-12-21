@@ -1,24 +1,14 @@
 import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
-import { ImgHTMLAttributes, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import Messaging from '~/api/extension/messaging'
+import HaloImg from '~/components/HaloImg'
 import PublicRouteLayout from '~/layouts/PublicRoute'
 import rootStore from '~/store'
 import { MethodEnum, SenderEnum } from '~/types/extension'
-
-const HaloImg = (props: ImgHTMLAttributes<HTMLImageElement>) => (
-    <div className="relative">
-        <img {...props} />
-        <div
-            className="w-[168px] h-[60px] rounded-[50%/50%] bg-white
-            absolute bottom-1 left-1/2 -translate-x-1/2
-            mix-blend-soft-light bg-blend-soft-light blur-[60px]"
-        ></div>
-    </div>
-)
 
 export const WelcomeBack = observer(() => {
     const { t } = useTranslation()
