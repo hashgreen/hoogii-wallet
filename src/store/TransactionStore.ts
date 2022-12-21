@@ -134,7 +134,7 @@ class TransactionStore {
         )
         const signatureList = [CATsignatures]
 
-        if (Number(fee) > 0) {
+        if (BigInt(fee) > 0n) {
             const spendableCoinList = await this.coinList(
                 addressToPuzzleHash(address)
             )

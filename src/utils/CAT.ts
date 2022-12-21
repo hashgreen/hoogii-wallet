@@ -87,7 +87,7 @@ export class CAT extends Program {
             puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
         })
 
-        if (Number(data) * Math.pow(10, 3) < spendAmount) {
+        if (BigInt(data) * BigInt(Math.pow(10, 3)) < spendAmount) {
             throw new Error("You don't have enough coin to spend")
         }
 
@@ -112,7 +112,7 @@ export class CAT extends Program {
             amount: spendAmount,
             memos: [puzzlehash.toString(), memo],
         })
-        if (Number(change) > 0) {
+        if (BigInt(change) > 0) {
             primaryList.push({
                 puzzlehash: sanitizeHex(wallet.hashHex()),
                 amount: change,
