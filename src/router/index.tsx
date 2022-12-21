@@ -149,7 +149,7 @@ export const routes: RouteObject[] = [
                 element: <Transfer />,
             },
             settingRoutes,
-            ...(isDev ? [{ path: 'network', element: <Network /> }] : []),
+            { path: 'network', element: <Network /> },
         ],
     },
     {

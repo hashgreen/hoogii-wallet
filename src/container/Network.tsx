@@ -4,7 +4,6 @@ import { observer } from 'mobx-react-lite'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 import developmentStore from '~/store/DevelopmentStore'
-import { isDev } from '~/utils'
 import { chains } from '~/utils/constants'
 
 const Network = () => {
@@ -32,7 +31,6 @@ const Network = () => {
                         value={item.id}
                         checked={item.id === chain?.id}
                         onChange={() => switchChain(item)}
-                        disabled={!isDev && item.id !== chains[1].id}
                     />
                     {item.name}
                 </label>
