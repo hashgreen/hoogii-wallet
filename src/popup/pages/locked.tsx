@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 
 import Messaging from '~/api/extension/messaging'
 import HaloImg from '~/components/HaloImg'
@@ -13,6 +14,7 @@ import controller from '../controller'
 const Locked = () => {
     const { t } = useTranslation()
     const [password, setPassword] = useState('')
+    const location = useLocation()
 
     const [error, setError] = useState<string>()
     const { checkPassword } = controller
@@ -34,8 +36,8 @@ const Locked = () => {
                     const isValid = await checkPassword(password)
                     if (!isValid) {
                         setError(t('error-password-incorrect'))
-                    } else {
-                        // TODO: do something here or close windows
+                    }
+                    if (isValid && location.pathname === '/') {
                         window.close()
                     }
                 }}
