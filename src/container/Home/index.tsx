@@ -46,11 +46,14 @@ const Home = ({ initialTab = 0 }: IProps) => {
 
     const xchBalance = mojoToXch(getBalanceByPuzzleHash('0x' + puzzleHash))
 
+    const exchangeRate = exchangeRateData?.data?.price_xch
     const xch2usds =
         chain?.id === ChainEnum.Testnet // display 0 on testnet
             ? '0'
-            : exchangeRateData?.data?.price_xch
-            ? (1 / Number(exchangeRateData.data.price_xch))
+            : exchangeRate
+            ? new Decimal(xchBalance)
+                  .mul(1)
+                  .div(exchangeRate)
                   .toFixed(2)
                   .toString()
             : ''
