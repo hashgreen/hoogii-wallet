@@ -37,7 +37,7 @@ export class InternalControllerStore {
     }
 
     unlock = async (password: string) => {
-        savePassword(password)
+        await savePassword(password)
 
         await unlock()
         runInAction(() => {
@@ -49,6 +49,7 @@ export class InternalControllerStore {
         try {
             const passwordHash = (await getStorage<string>('password')) || ''
             const result = await bcryptVerify(password, passwordHash)
+
             if (result) this.unlock(password)
             return result
         } catch (error) {
