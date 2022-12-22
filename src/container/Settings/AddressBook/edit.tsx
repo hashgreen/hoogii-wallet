@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 
 import ErrorMessage from '~/components/ErrorMessage'
-import { db } from '~/db'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
@@ -53,7 +52,7 @@ const EditAddressBook = () => {
     })
     const onSubmit = async (data: IForm) => {
         if (address?.id && (data.name || data.address)) {
-            await db.addresses.update(address.id, {
+            await rootStore.walletStore.db.addresses.update(address.id, {
                 name: data.name || address.name,
                 address: data.address || address.address,
             })

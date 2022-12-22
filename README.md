@@ -111,7 +111,7 @@ To build and run Hoogii Wallet from source, please follow the instructions.
 
 - Show help
 
-    ```sh
+```sh
     make help
 
 ```

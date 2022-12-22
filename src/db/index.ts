@@ -9,8 +9,8 @@ export class WalletDexie extends Dexie {
     [StorageEnum.ADDRESSES]!: Table<IAddress>;
     [StorageEnum.CONNECTED_SITES]!: Table<IConnectedSite>
 
-    constructor() {
-        super('wallet')
+    constructor(name: string) {
+        super(name)
         this.version(3).stores({
             [StorageEnum.ASSETS]: 'assetId, code, iconUrl',
             [StorageEnum.ADDRESSES]: 'id++, name, address',
@@ -22,7 +22,5 @@ export class WalletDexie extends Dexie {
         })
     }
 }
-
-export const db = new WalletDexie()
 
 export * from './schema'

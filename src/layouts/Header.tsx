@@ -94,15 +94,13 @@ const Header = ({ className }: IProps) => {
                                 icon: <SettingsIcon className="w-3 h-3" />,
                                 to: '/setting',
                             },
+                            {
+                                name: t('network'),
+                                icon: <NetworkIcon className="w-3 h-3" />,
+                                to: '/network',
+                            },
                             ...(isDev
                                 ? [
-                                      {
-                                          name: t('network'),
-                                          icon: (
-                                              <NetworkIcon className="w-3 h-3" />
-                                          ),
-                                          to: '/network',
-                                      },
                                       {
                                           name: t('about'),
                                           icon: (

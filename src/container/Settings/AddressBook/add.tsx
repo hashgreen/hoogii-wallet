@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import ErrorMessage from '~/components/ErrorMessage'
-import { db } from '~/db'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
@@ -49,7 +48,7 @@ const AddAddressBook = () => {
     })
 
     const onSubmit = async (data: IForm) => {
-        await db.addresses.add(data)
+        await rootStore.walletStore.db.addresses.add(data)
         navigate(-1)
     }
     useEffect(() => {

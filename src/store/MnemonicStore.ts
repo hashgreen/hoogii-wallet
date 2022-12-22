@@ -11,12 +11,12 @@ import {
 } from 'mobx'
 
 import { savePassword } from '~/api/extension'
+import RootStore from '~/store'
 import { bcryptVerify } from '~/utils'
 import { bytesToString } from '~/utils/encryption'
 import { getStorage } from '~/utils/extension/storage'
 import words from '~config/wordlist_en.json'
 
-import AssetsStore from './AssetsStore'
 import WalletStore from './WalletStore'
 class MnemonicStore {
     walletStore: WalletStore
@@ -43,7 +43,7 @@ class MnemonicStore {
             this.walletStore.saveKeyring(mnemonicPhrase, password)
         }
 
-        AssetsStore.addDefaultAsset()
+        RootStore.assetsStore.addDefaultAsset()
     }
 
     get mnemonicPhrase(): string {
@@ -138,7 +138,7 @@ export class CreateMnemonicStore extends MnemonicStore {
 
     async create() {
         super.create()
-        AssetsStore.addDefaultAsset()
+        RootStore.assetsStore.addDefaultAsset()
     }
 }
 
@@ -150,7 +150,7 @@ export class ImportMnemonicStore extends MnemonicStore {
 
     async create() {
         super.create()
-        AssetsStore.addDefaultAsset()
+        RootStore.assetsStore.addDefaultAsset()
     }
 }
 

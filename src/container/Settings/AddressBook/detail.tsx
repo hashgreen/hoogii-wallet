@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
 
 import { ErrorPopup } from '~/components/Popup'
-import { db, IAddress } from '~/db'
+import { IAddress } from '~/db'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
@@ -75,7 +75,9 @@ const AddressBookDetail = () => {
                         <BackLink
                             onClick={async () => {
                                 if (address?.id) {
-                                    await db.addresses.delete(address?.id)
+                                    await rootStore.walletStore.db.addresses.delete(
+                                        address?.id
+                                    )
                                 }
                             }}
                             className="btn btn-error w-min"

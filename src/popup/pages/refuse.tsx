@@ -1,4 +1,4 @@
-import { db } from '~/db'
+import rootStore from '~/store'
 import { APIError, MethodEnum } from '~/types/extension'
 
 import { IPopupPageProps } from '../types'
@@ -45,7 +45,7 @@ const Refuse = ({
                     <button
                         className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
                         onClick={async () => {
-                            await db.connectedSites.add({
+                            await rootStore.walletStore.db.connectedSites.add({
                                 name: request.origin,
                                 url: request.origin,
                             })
