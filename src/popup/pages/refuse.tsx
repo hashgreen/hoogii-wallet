@@ -1,42 +1,63 @@
-import { useNavigate } from 'react-router-dom'
-
+import rootStore from '~/store'
 import { APIError, MethodEnum } from '~/types/extension'
 
 import { IPopupPageProps } from '../types'
 
-const Refuse = ({ controller }: IPopupPageProps<MethodEnum.ENABLE>) => {
-    const navigate = useNavigate()
-
+const Refuse = ({
+    controller,
+    request,
+}: IPopupPageProps<MethodEnum.ENABLE>) => {
     return (
-        <div className="container flex flex-col justify-between h-full py-10 bg-main dark ">
-            <div className="flex flex-col gap-2">
-                <div className="flex gap-2">
-                    You need to connect wallet first
+        <div className="container flex flex-col justify-between h-full py-12 bg-main dark ">
+            <div className="flex flex-col gap-2 items-center">
+                <div className="w-[164px] h-[44px] border-solid border-primary-100 border rounded-lg flex justify-center items-center m-1">
+                    <img src={request.iconUrl} alt="icon" className="w-7 h-7" />
+                    <div className="text-body3 text-primary-100">
+                        {request.origin}
+                    </div>
                 </div>
-                <div className="flex gap-2">
-                    Do you want to connect wallet now?
+                <div className="flex gap-2 text-center text-xl">
+                    Connect with Hoogii:
+                </div>
+                <div className="flex gap-2  text-center text-body1 text-primary-100">
+                    This app would like to:
+                </div>
+                <div className="flex gap-2  text-body1 text-left w-full mt-10">
+                    Dapp’s Authorization contents
                 </div>
             </div>
-            <div className="flex justify-between w-full">
-                <button
-                    className="btn btn-CTA_landing btn-outline"
-                    onClick={() => {
-                        controller.returnData({
-                            error: APIError.REFUSED,
-                        })
-                        window.close()
-                    }}
-                >
-                    Cancel
-                </button>
-                <button
-                    className="btn btn-CTA_landing"
-                    onClick={() => {
-                        navigate('/enable')
-                    }}
-                >
-                    Connect
-                </button>
+            <div className="flex flex-col w-full">
+                <div className="text-center mb-5 text-body1 text-primary-100">
+                    Only connect with sites you trust.
+                </div>
+                <div className="flex justify-between">
+                    <button
+                        className="btn btn-CTA_landing btn-outline  w-[160px] h-[40px] btn-large"
+                        onClick={() => {
+                            controller.returnData({
+                                error: APIError.REFUSED,
+                            })
+                            window.close()
+                        }}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
+                        onClick={async () => {
+                            await rootStore.walletStore.db.connectedSites.add({
+                                name: request.origin,
+                                url: request.origin,
+                            })
+                            controller.returnData({
+                                data: true,
+                            })
+                            window.close()
+                        }}
+                    >
+                        Access
+                    </button>
+                </div>
             </div>
         </div>
     )
