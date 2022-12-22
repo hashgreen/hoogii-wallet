@@ -55,7 +55,7 @@ export enum RequestMethodEnum {
     CONNECT = 'connect',
     WALLET_SWITCH_CHAIN = 'walletSwitchChain',
     GET_PUBLIC_KEYS = 'getPublicKeys',
-    filterUnlockedCoins = 'filterUnlockedCoins',
+    FILTER_UNLOCK_COINS = 'filterUnlockedCoins',
     GET_ASSET_COINS = 'getAssetCoins',
     GET_ASSET_BALANCE = 'getAssetBalance',
     SIGN_COIN_SPENDS = 'signCoinSpends',
