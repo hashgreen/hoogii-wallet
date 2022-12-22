@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite'
 
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
-import { isDev } from '~/utils'
+import developmentStore from '~/store/DevelopmentStore'
 import { chains } from '~/utils/constants'
 
 const Network = () => {
@@ -31,11 +31,32 @@ const Network = () => {
                         value={item.id}
                         checked={item.id === chain?.id}
                         onChange={() => switchChain(item)}
-                        disabled={!isDev && item.id !== chains[1].id}
                     />
                     {item.name}
                 </label>
             ))}
+            {developmentStore.isEnable && (
+                <input
+                    type="text"
+                    value={developmentStore.apiEndpoints?.jarvan}
+                    className="input mt-1"
+                    onChange={(e) => {
+                        if (developmentStore.apiEndpoints) {
+                            developmentStore.apiEndpoints.jarvan =
+                                e.target.value
+                        }
+                    }}
+                    onBlur={async (e) => {
+                        await developmentStore.updateApiEndpoints(
+                            e.target.value
+                                ? {
+                                      jarvan: e.target.value,
+                                  }
+                                : {}
+                        )
+                    }}
+                />
+            )}
         </div>
     )
 }

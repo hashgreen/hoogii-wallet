@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ConnectedSiteItem } from '~/components/Item'
-import { db, IConnectedSite } from '~/db'
+import { IConnectedSite } from '~/db'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 import connectableSites from '~config/connectableSites.json'
@@ -27,11 +27,12 @@ const ConnectedSites = () => {
     )
 
     const connectSite = async (site: IConnectedSite) => {
-        await db.connectedSites.add(site)
+        await rootStore.walletStore.db.connectedSites.add(site)
     }
 
     const disconnectSite = async (site: IConnectedSite) => {
-        site.id && (await db.connectedSites.delete(site.id))
+        site.id &&
+            (await rootStore.walletStore.db.connectedSites.delete(site.id))
     }
 
     return (

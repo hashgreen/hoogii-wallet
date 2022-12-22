@@ -12,7 +12,7 @@ export const getStorage = async <
     K extends string = string
 >(
     key: K
-): Promise<T | undefined> => {
+): Promise<T> => {
     const bucket = getBucket('store', 'local')
     return (await bucket.get(key))[key]
 }
