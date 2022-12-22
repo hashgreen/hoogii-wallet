@@ -50,6 +50,19 @@ export enum MethodEnum {
     RESET_PASSWORD = 'RESET_PASSWORD',
 }
 
+export enum RequestMethodEnum {
+    CHAIN_ID = 'chainId',
+    CONNECT = 'connect',
+    WALLET_SWITCH_CHAIN = 'walletSwitchChain',
+    GET_PUBLIC_KEYS = 'getPublicKeys',
+    filterUnlockedCoins = 'filterUnlockedCoins',
+    GET_ASSET_COINS = 'getAssetCoins',
+    GET_ASSET_BALANCE = 'getAssetBalance',
+    SIGN_COIN_SPENDS = 'signCoinSpends',
+    SING_MESSAGE = 'signMessage',
+    SEND_TRANSACTION = 'sendTransaction',
+}
+
 export type MethodDataType<T extends MethodEnum> = {
     ENABLE: {
         title: string
@@ -93,7 +106,6 @@ export type MethodReturnDataType<T extends MethodEnum> = {
     RETURN_DATA: undefined
     SAVE_DATA: undefined
 }[T]
-
 export enum StorageEnum {
     ASSETS = 'assets',
     ADDRESSES = 'addresses',
