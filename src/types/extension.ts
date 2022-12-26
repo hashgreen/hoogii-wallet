@@ -43,6 +43,7 @@ export enum MethodEnum {
     IS_VALID_WALLET = 'IS_VALID_WALLET',
     SAVE_DATA = 'SAVE_DATA',
     REFUSE = 'REFUSE',
+    REQUEST = 'REQUEST',
     // internal
     REQUEST_DATA = 'REQUEST_DATA',
     RETURN_DATA = 'RETURN_DATA',
@@ -67,6 +68,9 @@ export type MethodDataType<T extends MethodEnum> = {
     ENABLE: {
         title: string
         iconUrl: string
+    }
+    REQUEST: {
+        method: RequestMethodEnum
     }
     LOCK: undefined
     UNLOCK: undefined
@@ -93,6 +97,7 @@ interface IIsValidWallet {
 }
 export type MethodReturnDataType<T extends MethodEnum> = {
     ENABLE: boolean
+    REQUEST: T
     LOCK: ILock
     UNLOCK: ILock
     IS_CONNECTED: boolean
