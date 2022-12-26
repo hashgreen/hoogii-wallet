@@ -1,7 +1,7 @@
 import { enable, isConnected, lock, unlock } from '~/api/extension/webpage'
 import { RequestMethodEnum } from '~/types/extension'
 
-import pkg from './package.json'
+import pkg from '../../package.json'
 
 const underDevelopment = async () => {
     const error = {
