@@ -1,7 +1,7 @@
 import { enable, isConnected, lock, unlock } from '~/api/extension/webpage'
 import { RequestMethodEnum } from '~/types/extension'
 
-import Package from '../../package.json'
+import pkg from './package.json'
 
 const underDevelopment = async () => {
     const error = {
@@ -16,7 +16,7 @@ window.chia = {
     hoogii: {
         name: 'Hoogii',
         apiVersion: '0.0.4',
-        version: Package.version,
+        version: pkg.version,
         request: async ({ method }) => {
             console.log('method', method)
             switch (method) {
@@ -48,6 +48,7 @@ window.chia = {
         lock: async () => await lock(),
         unlock: async () => await unlock(),
         enable: async () => {
+            console.log('enable')
             if (await enable()) {
                 return {
                     lock,
