@@ -15,8 +15,17 @@ window.chia = {
         apiVersion: '0.0.4',
         version: pkg.version,
         isHoogii: true,
-        request: async (arg: { method: RequestMethodEnum }) =>
-            await request(arg),
+        request: async (arg: { method: RequestMethodEnum }) => {
+            const res = await request(arg)
+            if (res && res?.data) {
+                if (res?.data.error) {
+                    throw res?.data
+                }
+                return res?.data
+            } else {
+                throw new Error('Unknown error!')
+            }
+        },
         isConnected: async () => await isConnected(),
         lock: async () => await lock(),
         unlock: async () => await unlock(),

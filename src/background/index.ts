@@ -3,7 +3,6 @@ import Messaging, { BackgroundController } from '~/api/extension/messaging'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
-
 const controller = new BackgroundController()
 
 controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
@@ -28,6 +27,7 @@ controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
     }
 })
 controller.add(MethodEnum.ENABLE, async (request, sendResponse) => {
+    console.log('ENABLE', connectedSitesStore.isConnectedSite(request.origin))
     if (connectedSitesStore.isConnectedSite(request.origin)) {
         sendResponse({
             ...request,
@@ -138,6 +138,21 @@ controller.add(MethodEnum.RESET_PASSWORD, async (request) => {
         )
         await Messaging.toInternal<MethodEnum.RESET_PASSWORD>(tab, request)
     } catch (error) {}
+})
+
+controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
+    const tab = await createPopup(PopupEnum.INTERNAL)
+    await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
+    sendResponse({
+        ...request,
+        data: {
+            error: true,
+            code: 401,
+            message: 'Under developer',
+        },
+        sender: SenderEnum.EXTENSION,
+        target: SenderEnum.WEBPAGE,
+    })
 })
 
 controller.listen()
