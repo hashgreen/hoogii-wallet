@@ -98,7 +98,7 @@ interface IIsValidWallet {
 }
 export type MethodReturnDataType<T extends MethodEnum> = {
     ENABLE: boolean
-    REQUEST: T
+    REQUEST: IIsValidWallet
     LOCK: ILock
     UNLOCK: ILock
     IS_CONNECTED: boolean

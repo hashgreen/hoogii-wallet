@@ -1,7 +1,8 @@
 import { MethodEnum } from '~/types/extension'
 export const permission = {
     Authenticate: {
-        LOCK: MethodEnum.LOCK,
-        UNLOCK: MethodEnum.UNLOCK,
+        [MethodEnum.LOCK]: MethodEnum.LOCK,
+        [MethodEnum.UNLOCK]: MethodEnum.UNLOCK,
+        [MethodEnum.REQUEST]: MethodEnum.REQUEST,
     },
 }
