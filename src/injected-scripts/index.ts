@@ -14,6 +14,7 @@ window.chia = {
         name: 'Hoogii',
         apiVersion: '0.0.4',
         version: pkg.version,
+        isHoogii: true,
         request: async (arg: { method: RequestMethodEnum }) =>
             await request(arg),
         isConnected: async () => await isConnected(),
