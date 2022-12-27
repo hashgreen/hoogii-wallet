@@ -14,5 +14,10 @@ export const unlock = async () => await Messaging.toContent(MethodEnum.UNLOCK)
 export const isConnected = async () =>
     await Messaging.toContent(MethodEnum.IS_CONNECTED)
 
-export const request = async (method: RequestMethodEnum) =>
-    await Messaging.toContent(MethodEnum.REQUEST, { method })
+export const request = async <T = any>({
+    method,
+    params,
+}: {
+    method: RequestMethodEnum
+    params?: T
+}) => await Messaging.toContent(MethodEnum.REQUEST, { method, params })

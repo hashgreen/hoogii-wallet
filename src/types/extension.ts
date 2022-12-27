@@ -71,6 +71,7 @@ export type MethodDataType<T extends MethodEnum> = {
     }
     REQUEST: {
         method: RequestMethodEnum
+        params?: any
     }
     LOCK: undefined
     UNLOCK: undefined
