@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
 import { lock, savePassword } from '~/api/extension'
-import { unlock } from '~/api/extension/webpage'
 import {
     ConnectionName,
     IMessage,
@@ -38,8 +37,6 @@ export class InternalControllerStore {
 
     unlock = async (password: string) => {
         await savePassword(password)
-
-        await unlock()
         runInAction(() => {
             this.locked = false
         })
@@ -66,6 +63,7 @@ export class InternalControllerStore {
         })
         const messageHandler = (response: IMessage) => {
             this.port.onMessage.removeListener(messageHandler)
+
             runInAction(() => {
                 this.request = response
             })
