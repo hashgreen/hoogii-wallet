@@ -19,8 +19,6 @@ export class RootStore {
         this.assetsStore = new AssetsStore(this.walletStore)
         this.historyStore = new HistoryStore(this.walletStore)
     }
-
-   
 }
 
 const rootStore = new RootStore()

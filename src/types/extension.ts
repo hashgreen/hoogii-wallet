@@ -76,7 +76,7 @@ export type MethodDataType<T extends MethodEnum> = {
     }
     LOCK: undefined
     UNLOCK: undefined
-    IS_LOCK: undefined
+    IS_LOCK: any
     IS_CONNECTED: undefined
     REFUSE: undefined
     IS_VALID_WALLET: undefined
@@ -103,7 +103,7 @@ export type MethodReturnDataType<T extends MethodEnum> = {
     REQUEST: IIsValidWallet
     LOCK: ILock
     UNLOCK: ILock
-    IS_LOCK: undefined
+    IS_LOCK: boolean
     IS_CONNECTED: boolean
     REFUSE: undefined
     IS_VALID_WALLET: IIsValidWallet

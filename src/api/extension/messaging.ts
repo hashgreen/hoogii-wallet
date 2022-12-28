@@ -53,6 +53,16 @@ class Messaging {
             if (isValidWalletRes?.data?.error) {
                 throw new Error(isValidWalletRes.data.message)
             }
+            // before enbale need to check unlock
+            const isLockRes = await this.toBackground<MethodEnum>({
+                ...request,
+                method: MethodEnum.IS_LOCK,
+            })
+            if (isLockRes?.data) {
+                window.postMessage(isLockRes)
+                return
+            }
+
             // only allow enable function, before checking for whitelisted
             const isConnectedRes = await this.toBackground<MethodEnum>({
                 ...request,
@@ -62,7 +72,6 @@ class Messaging {
                 window.postMessage(isConnectedRes)
                 return
             }
-
             if (
                 permission.Authenticate[request.method] &&
                 !isConnectedRes.data
@@ -73,6 +82,7 @@ class Messaging {
                 })
                 return
             }
+
             const response = await this.toBackground<MethodEnum>({
                 ...request,
             })

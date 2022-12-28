@@ -27,7 +27,6 @@ controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
     }
 })
 controller.add(MethodEnum.ENABLE, async (request, sendResponse) => {
-    console.log('ENABLE', connectedSitesStore.isConnectedSite(request.origin))
     if (connectedSitesStore.isConnectedSite(request.origin)) {
         sendResponse({
             ...request,
@@ -140,9 +139,23 @@ controller.add(MethodEnum.RESET_PASSWORD, async (request) => {
     } catch (error) {}
 })
 
+controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
+    const mnemonic = await getStorage<string>('mnemonic')
+    const password = controller?.password
+    const isLocked = !password && !mnemonic
+    if (isLocked) {
+        const tab = await createPopup(PopupEnum.INTERNAL)
+        await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
+    }
+    sendResponse({
+        ...request,
+        data: isLocked,
+        sender: SenderEnum.EXTENSION,
+        target: SenderEnum.WEBPAGE,
+    })
+})
+
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
-    const tab = await createPopup(PopupEnum.INTERNAL)
-    await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
     sendResponse({
         ...request,
         data: {
