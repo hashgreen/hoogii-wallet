@@ -30,9 +30,7 @@ window.chia = {
         lock: async () => await lock(),
         unlock: async () => await unlock(),
         enable: async () => {
-            console.log('enable')
             if (await enable()) {
-                console.log('enable end')
                 return {
                     lock,
                     unlock,

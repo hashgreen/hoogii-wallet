@@ -94,7 +94,10 @@ export class InternalControllerStore {
     }
 
     onFinishRequest = async () => {
-        this.returnData({ data: this.request?.data })
+        this.returnData({
+            data: true,
+        })
+        window.close()
     }
 }
 

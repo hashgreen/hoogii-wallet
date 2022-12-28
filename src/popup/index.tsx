@@ -27,28 +27,29 @@ const App = observer(() => {
         if (request && request.method === MethodEnum.REFUSE) {
             navigate('/refuse')
         }
+
         if (request && !locked) {
             if (!connected) {
                 navigate('/refuse')
             } else {
                 onFinishRequest()
-                window.close()
             }
-
-            // switch (request.method) {
-            //     case MethodEnum.ENABLE:
-            //         navigate('/refuse')
-            //         break
-            //     default:
-            //         onNextPorcess()
-            // }
         }
+
+        //     // switch (request.method) {
+        //     //     case MethodEnum.ENABLE:
+        //     //         navigate('/refuse')
+        //     //         break
+        //     //     default:
+        //     //         onNextPorcess()
+        //     // }
+        // }
     }, [request, locked, connected])
 
     return (
         <Routes>
             <Route>
-                {locked && <Route index element={<Locked />} />}
+                <Route index element={<Locked />} />
                 {request && (
                     <>
                         <Route

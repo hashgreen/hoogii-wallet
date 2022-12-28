@@ -153,24 +153,39 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
 })
 
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
+    console.log('request', request)
+
+    const basicResponse = {
+        ...request,
+        sender: SenderEnum.EXTENSION,
+        target: SenderEnum.WEBPAGE,
+    }
     if (!request?.isConnected || request?.isLocked) {
         const tab = await createPopup(PopupEnum.INTERNAL)
-        await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
-        sendResponse({
-            ...request,
-            sender: SenderEnum.EXTENSION,
-            target: SenderEnum.WEBPAGE,
-        })
+        const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
+
+        if (res?.data) {
+            sendResponse({
+                ...basicResponse,
+                data: {
+                    error: true,
+                    code: 401,
+                    message: 'Under development',
+                },
+            })
+        } else {
+            sendResponse({
+                ...basicResponse,
+            })
+        }
     } else {
         sendResponse({
-            ...request,
+            ...basicResponse,
             data: {
                 error: true,
                 code: 401,
                 message: 'Under development',
             },
-            sender: SenderEnum.EXTENSION,
-            target: SenderEnum.WEBPAGE,
         })
     }
 })
