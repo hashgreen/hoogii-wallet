@@ -5,6 +5,8 @@ export interface IMessage<T = any> {
     origin: string
     iconUrl: string
     method: MethodEnum
+    isLocked?: boolean
+    isConnected?: boolean
     data?: T
 }
 
@@ -100,7 +102,7 @@ interface IIsValidWallet {
 }
 export type MethodReturnDataType<T extends MethodEnum> = {
     ENABLE: boolean
-    REQUEST: IIsValidWallet
+    REQUEST: any
     LOCK: ILock
     UNLOCK: ILock
     IS_LOCK: boolean

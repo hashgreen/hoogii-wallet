@@ -18,6 +18,7 @@ export class InternalControllerStore {
     private tabId?: number
     request?: IMessage
     locked = true
+    connected = false
 
     constructor() {
         makeAutoObservable(this)
@@ -66,6 +67,8 @@ export class InternalControllerStore {
 
             runInAction(() => {
                 this.request = response
+                this.locked = Boolean(response?.isLocked)
+                this.connected = Boolean(response?.isConnected)
             })
         }
         this.port.onMessage.addListener(messageHandler)
@@ -82,6 +85,16 @@ export class InternalControllerStore {
             method: MethodEnum.RETURN_DATA,
             tabId: this.tabId,
         } as InternalReturnType)
+    }
+
+    connectSite = async () => {
+        runInAction(() => {
+            this.connected = true
+        })
+    }
+
+    onFinishRequest = async () => {
+        this.returnData({ data: this.request?.data })
     }
 }
 

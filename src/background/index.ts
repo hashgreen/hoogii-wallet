@@ -143,10 +143,7 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
     const mnemonic = await getStorage<string>('mnemonic')
     const password = controller?.password
     const isLocked = !password && !mnemonic
-    if (isLocked) {
-        const tab = await createPopup(PopupEnum.INTERNAL)
-        await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
-    }
+
     sendResponse({
         ...request,
         data: isLocked,
@@ -156,16 +153,26 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
 })
 
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
-    sendResponse({
-        ...request,
-        data: {
-            error: true,
-            code: 401,
-            message: 'Under developer',
-        },
-        sender: SenderEnum.EXTENSION,
-        target: SenderEnum.WEBPAGE,
-    })
+    if (!request?.isConnected || request?.isLocked) {
+        const tab = await createPopup(PopupEnum.INTERNAL)
+        await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
+        sendResponse({
+            ...request,
+            sender: SenderEnum.EXTENSION,
+            target: SenderEnum.WEBPAGE,
+        })
+    } else {
+        sendResponse({
+            ...request,
+            data: {
+                error: true,
+                code: 401,
+                message: 'Under development',
+            },
+            sender: SenderEnum.EXTENSION,
+            target: SenderEnum.WEBPAGE,
+        })
+    }
 })
 
 controller.listen()

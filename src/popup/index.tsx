@@ -16,7 +16,7 @@ import Refuse from './pages/refuse'
 const App = observer(() => {
     const navigate = useNavigate()
 
-    const { locked, request } = controller
+    const { locked, connected, request, onFinishRequest } = controller
 
     useEffect(() => {
         document.documentElement.classList.add('dark')
@@ -28,13 +28,22 @@ const App = observer(() => {
             navigate('/refuse')
         }
         if (request && !locked) {
-            switch (request.method) {
-                case MethodEnum.ENABLE:
-                    navigate('/enable')
-                    break
+            if (!connected) {
+                navigate('/refuse')
+            } else {
+                onFinishRequest()
+                window.close()
             }
+
+            // switch (request.method) {
+            //     case MethodEnum.ENABLE:
+            //         navigate('/refuse')
+            //         break
+            //     default:
+            //         onNextPorcess()
+            // }
         }
-    }, [request, locked])
+    }, [request, locked, connected])
 
     return (
         <Routes>

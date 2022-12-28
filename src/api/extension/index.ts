@@ -40,3 +40,17 @@ export const getDataFromMemory = async <T = string | number>(
 
     return res.data?.[key]
 }
+export const requestBackend = async ({
+    data,
+    method,
+}: {
+    data: any
+    method: MethodEnum
+}): Promise<void> => {
+    Messaging.toBackground({
+        sender: SenderEnum.EXTENSION,
+        method,
+        origin: window.origin,
+        data,
+    })
+}

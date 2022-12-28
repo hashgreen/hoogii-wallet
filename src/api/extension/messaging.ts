@@ -58,10 +58,6 @@ class Messaging {
                 ...request,
                 method: MethodEnum.IS_LOCK,
             })
-            if (isLockRes?.data) {
-                window.postMessage(isLockRes)
-                return
-            }
 
             // only allow enable function, before checking for whitelisted
             const isConnectedRes = await this.toBackground<MethodEnum>({
@@ -85,6 +81,8 @@ class Messaging {
 
             const response = await this.toBackground<MethodEnum>({
                 ...request,
+                isConnected: Boolean(isConnectedRes.data),
+                isLocked: Boolean(isLockRes.data),
             })
             console.log(
                 '[content script]:from websites << ' + JSON.stringify(response)

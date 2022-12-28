@@ -49,10 +49,7 @@ const Refuse = ({
                                 name: request.origin,
                                 url: request.origin,
                             })
-                            controller.returnData({
-                                data: true,
-                            })
-                            window.close()
+                            controller.connectSite()
                         }}
                     >
                         Access
