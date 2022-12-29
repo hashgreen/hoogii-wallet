@@ -74,7 +74,12 @@ class AssetsStore {
     }
 
     addDefaultAsset = () => {
-        defaultCATs.forEach(({ assetId, code, iconUrl }) =>
+        // Show USDS by default on mainnet
+        rootStore.walletStore.db.assets.clear()
+        ;(this.walletStore.isMainnet
+            ? defaultCATs.filter((cat) => cat.code === 'USDS')
+            : defaultCATs
+        ).forEach(({ assetId, code, iconUrl }) =>
             rootStore.walletStore.db.assets.add({
                 assetId,
                 code,

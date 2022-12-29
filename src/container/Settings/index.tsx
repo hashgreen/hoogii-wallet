@@ -143,7 +143,7 @@ const Settings = () => {
                             className="justify-between flex-row-center py-2.5 capitalize"
                         >
                             {item.title}
-                            <RightIcon className="w-4 h-4 text-active" />
+                            <RightIcon className="w-5 h-5 text-active" />
                         </Link>
                     </li>
                 ))}

@@ -47,7 +47,7 @@ export const ErrorPopup = ({
     className,
     ...rest
 }: IProps & { title: string; description: string }) => (
-    <Popup {...rest} className={classNames('w-full', className)}>
+    <Popup {...rest} className={classNames('w-[400px]', className)}>
         <div className="text-center flex-col-center">
             <img
                 src="/images/popup-error.png"

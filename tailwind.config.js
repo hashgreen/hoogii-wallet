@@ -98,6 +98,8 @@ module.exports = {
                 active: withOpacityValue('--color-active'), // #6EFFCB
                 text: withOpacityValue('--color-text'), // #5F6881
                 error: withOpacityValue('--color-error'), // #FF5C6F
+                'info-light': 'rgba(var(--color-info-light))', // #DDF3FF;
+
                 status: {
                     send: withOpacityValue('--color-status-send'), // #FF58BC
                     receive: withOpacityValue('--color-status-receive'), // #00C7CC

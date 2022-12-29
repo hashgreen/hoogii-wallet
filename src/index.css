@@ -30,6 +30,8 @@
         --color-dark-scale-900: 0 0 0; /* #000000 */
         --color-dark-scale-100: 255 255 255; /* #FFFFFF */
         --color-skeleton: 95, 104, 129, 0.2; /* #5F6881 */
+        --color-info-light: 221, 243, 255; /* #DDF3FF */
+        
 
         input {
             color-scheme: dark;
