@@ -62,11 +62,12 @@ const AssetCombobox = forwardRef<
                         ) : (
                             <span className="capitalize">{placeholder}</span>
                         )}
-                        {open ? (
-                            <UpIcon className="w-3 h-3 text-active" />
-                        ) : (
-                            <BottomIcon className="w-3 h-3 text-active" />
-                        )}
+                        <BottomIcon
+                            className={`w-5 h-5 text-active ${classNames({
+                                'transition-transform ease-in-out -rotate-180 duration-500':
+                                    open,
+                            })}`}
+                        />
                     </>
                 )}
             </Combobox.Button>
