@@ -57,6 +57,7 @@ export enum MethodEnum {
 export enum RequestMethodEnum {
     CHAIN_ID = 'chainId',
     CONNECT = 'connect',
+    ACCOUNTS = 'accounts',
     WALLET_SWITCH_CHAIN = 'walletSwitchChain',
     GET_PUBLIC_KEYS = 'getPublicKeys',
     FILTER_UNLOCK_COINS = 'filterUnlockedCoins',
@@ -67,15 +68,17 @@ export enum RequestMethodEnum {
     SEND_TRANSACTION = 'sendTransaction',
 }
 
+export interface RequestArguments {
+    method: RequestMethodEnum
+    params?: any
+}
+
 export type MethodDataType<T extends MethodEnum> = {
     ENABLE: {
         title: string
         iconUrl: string
     }
-    REQUEST: {
-        method: RequestMethodEnum
-        params?: any
-    }
+    REQUEST: RequestArguments
     LOCK: undefined
     UNLOCK: undefined
     IS_LOCK: any

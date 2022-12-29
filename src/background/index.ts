@@ -1,7 +1,13 @@
 import { createPopup, createTab } from '~/api/extension/extension'
 import Messaging, { BackgroundController } from '~/api/extension/messaging'
+import { requestHandler } from '~/api/extension/request'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
-import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
+import {
+    MethodEnum,
+    PopupEnum,
+    RequestArguments,
+    SenderEnum,
+} from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
 const controller = new BackgroundController()
 
@@ -153,8 +159,6 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
 })
 
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
-    console.log('request', request)
-
     const basicResponse = {
         ...request,
         sender: SenderEnum.EXTENSION,
@@ -167,11 +171,7 @@ controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
         if (res?.data) {
             sendResponse({
                 ...basicResponse,
-                data: {
-                    error: true,
-                    code: 401,
-                    message: 'Under development',
-                },
+                data: requestHandler(request?.data as RequestArguments),
             })
         } else {
             sendResponse({
@@ -181,11 +181,7 @@ controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
     } else {
         sendResponse({
             ...basicResponse,
-            data: {
-                error: true,
-                code: 401,
-                message: 'Under development',
-            },
+            data: requestHandler(request?.data as RequestArguments),
         })
     }
 })
