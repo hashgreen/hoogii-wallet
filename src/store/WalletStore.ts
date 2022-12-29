@@ -31,7 +31,7 @@ class WalletStore {
     isAblyConnected = false
     locked: boolean = false
     mnemonicLength = 24
-    db: WalletDexie = new WalletDexie(ChainEnum.Testnet)
+    db: WalletDexie = new WalletDexie(ChainEnum.Mainnet)
     name?: string
     password: string = ''
     chain?: IChain
@@ -100,6 +100,10 @@ class WalletStore {
                 }
             }
         )
+    }
+
+    get isMainnet(): boolean {
+        return this.chain?.id === ChainEnum.Mainnet
     }
 
     init = async () => {

@@ -14,7 +14,8 @@ export async function apiHandler<T = any>(
 ): Promise<AxiosResponse<T>> {
     try {
         const chainId: string = await getStorage<string>('chainId')
-        const apiEndpoint = apiEndpointSets[chainId || '0x01'].jarvan
+
+        const apiEndpoint = apiEndpointSets[chainId || '0x01'].jarvan // default mainnet
         const request = axios.create({
             baseURL: apiEndpoint,
             timeout: 60 * 1000,

@@ -9,11 +9,14 @@ import {
 } from '~/types/extension'
 import { chains } from '~/utils/constants'
 import { decrypt, stringToBytes } from '~/utils/encryption'
-import { getStorage } from '~/utils/storage'
+import { getStorage, setStorage } from '~/utils/storage'
 
 export const retrieveChain = async () => {
     const chainId = await getStorage<string>('chainId')
-    const chain = chains.find((item) => item.id === chainId) ?? chains[1]
+    if (!chainId) {
+        setStorage({ chainId: chains[0].id })
+    }
+    const chain = chains.find((item) => item.id === chainId) ?? chains[0]
     return chain
 }
 export const retrieveSeed = async (
