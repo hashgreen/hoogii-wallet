@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import Mnemonic from '~/components/Mnemonic'
 import { ErrorPopup } from '~/components/Popup'
+import InfoIcon from '~icons/hoogii/blue-info.jsx'
 import { SubLayout } from '~tabs/layout'
 import rootStore from '~tabs/store'
 
@@ -57,6 +58,10 @@ function ImportMnemonic({
             }}
             back={routeFor === 'import'}
         >
+            <div className="bg-info-light text-black font-normal py-4 flex text-sm justify-center items-center rounded mt-5">
+                <InfoIcon color=" #1A9FEA" />
+                <span className="ml-2.5">{t('tooltip-paste_hint')}</span>
+            </div>
             <div className="mt-7">
                 {schema && (
                     <Mnemonic
@@ -70,7 +75,6 @@ function ImportMnemonic({
                             setIsValid(isValid)
                             setMnemonics?.(mnemonics)
                         }}
-                        showPasteHint
                     />
                 )}
                 {open && (

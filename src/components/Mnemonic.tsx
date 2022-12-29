@@ -2,7 +2,7 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import classNames from 'classnames'
 import Joi from 'joi'
 import { range } from 'lodash-es'
-import { ClipboardEvent, useEffect, useState } from 'react'
+import { ClipboardEvent, useEffect } from 'react'
 import { useFieldArray, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -20,7 +20,6 @@ interface IProps {
     readOnly?: boolean | boolean[]
     schema?: Joi.ObjectSchema
     onChange?: (isValid: boolean, ˇs: string[]) => void
-    showPasteHint?: boolean
 }
 
 function Mnemonic({
@@ -29,11 +28,9 @@ function Mnemonic({
     readOnly = false,
     schema = Joi.object({ phrases: Joi.array().required() }),
     onChange,
-    showPasteHint = false,
 }: IProps) {
     const { t } = useTranslation()
-    const [pasteHint, setPasteHint] = useState<boolean>(true)
-    const [pasteHintIndex, setPasteHintIndex] = useState<number>(-1)
+
     const {
         control,
         register,
@@ -99,7 +96,7 @@ function Mnemonic({
             setValue(
                 'phrases',
                 phrases.map((phrase) => ({
-                    value: phrase,
+                    value: phrase.trim(), // trim the string
                 }))
             )
             return
@@ -109,7 +106,7 @@ function Mnemonic({
                 if (phrases[index]) {
                     setValue(
                         `phrases.${fieldIndex}.value` as const,
-                        phrases[index]
+                        phrases[index].trim() // trim the string
                     )
                     lastIndex = fieldIndex
                 }
@@ -117,13 +114,6 @@ function Mnemonic({
         )
         setFocus(`phrases.${lastIndex}.value` as const)
         trigger()
-    }
-
-    const onFocus = (index: number) => {
-        if (values.every((value) => !value.value)) {
-            setPasteHintIndex(index)
-            setPasteHint(true)
-        }
     }
 
     useEffect(() => {
@@ -146,16 +136,11 @@ function Mnemonic({
             isValid,
             values.map((e) => e.value)
         )
-        if (pasteHint) {
-            if (values.some((value) => value)) {
-                setPasteHint(false)
-            }
-        }
     }, [isValid, values])
 
     return (
         <>
-            <form className="grid grid-cols-3 gap-2 [&>:not(div)]:absolute">
+            <form className="grid grid-cols-3 gap-3 [&>:not(div)]:absolute">
                 {fields.map((field, index) => (
                     <div key={field.id} className="relative">
                         <input
@@ -185,20 +170,7 @@ function Mnemonic({
                                 }
                             }}
                             onPaste={(e) => onPaste(index, e)}
-                            onFocus={() => onFocus(index)}
-                            onBlur={() => setPasteHint(false)}
                         />
-                        {showPasteHint && (
-                            <div
-                                className={classNames(
-                                    "absolute top-full translate-y-3  bg-primary-100 text-secondary px-3 py-2 w-44 rounded-sm z-50 left-1/2 -translate-x-1/2 text-xs text-center after:content-[''] after:absolute after:w-3 after:h-3 after:bg-primary-100 after:left-1/2 after:-translate-x-1/2 after:-top-1 after:rotate-45",
-                                    (!pasteHint || index !== pasteHintIndex) &&
-                                        'hidden'
-                                )}
-                            >
-                                <span>{t('tooltip-paste_hint')}</span>
-                            </div>
-                        )}
                     </div>
                 ))}
             </form>
