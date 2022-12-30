@@ -167,11 +167,11 @@ controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
     if (!request?.isConnected || request?.isLocked) {
         const tab = await createPopup(PopupEnum.INTERNAL)
         const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
-
+        const data = await requestHandler(request?.data as RequestArguments)
         if (res?.data) {
             sendResponse({
                 ...basicResponse,
-                data: requestHandler(request?.data as RequestArguments),
+                data,
             })
         } else {
             sendResponse({
@@ -179,9 +179,10 @@ controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
             })
         }
     } else {
+        const data = await requestHandler(request?.data as RequestArguments)
         sendResponse({
             ...basicResponse,
-            data: requestHandler(request?.data as RequestArguments),
+            data,
         })
     }
 })

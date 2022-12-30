@@ -1,7 +1,9 @@
 import { RequestArguments, RequestMethodEnum } from '~/types/extension'
+import { getStorage } from '~/utils/extension/storage'
 
-const chainId = (): string => {
-    return '0x01'
+const chainId = async (): Promise<string> => {
+    const chainId: string = await getStorage<string>('chainId')
+    return chainId || '0x01'
 }
 
 const connect = (params: { eager?: boolean }): boolean => {
@@ -24,11 +26,10 @@ export const requestMethods = {
     [RequestMethodEnum.ACCOUNTS]: accounts,
     [RequestMethodEnum.WALLET_SWITCH_CHAIN]: walletSwitchChain,
 }
-export const requestHandler = (arg: RequestArguments) => {
+export const requestHandler = async (arg: RequestArguments) => {
     const requestMethod = requestMethods[arg.method]
-    console.log('requestMethod', requestMethod)
     if (requestMethod) {
-        return requestMethod(arg.params)
+        return await requestMethod(arg.params)
     } else {
         return {
             error: true,
