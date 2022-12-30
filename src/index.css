@@ -15,6 +15,7 @@
     }
     html.dark {
         --color-primary-500: 113 110 255; /* #716EFF */
+        --color-primary-300: 193 114 255; /* #9E01FF */
         --color-primary-200: 193 114 255; /* #C172FF */
         --color-primary-100: 206 214 255; /* #CED6FF */
         --color-secondary: 14 31 77; /* #0E1F4D */
@@ -31,8 +32,7 @@
         --color-dark-scale-100: 255 255 255; /* #FFFFFF */
         --color-skeleton: 95, 104, 129, 0.2; /* #5F6881 */
         --color-info-light: 221, 243, 255; /* #DDF3FF */
-        
-
+    
         input {
             color-scheme: dark;
         }

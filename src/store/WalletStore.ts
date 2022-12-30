@@ -17,6 +17,7 @@ import { walletTo0x02 } from '~/db/migrations'
 import rootStore from '~/store'
 import { ChainEnum, IChain } from '~/types/chia'
 import { bcryptHash, bcryptVerify } from '~/utils'
+import { chains } from '~/utils/constants'
 import { bytesToString, decrypt, encrypt } from '~/utils/encryption'
 import { retrieveChain, retrieveSeed } from '~/utils/extension'
 import { seedToAddress, seedToPuzzle } from '~/utils/signature'
@@ -34,7 +35,7 @@ class WalletStore {
     db: WalletDexie = new WalletDexie(ChainEnum.Mainnet)
     name?: string
     password: string = ''
-    chain?: IChain
+    chain: IChain = chains[0]
     address: string = ''
     puzzleHash: string = ''
     addresses: IAddress[] = []
@@ -124,6 +125,7 @@ class WalletStore {
             return { seed: new Uint8Array(), password, locked: true }
         }
         const seed = await retrieveSeed(password)
+
         const name = await getStorage<string>('name')
         const locked = false
         if (!seed) {
@@ -173,6 +175,7 @@ class WalletStore {
         runInAction(() => {
             this.chain = chain
         })
+        this.init()
     }
 
     checkPassword = async (password: string) => {

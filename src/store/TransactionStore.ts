@@ -13,9 +13,6 @@ import SpendBundle from '~/utils/SpendBundle'
 import { Wallet } from '~/utils/Wallet'
 
 import WalletStore from './WalletStore'
-const agg_sig_me_additional_data =
-    'ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2'
-
 class TransactionStore {
     walletStore: WalletStore
 
@@ -48,7 +45,8 @@ class TransactionStore {
         memo: string,
         fee: string
     ): Promise<void> => {
-        const { seed, address } = this.walletStore
+        const { seed, address, chain } = this.walletStore
+        const { agg_sig_me_additional_data } = chain
         if (!seed) return
         const puzzleReveal = getProgramBySeed(seed).serializeHex()
 
@@ -94,7 +92,8 @@ class TransactionStore {
         memo: string,
         fee: string
     ): Promise<void> => {
-        const { seed, address } = this.walletStore
+        const { seed, address, chain } = this.walletStore
+        const { agg_sig_me_additional_data } = chain
         if (!seed) return
         const puzzleReveal = getProgramBySeed(seed).serializeHex()
 
