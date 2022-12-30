@@ -1,4 +1,4 @@
-import '~/index.css'
+import '~/index.scss'
 import '~/utils/i18n'
 
 import { Buffer } from 'buffer'
