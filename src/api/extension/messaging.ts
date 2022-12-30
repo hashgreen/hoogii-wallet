@@ -53,7 +53,7 @@ class Messaging {
             if (isValidWalletRes?.data?.error) {
                 throw new Error(isValidWalletRes.data.message)
             }
-            // before enbale need to check unlock
+            // before enable need to check if unlock
             const isLockRes = await this.toBackground<MethodEnum>({
                 ...request,
                 method: MethodEnum.IS_LOCK,
