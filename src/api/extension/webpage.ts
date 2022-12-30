@@ -2,7 +2,6 @@ import Messaging from '~/api/extension/messaging'
 import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 
 export const enable = async () => {
-    console.log('start enable')
     const response = await Messaging.toContent(MethodEnum.ENABLE)
     return response.data
 }
