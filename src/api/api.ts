@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
 import { IMarket, RequestConfig } from '~/types/api'
+import { ChainEnum } from '~/types/chia'
 import { apiEndpointSets } from '~/utils/constants'
 import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
 import { getStorage } from '~/utils/extension/storage'
@@ -127,7 +128,7 @@ export const callGetAblyAccessToken = (formData) =>
 export const callGetMarkets = async () =>
     apiHandler<AxiosResponse<IMarket[]>>({
         url:
-            (await getStorage<string>('chainId')) === '0x01'
+            (await getStorage<string>('chainId')) === ChainEnum.Mainnet
                 ? 'https://hash.green/api/v1/markets'
                 : 'https://testnet10.hash.green/api/v1/markets',
         method: 'get',
