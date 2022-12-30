@@ -10,22 +10,30 @@ import {
     RequestMethodEnum,
 } from '~/types/extension'
 import { apiEndpointSets } from '~/utils/constants'
-import { getStorage } from '~/utils/extension/storage'
+import { getStorage, setStorage } from '~/utils/extension/storage'
 
 const chainId = async (): Promise<string> => {
+    console.log('request >> chainId')
     const chainId: string = await getStorage<string>('chainId')
     return chainId || ChainEnum.Mainnet
 }
 
 const connect = (origin: string): boolean => {
+    console.log('request >> connect')
     return connectedSitesStore.isConnectedSite(origin)
 }
 
-const walletSwitchChain = (params: { chainId: ChainEnum }): boolean => {
+const walletSwitchChain = async (params: {
+    chainId: ChainEnum
+}): Promise<any> => {
     if (apiEndpointSets[params.chainId]) {
+        await setStorage({ chainId: params.chainId })
         return true
     }
-    return false
+    return {
+        code: 4004,
+        message: 'method not found',
+    }
 }
 export const requestHandler = async (request: IMessage<RequestArguments>) => {
     switch (request.data?.method) {
@@ -40,11 +48,12 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
                     tab,
                     request
                 )
+
                 if (!res?.data) {
                     return {
                         error: true,
-                        code: 401,
-                        message: 'Under development',
+                        code: 4002,
+                        message: 'user rejected request',
                     }
                 }
             }
