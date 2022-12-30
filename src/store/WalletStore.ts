@@ -97,7 +97,6 @@ class WalletStore {
                     runInAction(() => {
                         this.db = new WalletDexie(chain.id)
                     })
-                    rootStore.assetsStore.addDefaultAsset()
                 }
             }
         )
@@ -175,7 +174,7 @@ class WalletStore {
         runInAction(() => {
             this.chain = chain
         })
-        this.init()
+        rootStore.assetsStore.addDefaultAsset()
     }
 
     checkPassword = async (password: string) => {

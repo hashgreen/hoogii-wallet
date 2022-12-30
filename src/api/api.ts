@@ -124,9 +124,12 @@ export const callGetAblyAccessToken = (formData) =>
     })
 /** -------------------------- Jarvan addon API END -------------------------- */
 /** -------------------------- Zed API -------------------------- */
-export const callGetMarkets = () =>
+export const callGetMarkets = async () =>
     apiHandler<AxiosResponse<IMarket[]>>({
-        url: 'https://testnet10.hash.green/api/v1/markets',
+        url:
+            (await getStorage<string>('chainId')) === '0x01'
+                ? 'https://hash.green/api/v1/markets'
+                : 'https://testnet10.hash.green/api/v1/markets',
         method: 'get',
     })
 
