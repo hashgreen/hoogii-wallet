@@ -2,7 +2,13 @@ import { createPopup, createTab } from '~/api/extension/extension'
 import Messaging, { BackgroundController } from '~/api/extension/messaging'
 import { requestHandler } from '~/api/extension/request'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
-import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
+import {
+    IMessage,
+    MethodEnum,
+    PopupEnum,
+    RequestArguments,
+    SenderEnum,
+} from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
 const controller = new BackgroundController()
 
@@ -153,33 +159,32 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
     })
 })
 
+const authHandler = async (request: IMessage<RequestArguments>) => {
+    if (!request?.isConnected || request?.isLocked) {
+        const tab = await createPopup(PopupEnum.INTERNAL)
+        return await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
+    }
+
+    return true
+}
+
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
-    const basicResponse = {
+    const auth = await authHandler(request)
+
+    const data = auth
+        ? await requestHandler(request)
+        : {
+              error: true,
+              code: 4002,
+              message: 'user rejected request',
+          }
+
+    sendResponse({
         ...request,
         sender: SenderEnum.EXTENSION,
         target: SenderEnum.WEBPAGE,
-    }
-    if (!request?.isConnected || request?.isLocked) {
-        const tab = await createPopup(PopupEnum.INTERNAL)
-        const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
-        const data = await requestHandler(request)
-        if (res?.data) {
-            sendResponse({
-                ...basicResponse,
-                data,
-            })
-        } else {
-            sendResponse({
-                ...basicResponse,
-            })
-        }
-    } else {
-        const data = await requestHandler(request)
-        sendResponse({
-            ...basicResponse,
-            data,
-        })
-    }
+        data,
+    })
 })
 
 controller.listen()
