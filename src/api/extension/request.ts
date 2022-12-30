@@ -23,12 +23,6 @@ const walletSwitchChain = (params: { chainId: ChainEnum }): boolean => {
     }
     return false
 }
-
-export const requestMethods = {
-    [RequestMethodEnum.CHAIN_ID]: chainId,
-    [RequestMethodEnum.CONNECT]: connect,
-    [RequestMethodEnum.WALLET_SWITCH_CHAIN]: walletSwitchChain,
-}
 export const requestHandler = async (request: IMessage<RequestArguments>) => {
     switch (request.data?.method) {
         case RequestMethodEnum.CHAIN_ID:
