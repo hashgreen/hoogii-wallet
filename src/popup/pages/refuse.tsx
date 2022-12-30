@@ -34,10 +34,14 @@ const Refuse = ({
                     <button
                         className="btn btn-CTA_landing btn-outline  w-[160px] h-[40px] btn-large"
                         onClick={() => {
-                            controller.returnData({
-                                error: APIError.REFUSED,
-                            })
-                            window.close()
+                            if (request.method === MethodEnum.REQUEST) {
+                                controller.onFinishRequest(false)
+                            } else {
+                                controller.returnData({
+                                    error: APIError.REFUSED,
+                                })
+                                window.close()
+                            }
                         }}
                     >
                         Cancel

@@ -6,12 +6,12 @@ import { Suspense, useEffect } from 'react'
 import { render } from 'react-dom'
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
-import { MethodEnum, PopupEnum } from '~/types/extension'
+import { MethodEnum, PopupEnum, RequestMethodEnum } from '~/types/extension'
 
 import controller from './controller'
-import Enable from './pages/enable'
 import Locked from './pages/locked'
 import Refuse from './pages/refuse'
+import SwitchChain from './pages/switchChain'
 
 const App = observer(() => {
     const navigate = useNavigate()
@@ -32,18 +32,16 @@ const App = observer(() => {
             if (!connected) {
                 navigate('/refuse')
             } else {
-                onFinishRequest()
+                switch (request.data?.method) {
+                    case RequestMethodEnum.WALLET_SWITCH_CHAIN:
+                        navigate('/switchChain')
+                        break
+
+                    default:
+                        onFinishRequest()
+                }
             }
         }
-
-        //     // switch (request.method) {
-        //     //     case MethodEnum.ENABLE:
-        //     //         navigate('/refuse')
-        //     //         break
-        //     //     default:
-        //     //         onNextPorcess()
-        //     // }
-        // }
     }, [request, locked, connected])
 
     return (
@@ -53,18 +51,18 @@ const App = observer(() => {
                 {request && (
                     <>
                         <Route
-                            path="enable"
+                            path="refuse"
                             element={
-                                <Enable
+                                <Refuse
                                     request={request}
                                     controller={controller}
                                 />
                             }
                         />
                         <Route
-                            path="refuse"
+                            path="switchChain"
                             element={
-                                <Refuse
+                                <SwitchChain
                                     request={request}
                                     controller={controller}
                                 />

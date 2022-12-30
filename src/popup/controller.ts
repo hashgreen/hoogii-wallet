@@ -93,9 +93,10 @@ export class InternalControllerStore {
         })
     }
 
-    onFinishRequest = async () => {
+    onFinishRequest = async (response = true) => {
+        // response is to background script
         this.returnData({
-            data: true,
+            data: response,
         })
         window.close()
     }
