@@ -15,11 +15,11 @@ export const chains: readonly IChain[] = [
 export const apiEndpointSets: {
     [key in ChainEnum]: IApiEndpointSet
 } = {
-    '0x01': {
+    [ChainEnum.Mainnet]: {
         jarvan: 'https://prod-jarvan.hash.green/api/v1',
         zed: 'https://testnet10.hash.green/api/v1',
     },
-    '0x02': {
+    [ChainEnum.Testnet]: {
         jarvan: 'https://stg-jarvan.hash.green/api/v1',
         zed: 'https://testnet10.hash.green/api/v1',
     },
