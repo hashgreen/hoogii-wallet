@@ -17,14 +17,10 @@ window.chia = {
         isHoogii: true,
         request: async (arg: { method: RequestMethodEnum }) => {
             const res = await request(arg)
-            if (res && res?.data) {
-                if (res?.data.error) {
-                    throw res?.data
-                }
-                return res?.data
-            } else {
-                throw new Error('Unknown error!')
+            if (res?.data.error) {
+                throw res?.data
             }
+            return res?.data
         },
         isConnected: async () => await isConnected(),
         lock: async () => await lock(),
