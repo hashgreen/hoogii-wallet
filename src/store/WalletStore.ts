@@ -170,7 +170,7 @@ class WalletStore {
         try {
             const passwordHash = (await getStorage<string>('password')) || ''
             const result = await bcryptVerify(password, passwordHash)
-            console.log('result', result)
+
             if (result) {
                 this.unlock(password)
                 this.password = password
