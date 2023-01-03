@@ -125,7 +125,7 @@ const Header = ({ className }: IProps) => {
                 </Menu>
                 {open && <Account open={open} setOpen={setOpen} />}
             </div>
-            {locked && <Navigate to="/" replace={true} />}
+            {locked && <Navigate to="/locked" replace={true} />}
         </nav>
     )
 }

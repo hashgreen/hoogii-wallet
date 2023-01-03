@@ -40,7 +40,7 @@ class WalletStore {
     puzzleHash: string = ''
     addresses: IAddress[] = []
     connectedSites: IConnectedSite[] = []
-    seed: Uint8Array = new Uint8Array([])
+    seed?: Uint8Array = new Uint8Array([])
     privateKey: PrivateKey = new PrivateKey(0n)
 
     editName = async (name?: string) => {
@@ -110,33 +110,22 @@ class WalletStore {
         const chain = await retrieveChain()
 
         const password = await getDataFromMemory('password')
-        const mnemonic = await getStorage<string>('mnemonic')
+
         const keyring = await getStorage<string>('keyring')
-        if (mnemonic && !keyring) {
-            // patch the version has mnemonic
-            return {
-                seed: new Uint8Array(),
-                password: 'CREATE_NEW_PASSWORD',
-                locked: true,
-            }
-        }
         if (keyring && !password) {
-            return { seed: new Uint8Array(), password, locked: true }
+            runInAction(() => {
+                this.locked = false
+            })
         }
         const seed = await retrieveSeed(password)
 
         const name = await getStorage<string>('name')
-        const locked = false
-        if (!seed) {
-            return { seed, locked }
-        }
         runInAction(() => {
             this.chain = chain
             this.seed = seed
             this.name = name
-            this.locked = locked
         })
-        return { seed, locked }
+        return { seed }
     }
 
     dbMigration = async (chain: IChain) => {
@@ -232,7 +221,7 @@ class WalletStore {
         }
 
         savePassword(password)
-        await unlock()
+
         runInAction(() => {
             this.locked = false
         })
