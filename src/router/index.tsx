@@ -39,7 +39,7 @@ const Advance = lazy(() => import('~/container/Settings/Advance'))
 const Feedback = lazy(() => import('~/container/Settings/Advance/feedback'))
 const ConnectedSites = lazy(() => import('~/container/Settings/ConnectedSites'))
 const Network = lazy(() => import('~/container/Network'))
-console.log('locked>', rootStore.walletStore.locked)
+
 const settingRoutes = {
     path: 'setting',
     children: [
