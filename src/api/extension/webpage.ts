@@ -1,5 +1,5 @@
 import Messaging from '~/api/extension/messaging'
-import { MethodEnum } from '~/types/extension'
+import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 
 export const enable = async () => {
     const response = await Messaging.toContent(MethodEnum.ENABLE)
@@ -12,3 +12,11 @@ export const unlock = async () => await Messaging.toContent(MethodEnum.UNLOCK)
 
 export const isConnected = async () =>
     await Messaging.toContent(MethodEnum.IS_CONNECTED)
+
+export const request = async <T = any>({
+    method,
+    params,
+}: {
+    method: RequestMethodEnum
+    params?: T
+}) => await Messaging.toContent(MethodEnum.REQUEST, { method, params })
