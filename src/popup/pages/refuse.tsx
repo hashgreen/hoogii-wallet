@@ -1,4 +1,5 @@
-import rootStore from '~/store'
+import { useNavigate } from 'react-router-dom'
+
 import { APIError, MethodEnum } from '~/types/extension'
 
 import { IPopupPageProps } from '../types'
@@ -7,6 +8,7 @@ const Refuse = ({
     controller,
     request,
 }: IPopupPageProps<MethodEnum.ENABLE>) => {
+    const navigate = useNavigate()
     return (
         <div className="container flex flex-col justify-between h-full py-12 bg-main dark ">
             <div className="flex flex-col gap-2 items-center">
@@ -51,11 +53,12 @@ const Refuse = ({
                     <button
                         className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
                         onClick={async () => {
-                            await rootStore.walletStore.db.connectedSites.add({
-                                name: request.origin,
-                                url: request.origin,
-                            })
-                            controller.checkIsConnectedSite()
+                            // await rootStore.walletStore.db.connectedSites.add({
+                            //     name: request.origin,
+                            //     url: request.origin,
+                            // })
+                            // controller.checkIsConnectedSite()
+                            navigate('/connecting')
                         }}
                     >
                         Access

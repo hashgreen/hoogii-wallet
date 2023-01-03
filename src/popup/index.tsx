@@ -9,6 +9,7 @@ import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import { MethodEnum, PopupEnum, RequestMethodEnum } from '~/types/extension'
 
 import controller from './controller'
+import Connecting from './pages/connecting'
 import Locked from './pages/locked'
 import Refuse from './pages/refuse'
 import SwitchChain from './pages/switchChain'
@@ -57,6 +58,15 @@ const App = observer(() => {
                             path="refuse"
                             element={
                                 <Refuse
+                                    request={request}
+                                    controller={controller}
+                                />
+                            }
+                        />
+                        <Route
+                            path="connecting"
+                            element={
+                                <Connecting
                                     request={request}
                                     controller={controller}
                                 />
