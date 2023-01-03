@@ -27,7 +27,7 @@ const App = observer(() => {
         if (request && request.method === MethodEnum.REFUSE) {
             navigate('/refuse')
         }
-        console.log('locked>', locked, 'connected>', connected)
+
         if (request && !locked) {
             if (!connected) {
                 navigate('/refuse')
