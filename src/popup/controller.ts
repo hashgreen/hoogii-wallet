@@ -88,7 +88,7 @@ export class InternalControllerStore {
         } as InternalReturnType)
     }
 
-    checkIsConnectedSite = async () => {
+    checkIsConnectedSite = () => {
         runInAction(() => {
             this.connected = connectedSitesStore.isConnectedSite(
                 this.request?.origin
