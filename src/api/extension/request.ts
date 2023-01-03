@@ -21,7 +21,6 @@ const chainId = async (): Promise<string> => {
 }
 
 const connect = (origin: string): boolean => {
-    console.log('request >> connect')
     return connectedSitesStore.isConnectedSite(origin)
 }
 
@@ -33,11 +32,11 @@ const walletSwitchChain = async (params: {
         return true
     }
     return {
-        code: 4004,
-        message: 'method not found',
+        code: 4002,
+        message: 'network not found',
     }
 }
-const doubleCheckHandler = async (request: IMessage<RequestArguments>) => {
+const requestConfirmHandler = async (request: IMessage<RequestArguments>) => {
     if (permission.DoubleCheck[request.data?.method as RequestMethodEnum]) {
         const tab = await createPopup(PopupEnum.INTERNAL)
         const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
@@ -48,12 +47,12 @@ const doubleCheckHandler = async (request: IMessage<RequestArguments>) => {
 }
 
 export const requestHandler = async (request: IMessage<RequestArguments>) => {
-    const check = await doubleCheckHandler(request)
-    if (!check) {
+    const confirmed = await requestConfirmHandler(request)
+    if (!confirmed) {
         return {
             error: true,
             code: 4002,
-            message: 'user rejected request',
+            message: 'user rejected confirm',
         }
     }
 
