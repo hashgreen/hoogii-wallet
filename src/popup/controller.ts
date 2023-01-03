@@ -91,7 +91,7 @@ export class InternalControllerStore {
     connectedSite = async () => {
         const oldConnectedSites =
             await rootStore.walletStore.db.connectedSites.toArray()
-        console.log('oldConnectedSites', oldConnectedSites)
+
         if (
             oldConnectedSites.some((site) => site.url === this.request?.origin)
         ) {
@@ -118,6 +118,7 @@ export class InternalControllerStore {
 
             return
         }
+
         runInAction(() => {
             this.connected = false
         })
