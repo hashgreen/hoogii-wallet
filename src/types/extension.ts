@@ -5,6 +5,8 @@ export interface IMessage<T = any> {
     origin: string
     iconUrl: string
     method: MethodEnum
+    isLocked?: boolean
+    isConnected?: boolean
     data?: T
 }
 
@@ -39,10 +41,12 @@ export enum MethodEnum {
     ENABLE = 'ENABLE',
     LOCK = 'LOCK',
     UNLOCK = 'UNLOCK',
+    IS_LOCK = 'IS_LOCK',
     IS_CONNECTED = 'IS_CONNECTED',
     IS_VALID_WALLET = 'IS_VALID_WALLET',
     SAVE_DATA = 'SAVE_DATA',
     REFUSE = 'REFUSE',
+    REQUEST = 'REQUEST',
     // internal
     REQUEST_DATA = 'REQUEST_DATA',
     RETURN_DATA = 'RETURN_DATA',
@@ -50,13 +54,34 @@ export enum MethodEnum {
     RESET_PASSWORD = 'RESET_PASSWORD',
 }
 
+export enum RequestMethodEnum {
+    CHAIN_ID = 'chainId',
+    CONNECT = 'connect',
+    ACCOUNTS = 'accounts',
+    WALLET_SWITCH_CHAIN = 'walletSwitchChain',
+    GET_PUBLIC_KEYS = 'getPublicKeys',
+    FILTER_UNLOCK_COINS = 'filterUnlockedCoins',
+    GET_ASSET_COINS = 'getAssetCoins',
+    GET_ASSET_BALANCE = 'getAssetBalance',
+    SIGN_COIN_SPENDS = 'signCoinSpends',
+    SING_MESSAGE = 'signMessage',
+    SEND_TRANSACTION = 'sendTransaction',
+}
+
+export interface RequestArguments {
+    method: RequestMethodEnum
+    params?: any
+}
+
 export type MethodDataType<T extends MethodEnum> = {
     ENABLE: {
         title: string
         iconUrl: string
     }
+    REQUEST: RequestArguments
     LOCK: undefined
     UNLOCK: undefined
+    IS_LOCK: any
     IS_CONNECTED: undefined
     REFUSE: undefined
     IS_VALID_WALLET: undefined
@@ -80,8 +105,10 @@ interface IIsValidWallet {
 }
 export type MethodReturnDataType<T extends MethodEnum> = {
     ENABLE: boolean
+    REQUEST: any
     LOCK: ILock
     UNLOCK: ILock
+    IS_LOCK: boolean
     IS_CONNECTED: boolean
     REFUSE: undefined
     IS_VALID_WALLET: IIsValidWallet
@@ -93,7 +120,6 @@ export type MethodReturnDataType<T extends MethodEnum> = {
     RETURN_DATA: undefined
     SAVE_DATA: undefined
 }[T]
-
 export enum StorageEnum {
     ASSETS = 'assets',
     ADDRESSES = 'addresses',
