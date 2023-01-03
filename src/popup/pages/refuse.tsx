@@ -34,9 +34,15 @@ const Refuse = ({
                     <button
                         className="btn btn-CTA_landing btn-outline  w-[160px] h-[40px] btn-large"
                         onClick={() => {
-                            controller.returnData({
-                                error: APIError.REFUSED,
-                            })
+                            if (request.method === MethodEnum.REQUEST) {
+                                controller.returnData({
+                                    data: false,
+                                })
+                            } else {
+                                controller.returnData({
+                                    error: APIError.REFUSED,
+                                })
+                            }
                             window.close()
                         }}
                     >
@@ -49,10 +55,7 @@ const Refuse = ({
                                 name: request.origin,
                                 url: request.origin,
                             })
-                            controller.returnData({
-                                data: true,
-                            })
-                            window.close()
+                            controller.checkIsConnectedSite()
                         }}
                     >
                         Access

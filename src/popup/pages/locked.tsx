@@ -34,9 +34,6 @@ const Locked = () => {
                     const isValid = await checkPassword(password)
                     if (!isValid) {
                         setError(t('error-password-incorrect'))
-                    } else {
-                        // TODO: do something here or close windows
-                        window.close()
                     }
                 }}
                 className="h-full pt-[116px] pb-12 flex-col-center scroll-di"

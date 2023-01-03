@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
 import { lock, savePassword } from '~/api/extension'
-import { unlock } from '~/api/extension/webpage'
+import connectedSitesStore from '~/store/ConnectedSitesStore'
 import {
     ConnectionName,
     IMessage,
@@ -19,6 +19,7 @@ export class InternalControllerStore {
     private tabId?: number
     request?: IMessage
     locked = true
+    connected = false
 
     constructor() {
         makeAutoObservable(this)
@@ -37,9 +38,7 @@ export class InternalControllerStore {
     }
 
     unlock = async (password: string) => {
-        savePassword(password)
-
-        await unlock()
+        await savePassword(password)
         runInAction(() => {
             this.locked = false
         })
@@ -49,6 +48,7 @@ export class InternalControllerStore {
         try {
             const passwordHash = (await getStorage<string>('password')) || ''
             const result = await bcryptVerify(password, passwordHash)
+
             if (result) this.unlock(password)
             return result
         } catch (error) {
@@ -65,8 +65,11 @@ export class InternalControllerStore {
         })
         const messageHandler = (response: IMessage) => {
             this.port.onMessage.removeListener(messageHandler)
+
             runInAction(() => {
                 this.request = response
+                this.locked = Boolean(response?.isLocked)
+                this.connected = Boolean(response?.isConnected)
             })
         }
         this.port.onMessage.addListener(messageHandler)
@@ -83,6 +86,14 @@ export class InternalControllerStore {
             method: MethodEnum.RETURN_DATA,
             tabId: this.tabId,
         } as InternalReturnType)
+    }
+
+    checkIsConnectedSite = () => {
+        runInAction(() => {
+            this.connected = connectedSitesStore.isConnectedSite(
+                this.request?.origin
+            )
+        })
     }
 }
 

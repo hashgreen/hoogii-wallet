@@ -4,7 +4,6 @@ interface IParams {
 }
 
 export const setup = ({ src, textContent }: IParams) => {
-    
     const script = document.createElement('script')
     if (src) {
         script.src = chrome.runtime.getURL(src)
