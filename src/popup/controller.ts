@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
 import { lock, savePassword } from '~/api/extension'
-import connectedSitesStore from '~/store/ConnectedSitesStore'
+import rootStore from '~/store'
 import {
     ConnectionName,
     IMessage,
@@ -88,11 +88,38 @@ export class InternalControllerStore {
         } as InternalReturnType)
     }
 
-    checkIsConnectedSite = () => {
+    connectedSite = async () => {
+        const oldConnectedSites =
+            await rootStore.walletStore.db.connectedSites.toArray()
+        console.log('oldConnectedSites', oldConnectedSites)
+        if (
+            oldConnectedSites.some((site) => site.url === this.request?.origin)
+        ) {
+            runInAction(() => {
+                this.connected = true
+            })
+
+            return
+        }
+
+        if (this.request?.origin) {
+            await rootStore.walletStore.db.connectedSites.add({
+                name: this.request?.origin,
+                url: this.request?.origin,
+            })
+
+            const newConnectedSites =
+                await rootStore.walletStore.db.connectedSites.toArray()
+            runInAction(() => {
+                this.connected = newConnectedSites.some(
+                    (site) => site.url === this.request?.origin
+                )
+            })
+
+            return
+        }
         runInAction(() => {
-            this.connected = connectedSitesStore.isConnectedSite(
-                this.request?.origin
-            )
+            this.connected = false
         })
     }
 }

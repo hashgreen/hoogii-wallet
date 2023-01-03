@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 
-import rootStore from '~/store'
 import { APIError, MethodEnum } from '~/types/extension'
 
 import { IPopupPageProps } from '../types'
@@ -11,17 +10,11 @@ const Connecting = ({
     controller,
     request,
 }: IPopupPageProps<MethodEnum.ENABLE>) => {
-    const connectSite = async () => {
-        // await rootStore.walletStore.db.connectedSites.add({
-        //     name: request.origin,
-        //     url: request.origin,
-        // })
-        controller.checkIsConnectedSite()
-    }
     useEffect(() => {
-        setTimeout(connectSite, 3000)
-    }, [])
-
+        setTimeout(() => {
+            controller.connectedSite()
+        }, 2000)
+    })
     return (
         <div className="container flex flex-col justify-between h-full py-12 bg-main dark ">
             <div className="flex flex-col gap-2 items-center">
