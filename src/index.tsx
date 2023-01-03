@@ -1,6 +1,6 @@
 import 'react-toastify/dist/ReactToastify.css'
 import '~/utils/i18n'
-import './index.css'
+import './index.scss'
 
 import { Buffer } from 'buffer'
 import ReactDOM from 'react-dom'

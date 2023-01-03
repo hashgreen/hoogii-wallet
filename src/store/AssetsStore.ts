@@ -76,15 +76,14 @@ class AssetsStore {
     addDefaultAsset = () => {
         // Show USDS by default on mainnet
         rootStore.walletStore.db.assets.clear()
-        ;(this.walletStore.isMainnet
-            ? defaultCATs.filter((cat) => cat.code === 'USDS')
-            : defaultCATs
-        ).forEach(({ assetId, code, iconUrl }) =>
-            rootStore.walletStore.db.assets.add({
-                assetId,
-                code,
-                iconUrl,
-            })
+        defaultCATs[this.walletStore.chain.name].forEach(
+            ({ assetId, code, iconUrl }) => {
+                rootStore.walletStore.db.assets.add({
+                    assetId,
+                    code,
+                    iconUrl,
+                })
+            }
         )
     }
 
@@ -172,7 +171,9 @@ class AssetsStore {
             this.exchangeRateData.isFetching = true
 
             const { data } = await callGetExchangeRate(
-                defaultCATs.find((cat) => cat.code === 'USDS')?.assetId ?? '' // USDS assetId
+                defaultCATs[this.walletStore.chain.name].find(
+                    (cat) => cat.code === 'USDS'
+                )?.assetId ?? '' // USDS assetId
             )
 
             runInAction(() => {

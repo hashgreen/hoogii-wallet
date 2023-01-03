@@ -90,6 +90,7 @@ module.exports = {
                 primary: {
                     DEFAULT: withOpacityValue('--color-primary-500'), // #716EFF
                     500: withOpacityValue('--color-primary-500'), // #716EFF
+                    300: 'rgba(var(--color-primary-300))', // #9E01FF;
                     200: withOpacityValue('--color-primary-200'), // #C172FF
                     100: withOpacityValue('--color-primary-100'), // #CED6FF
                 },

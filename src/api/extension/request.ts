@@ -52,7 +52,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         return {
             error: true,
             code: 4002,
-            message: 'user rejected confirm',
+            message: 'Reject the request',
         }
     }
 

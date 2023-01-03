@@ -12,6 +12,7 @@ import rootStore from '~/store'
 import { ChainEnum } from '~/types/chia'
 import { enumArray } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
+import { puzzleHashToAddress } from '~/utils/signature'
 import SendIcon from '~icons/hoogii/activity-send.jsx'
 
 import Info from './Info'
@@ -33,7 +34,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
     const [query, setQuery] = useState('')
 
     const {
-        walletStore: { puzzleHash, isAblyConnected, chain },
+        walletStore: { puzzleHash, isAblyConnected, chain, isMainnet },
         assetsStore: {
             XCH,
             balancesData,
@@ -75,8 +76,8 @@ const Home = ({ initialTab = 0 }: IProps) => {
             )}
             <div className="flex flex-col overflow-hidden grow">
                 <div className="overflow-auto container">
-                    <div className="justify-between mt-3 mb-6 flex-row-center">
-                        <div className="flex flex-col gap-0.5">
+                    <div className="justify-between mt-3 mb-6 flex-col-center">
+                        <div className="flex flex-col-center gap-0.5 ">
                             {balancesData.isFetching ? (
                                 <div className="skeleton skeleton-text w-[180px]"></div>
                             ) : (
@@ -96,15 +97,43 @@ const Home = ({ initialTab = 0 }: IProps) => {
                                     </span>
                                 </div>
                             )}
-                            <span className="font-medium text-body2 text-primary-100">
+                            <span
+                                className="font-medium text-body2 text-primary-100"
+                                data-tip={xch2usds}
+                            >
                                 {exchangeRateData.isFetching
                                     ? '---'
-                                    : `${xch2usds} USD`}
+                                    : `$ ${xch2usds} USD`}
                             </span>
                         </div>
-                        <Link to="/transfer" className="btn btn-CTA_main">
-                            {t('btn-send')} <SendIcon className="w-3 h-3" />
-                        </Link>
+                    </div>
+                    <div className="flex justify-center mb-6">
+                        <div className="flex">
+                            {isMainnet && (
+                                <a
+                                    href={`https://ramp.stably.io/?network=chia&asset=USDS&filter=true&address=${puzzleHashToAddress(
+                                        puzzleHash,
+                                        chain?.prefix
+                                    )}`}
+                                    className="btn btn-CTA_main bg-none bg-white"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <span className="text-black mr-1">
+                                        {t('buy')}
+                                    </span>
+                                    <span className="text-primary-300">
+                                        {t('stably-symbol')}
+                                    </span>
+                                </a>
+                            )}
+                            <Link
+                                to="/transfer"
+                                className="btn btn-CTA_main ml-3"
+                            >
+                                {t('btn-send')} <SendIcon className="w-3 h-3" />
+                            </Link>
+                        </div>
                     </div>
                     <Tabs
                         tabs={enumArray(TabEnum).map((e) =>

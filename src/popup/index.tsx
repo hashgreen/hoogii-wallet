@@ -1,4 +1,4 @@
-import '~/index.css'
+import '~/index.scss'
 import '~/utils/i18n'
 
 import { observer } from 'mobx-react-lite'

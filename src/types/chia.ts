@@ -7,6 +7,7 @@ export interface IChain {
     name: keyof typeof ChainEnum
     id: ChainEnum
     prefix: string
+    agg_sig_me_additional_data: string
 }
 export interface IApiEndpointSet {
     jarvan: string
