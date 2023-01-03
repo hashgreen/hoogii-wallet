@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
 import { lock, savePassword } from '~/api/extension'
+import connectedSitesStore from '~/store/ConnectedSitesStore'
 import {
     ConnectionName,
     IMessage,
@@ -87,9 +88,11 @@ export class InternalControllerStore {
         } as InternalReturnType)
     }
 
-    connectSite = async () => {
+    checkIsConnectedSite = async () => {
         runInAction(() => {
-            this.connected = true
+            this.connected = connectedSitesStore.isConnectedSite(
+                this.request?.origin
+            )
         })
     }
 }

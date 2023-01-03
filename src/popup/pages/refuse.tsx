@@ -55,7 +55,7 @@ const Refuse = ({
                                 name: request.origin,
                                 url: request.origin,
                             })
-                            controller.connectSite()
+                            controller.checkIsConnectedSite()
                         }}
                     >
                         Access
