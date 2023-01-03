@@ -25,7 +25,10 @@ const SwitchChain = ({
                     <button
                         className="btn btn-CTA_landing btn-outline  w-[160px] h-[40px] btn-large"
                         onClick={() => {
-                            controller.onFinishRequest(false)
+                            controller.returnData({
+                                data: false,
+                            })
+                            window.close()
                         }}
                     >
                         Cancel
@@ -33,7 +36,10 @@ const SwitchChain = ({
                     <button
                         className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
                         onClick={async () => {
-                            controller.onFinishRequest()
+                            controller.returnData({
+                                data: true,
+                            })
+                            window.close()
                         }}
                     >
                         Switch

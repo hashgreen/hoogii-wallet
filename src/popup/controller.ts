@@ -92,14 +92,6 @@ export class InternalControllerStore {
             this.connected = true
         })
     }
-
-    onFinishRequest = async (response = true) => {
-        // response is to background script
-        this.returnData({
-            data: response,
-        })
-        window.close()
-    }
 }
 
 const controller = new InternalControllerStore()

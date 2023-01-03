@@ -16,7 +16,7 @@ import SwitchChain from './pages/switchChain'
 const App = observer(() => {
     const navigate = useNavigate()
 
-    const { locked, connected, request, onFinishRequest } = controller
+    const { locked, connected, request, returnData } = controller
 
     useEffect(() => {
         document.documentElement.classList.add('dark')
@@ -27,7 +27,7 @@ const App = observer(() => {
         if (request && request.method === MethodEnum.REFUSE) {
             navigate('/refuse')
         }
-
+        console.log('locked>', locked, 'connected>', connected)
         if (request && !locked) {
             if (!connected) {
                 navigate('/refuse')
@@ -38,7 +38,10 @@ const App = observer(() => {
                         break
 
                     default:
-                        onFinishRequest()
+                        returnData({
+                            data: true,
+                        })
+                        window.close()
                 }
             }
         }

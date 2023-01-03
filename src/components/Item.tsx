@@ -133,10 +133,16 @@ export const ConnectedSiteItem = ({
     name,
     iconUrl,
     action,
+    href,
     ...rest
 }: IConnectedSiteItemProps & ComponentProps<typeof Item<'a'>>) => (
-    <Item as="a" key={name} {...rest} className="!cursor-pointer">
-        <span className="gap-2 flex-row-center">
+    <Item key={name} {...rest} className="!cursor-pointer">
+        <span
+            className="gap-2 flex-row-center"
+            onClick={() => {
+                window.open(href, '_blank')
+            }}
+        >
             <img
                 src={iconUrl}
                 alt={`${name} icon`}
