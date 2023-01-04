@@ -123,7 +123,7 @@ function ImportCAT() {
                 </>
             )}
             <div className="grow"></div>
-            {keyword && (
+            {keyword && !!filteredAssets?.length && (
                 <div className="flex justify-between gap-4 child:w-full mt-7">
                     <BackLink className="btn btn-secondary">
                         {t('btn-cancel')}
