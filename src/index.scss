@@ -156,9 +156,9 @@
     .input-mnemonics {
         @apply px-3 py-2 font-bold text-center rounded-sm h-7 border-primary-100 hover:border-primary-100 bg-secondary focus:border-active read-only:border-none;
     }
-    // .input-error {
-    //     @apply !border-error;
-    // }
+    .input-error {
+        @apply border-error;
+    }
 
     .tooltip {
         @apply z-50 after:hidden;
