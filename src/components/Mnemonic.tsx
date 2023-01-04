@@ -169,7 +169,11 @@ function Mnemonic({
                                     nextField(index)
                                 }
                             }}
-                            onPaste={(e) => onPaste(index, e)}
+                            onPaste={(e) => {
+                                if (!disabled) {
+                                    onPaste(index, e)
+                                }
+                            }}
                         />
                     </div>
                 ))}
