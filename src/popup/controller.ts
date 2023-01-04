@@ -89,12 +89,10 @@ export class InternalControllerStore {
     }
 
     connectedSite = async () => {
-        const oldConnectedSites =
+        let connectedSites =
             await rootStore.walletStore.db.connectedSites.toArray()
 
-        if (
-            oldConnectedSites.some((site) => site.url === this.request?.origin)
-        ) {
+        if (connectedSites.some((site) => site.url === this.request?.origin)) {
             runInAction(() => {
                 this.connected = true
             })
@@ -108,10 +106,10 @@ export class InternalControllerStore {
                 url: this.request?.origin,
             })
 
-            const newConnectedSites =
+            connectedSites =
                 await rootStore.walletStore.db.connectedSites.toArray()
             runInAction(() => {
-                this.connected = newConnectedSites.some(
+                this.connected = connectedSites.some(
                     (site) => site.url === this.request?.origin
                 )
             })
