@@ -19,7 +19,7 @@ interface IProps {
     disabled?: boolean | boolean[]
     readOnly?: boolean | boolean[]
     schema?: Joi.ObjectSchema
-    onChange?: (isValid: boolean, ˇs: string[]) => void
+    onChange?: (isValid: boolean, s: string[]) => void
 }
 
 function Mnemonic({
@@ -154,10 +154,10 @@ function Mnemonic({
                             className={`input input-mnemonics ${classNames({
                                 'input-error':
                                     errors.phrases?.[index] ||
-                                    (values[index].value &&
+                                    (values[index]?.value &&
                                         !words.some(
                                             (word) =>
-                                                word === values[index].value
+                                                word === values[index]?.value
                                         )),
                             })}`}
                             disabled={disabled[index] ?? disabled}
@@ -178,6 +178,7 @@ function Mnemonic({
                     </div>
                 ))}
             </form>
+
             {!isValid && (
                 <ErrorMessage
                     field={{ key: field }}
