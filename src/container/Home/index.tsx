@@ -97,14 +97,19 @@ const Home = ({ initialTab = 0 }: IProps) => {
                                     </span>
                                 </div>
                             )}
-                            <span
-                                className="font-medium text-body2 text-primary-100"
-                                data-tip={xch2usds}
-                            >
-                                {exchangeRateData.isFetching
-                                    ? '---'
-                                    : `$ ${xch2usds} USD`}
-                            </span>
+                            {exchangeRateData.isFetching ||
+                            balancesData.isFetching ? (
+                                <div className="skeleton skeleton-text w-10" />
+                            ) : (
+                                <span
+                                    className="font-medium text-body2 text-primary-100"
+                                    data-tip={xch2usds}
+                                >
+                                    {exchangeRateData.isFetching
+                                        ? '---'
+                                        : `$ ${xch2usds} USD`}
+                                </span>
+                            )}
                         </div>
                     </div>
                     <div className="flex justify-center mb-6">
