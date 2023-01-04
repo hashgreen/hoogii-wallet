@@ -3,7 +3,12 @@ import classNames from 'classnames'
 import Joi from 'joi'
 import { range } from 'lodash-es'
 import { ClipboardEvent, useEffect } from 'react'
-import { useFieldArray, useForm, useWatch } from 'react-hook-form'
+import {
+    FieldErrorsImpl,
+    useFieldArray,
+    useForm,
+    useWatch,
+} from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import words from '~config/wordlist_en.json'
@@ -58,7 +63,7 @@ function Mnemonic({
     const length = fields.length
     const values = useWatch({ control, name: 'phrases' })
     const [error, field] = Array.isArray(errors.phrases)
-        ? [errors.phrases.find((item) => item), 'value']
+        ? [{ value: errors.phrases.find((item) => item) }, 'value']
         : [errors, 'phrases']
 
     const nextField = (currentIndex: number = -1) => {
@@ -182,7 +187,7 @@ function Mnemonic({
             {!isValid && (
                 <ErrorMessage
                     field={{ key: field }}
-                    errors={error}
+                    errors={error as FieldErrorsImpl}
                     t={t}
                     className="w-full mt-4 text-center"
                 />
