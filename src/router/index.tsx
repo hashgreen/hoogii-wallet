@@ -3,16 +3,18 @@ import {
     createBrowserRouter,
     createMemoryRouter,
     defer,
+    redirect,
     RouteObject,
 } from 'react-router-dom'
 
+import Messaging from '~/api/extension/messaging'
 import Home from '~/container/Home'
 import WelcomeBack from '~/container/Status/WelcomeBack'
 import Transfer from '~/container/Transfer/Transfer'
 import ClosablePageLayout from '~/layouts/ClosablePage'
 import rootStore from '~/store'
+import { MethodEnum, SenderEnum } from '~/types/extension'
 import { isDev } from '~/utils'
-
 const ImportCAT = lazy(() => import('~/container/ImportCAT/ImportCAT'))
 
 // settings
@@ -101,6 +103,18 @@ export const routes: RouteObject[] = [
     {
         index: true,
         loader: async () => {
+            await rootStore.walletStore.init()
+            if (rootStore.walletStore.locked) throw redirect('/locked')
+            if (!rootStore.walletStore.isWalletExisted) {
+                Messaging.toBackground<MethodEnum.MNEMONIC>({
+                    sender: SenderEnum.EXTENSION,
+                    origin: chrome.runtime.getURL(''),
+                    method: MethodEnum.MNEMONIC,
+                })
+                window.close()
+                return
+            }
+
             await rootStore.assetsStore.retrieveExistedAssets()
             const balances = rootStore.assetsStore.getAllBalances()
             return defer({ balances })
