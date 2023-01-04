@@ -61,6 +61,7 @@ const Password = ({
                 onClick: () => {
                     savePassword(getValues('password'))
                 },
+                disabled: !isValid,
             }}
             back={false}
         >
