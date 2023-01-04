@@ -7,6 +7,7 @@ const idlePeriod = import.meta.env.VITE_LOCK_AFTER * 60 * 1000
 chrome.idle.setDetectionInterval(idlePeriod)
 chrome.idle.onStateChanged.addListener(async (newState) => {
     if (newState === 'idle') {
+        console.log('idle detected, locking wallet')
         rootStore.walletStore.lock()
     }
 })
