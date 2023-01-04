@@ -147,9 +147,9 @@ controller.add(MethodEnum.RESET_PASSWORD, async (request) => {
 })
 
 controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
-    const mnemonic = await getStorage<string>('mnemonic')
+    const keyString = await getStorage<string>('keyString')
     const password = controller?.password
-    const isLocked = !password && !mnemonic
+    const isLocked = !password && !!keyString
 
     sendResponse({
         ...request,

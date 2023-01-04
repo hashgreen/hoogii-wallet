@@ -5,7 +5,7 @@ export interface IMessage<T = any> {
     origin: string
     iconUrl: string
     method: MethodEnum
-    isLocked?: boolean
+    isLocked: boolean
     isConnected?: boolean
     data?: T
 }

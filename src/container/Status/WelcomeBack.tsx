@@ -34,7 +34,9 @@ export const WelcomeBack = observer(() => {
             <form
                 onSubmit={async (e) => {
                     e.preventDefault()
+
                     const isValid = await checkPassword(password)
+
                     setIsValid(isValid)
                     if (isValid) navigate('/')
                     else setError(t('error-password-incorrect'))

@@ -32,7 +32,6 @@ class WalletStore {
     locked: boolean = false
     db: WalletDexie = new WalletDexie(ChainEnum.Mainnet)
     name?: string
-    password: string = ''
     chain: IChain = chains[0]
     address: string = ''
     puzzleHash: string = ''
@@ -112,10 +111,9 @@ class WalletStore {
         const chain = await retrieveChain()
         const password = await getDataFromMemory('password')
         const keyring = await getStorage<string>('keyring')
+
         if (keyring && !password) {
-            runInAction(() => {
-                this.locked = true
-            })
+            await this.lock()
             return
         }
         const seed = await retrieveSeed(password)
@@ -158,6 +156,8 @@ class WalletStore {
     }
 
     switchChain = async (chain: IChain) => {
+        rootStore.historyStore.history = []
+        rootStore.historyStore.pendingHistory = []
         await setStorage({ chainId: chain.id })
         runInAction(() => {
             this.chain = chain
@@ -171,8 +171,7 @@ class WalletStore {
             const result = await bcryptVerify(password, passwordHash)
 
             if (result) {
-                this.unlock(password)
-                this.password = password
+                await this.unlock(password)
             }
             return result
         } catch (error) {
@@ -219,7 +218,7 @@ class WalletStore {
             this.encryptKeyPatch(mnemonic, password)
         }
 
-        savePassword(password)
+        await savePassword(password)
 
         runInAction(() => {
             this.locked = false
