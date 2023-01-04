@@ -11,7 +11,6 @@ import {
 } from 'mobx'
 
 import { getDataFromMemory, lock, savePassword } from '~/api/extension'
-import { unlock } from '~/api/extension/webpage'
 import { IAddress, IConnectedSite, WalletDexie } from '~/db'
 import { walletTo0x02 } from '~/db/migrations'
 import rootStore from '~/store'
@@ -31,7 +30,6 @@ import {
 class WalletStore {
     isAblyConnected = false
     locked: boolean = false
-    mnemonicLength = 24
     db: WalletDexie = new WalletDexie(ChainEnum.Mainnet)
     name?: string
     password: string = ''
@@ -106,26 +104,27 @@ class WalletStore {
         return this.chain?.id === ChainEnum.Mainnet
     }
 
+    get isWalletExisted(): boolean {
+        return !!this.seed
+    }
+
     init = async () => {
         const chain = await retrieveChain()
-
         const password = await getDataFromMemory('password')
-
         const keyring = await getStorage<string>('keyring')
         if (keyring && !password) {
             runInAction(() => {
-                this.locked = false
+                this.locked = true
             })
+            return
         }
         const seed = await retrieveSeed(password)
-
         const name = await getStorage<string>('name')
         runInAction(() => {
             this.chain = chain
             this.seed = seed
             this.name = name
         })
-        return { seed }
     }
 
     dbMigration = async (chain: IChain) => {
