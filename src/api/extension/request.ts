@@ -33,19 +33,22 @@ const walletSwitchChain = async (params: {
     }
     return Errors.InvalidParamsError
 }
-const requestConfirmHandler = async (request: IMessage<RequestArguments>) => {
-    if (permission.Confirm[request.data?.method as RequestMethodEnum]) {
+const authHandler = async (request: IMessage<RequestArguments>) => {
+    if (
+        !request?.isConnected ||
+        request?.isLocked ||
+        permission.Confirm[request.data?.method as RequestMethodEnum]
+    ) {
         const tab = await createPopup(PopupEnum.INTERNAL)
         const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
-        return res?.data
+        return res.data
     }
 
     return true
 }
-
 export const requestHandler = async (request: IMessage<RequestArguments>) => {
-    const confirmed = await requestConfirmHandler(request)
-    if (!confirmed) {
+    const auth = await authHandler(request)
+    if (!auth) {
         return Errors.UserRejectedRequestError
     }
 

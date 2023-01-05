@@ -3,13 +3,7 @@ import { createPopup, createTab } from '~/api/extension/extension'
 import Messaging, { BackgroundController } from '~/api/extension/messaging'
 import { requestHandler } from '~/api/extension/request'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
-import {
-    IMessage,
-    MethodEnum,
-    PopupEnum,
-    RequestArguments,
-    SenderEnum,
-} from '~/types/extension'
+import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
 console.log('Service worker reload!')
 const controller = new BackgroundController()
@@ -157,26 +151,12 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
     })
 })
 
-const authHandler = async (request: IMessage<RequestArguments>) => {
-    if (!request?.isConnected || request?.isLocked) {
-        const tab = await createPopup(PopupEnum.INTERNAL)
-        const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
-        return res.data
-    }
-
-    return true
-}
-
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
-    const auth = await authHandler(request)
-
-    const data = auth ? await requestHandler(request) : Errors.UnauthorizedError
-
     sendResponse({
         ...request,
         sender: SenderEnum.EXTENSION,
         target: SenderEnum.WEBPAGE,
-        data,
+        data: await requestHandler(request),
     })
 })
 
