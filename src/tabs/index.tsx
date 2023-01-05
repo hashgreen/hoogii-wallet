@@ -22,7 +22,7 @@ const App = observer(() => {
     }, [])
 
     return request ? (
-        <Suspense fallback="Loading...">
+        <Suspense fallback={<div className="full bg-main" />}>
             <RouterProvider router={router} />
         </Suspense>
     ) : (
