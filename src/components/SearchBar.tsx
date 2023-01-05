@@ -24,7 +24,7 @@ const SearchBar = forwardRef<
                 className
             )}
         >
-            {!collapsible && <SearchIcon className="absolute w-3 h-3 left-2" />}
+            {!collapsible && <SearchIcon className="absolute w-4 h-4 left-2" />}
             <input
                 ref={ref}
                 type="search"
