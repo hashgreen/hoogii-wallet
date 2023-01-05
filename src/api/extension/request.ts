@@ -1,6 +1,7 @@
 import { createPopup } from '~/api/extension/extension'
-import Messaging from '~/api/extension/messaging'
+import Messaging, { BackgroundController } from '~/api/extension/messaging'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
+import RequestStore from '~/store/RequestStore'
 import { ChainEnum } from '~/types/chia'
 import {
     IMessage,
@@ -10,14 +11,15 @@ import {
     RequestMethodEnum,
 } from '~/types/extension'
 import { apiEndpointSets } from '~/utils/constants'
+import { decrypt, stringToBytes } from '~/utils/encryption'
 import { getStorage, setStorage } from '~/utils/extension/storage'
 
 import * as Errors from './errors'
 import { permission } from './permission'
 
-const chainId = async (): Promise<string> => {
+const chainId = async (): Promise<string | Errors.Error> => {
     const chainId: string = await getStorage<string>('chainId')
-    return chainId || ChainEnum.Mainnet
+    return chainId || Errors.InvalidParamsError
 }
 
 const connect = (origin: string): boolean => {
@@ -33,6 +35,23 @@ const walletSwitchChain = async (params: {
     }
     return Errors.InvalidParamsError
 }
+
+const accounts = async (password: string): Promise<any> => {
+    const chainId: string = await getStorage<string>('chainId')
+
+    const keyring = await getStorage('keyring')
+    const { salt, cipherText } = keyring
+    const plainText = await decrypt(salt, password, cipherText)
+
+    const seed = stringToBytes(plainText)
+    const account = await RequestStore.getAddress(seed, chainId)
+
+    if (account) {
+        return [account]
+    }
+    return Errors.NoSecretKeyError
+}
+
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
         !request?.isConnected ||
@@ -46,7 +65,10 @@ const authHandler = async (request: IMessage<RequestArguments>) => {
 
     return true
 }
-export const requestHandler = async (request: IMessage<RequestArguments>) => {
+export const requestHandler = async (
+    request: IMessage<RequestArguments>,
+    controller: BackgroundController
+) => {
     const auth = await authHandler(request)
     if (!auth) {
         return Errors.UserRejectedRequestError
@@ -59,6 +81,8 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
             return connect(request.origin)
         case RequestMethodEnum.WALLET_SWITCH_CHAIN:
             return walletSwitchChain(request.data.params)
+        case RequestMethodEnum.ACCOUNTS:
+            return accounts(controller?.password)
         case RequestMethodEnum.GET_PUBLIC_KEYS:
             return Errors.UnderDevelopment
         case RequestMethodEnum.FILTER_UNLOCK_COINS:

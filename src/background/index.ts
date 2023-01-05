@@ -5,6 +5,7 @@ import { requestHandler } from '~/api/extension/request'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
+
 console.log('Service worker reload!')
 const controller = new BackgroundController()
 
@@ -156,7 +157,7 @@ controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
         ...request,
         sender: SenderEnum.EXTENSION,
         target: SenderEnum.WEBPAGE,
-        data: await requestHandler(request),
+        data: await requestHandler(request, controller),
     })
 })
 

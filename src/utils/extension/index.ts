@@ -30,6 +30,9 @@ export const retrieveSeed = async (
     return stringToBytes(plainText)
 }
 
+export const getChainId = async (): Promise<string | undefined> => {
+    return await getStorage<string>('chainId')
+}
 export class InternalStore {
     private port: chrome.runtime.Port
     private tabId?: number
