@@ -2,7 +2,6 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
 import { IMarket, RequestConfig } from '~/types/api'
-import { ChainEnum } from '~/types/chia'
 import { apiEndpointSets } from '~/utils/constants'
 import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
 import { getStorage } from '~/utils/extension/storage'
@@ -127,7 +126,9 @@ export const callGetAblyAccessToken = (formData) =>
 /** -------------------------- Zed API -------------------------- */
 export const callGetMarkets = async () =>
     apiHandler<AxiosResponse<IMarket[]>>({
-        url: apiEndpointSets[await getStorage<string>('chainId')]?.zed,
+        url:
+            apiEndpointSets[await getStorage<string>('chainId')]?.zed +
+            '/markets',
 
         method: 'get',
     })
