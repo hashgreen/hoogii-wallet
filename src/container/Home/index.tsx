@@ -2,7 +2,7 @@ import Decimal from 'decimal.js-light'
 import { observer } from 'mobx-react-lite'
 import { lazy, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 
 import Ably from '~/components/Ably'
 import SearchBar from '~/components/SearchBar'
@@ -34,7 +34,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
     const [query, setQuery] = useState('')
 
     const {
-        walletStore: { puzzleHash, isAblyConnected, chain, isMainnet },
+        walletStore: { puzzleHash, isAblyConnected, chain, isMainnet, locked },
         assetsStore: {
             XCH,
             balancesData,
@@ -184,6 +184,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
                     </Link>
                 </div>
             )}
+            {locked && <Navigate to="/locked" replace={true} />}
         </div>
     )
 }

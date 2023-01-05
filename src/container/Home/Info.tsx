@@ -2,7 +2,6 @@ import Decimal from 'decimal.js-light'
 import { observer } from 'mobx-react-lite'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Navigate } from 'react-router-dom'
 
 import { AssetItem, LoadingAssetItem } from '~/components/Item'
 import rootStore from '~/store'
@@ -13,7 +12,7 @@ const Info = ({ query }: { query: string }) => {
     const { t } = useTranslation()
 
     const {
-        walletStore: { puzzleHash, locked },
+        walletStore: { puzzleHash },
         assetsStore: {
             assets,
             assetIdToPuzzleHash,
@@ -79,7 +78,6 @@ const Info = ({ query }: { query: string }) => {
                           />
                       )
                   })}
-            {locked && <Navigate to="/locked" replace={true} />}
         </>
     )
 }
