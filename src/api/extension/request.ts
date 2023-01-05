@@ -12,10 +12,10 @@ import {
 import { apiEndpointSets } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/extension/storage'
 
+import * as Errors from './errors'
 import { permission } from './permission'
 
 const chainId = async (): Promise<string> => {
-    console.log('request >> chainId')
     const chainId: string = await getStorage<string>('chainId')
     return chainId || ChainEnum.Mainnet
 }
@@ -31,10 +31,7 @@ const walletSwitchChain = async (params: {
         await setStorage({ chainId: params.chainId })
         return true
     }
-    return {
-        code: 4002,
-        message: 'network not found',
-    }
+    return Errors.InvalidParamsError
 }
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
@@ -52,11 +49,7 @@ const authHandler = async (request: IMessage<RequestArguments>) => {
 export const requestHandler = async (request: IMessage<RequestArguments>) => {
     const auth = await authHandler(request)
     if (!auth) {
-        return {
-            error: true,
-            code: 4002,
-            message: 'Reject the request',
-        }
+        return Errors.UserRejectedRequestError
     }
 
     switch (request.data?.method) {
@@ -66,12 +59,22 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
             return connect(request.origin)
         case RequestMethodEnum.WALLET_SWITCH_CHAIN:
             return walletSwitchChain(request.data.params)
+        case RequestMethodEnum.GET_PUBLIC_KEYS:
+            return Errors.UnderDevelopment
+        case RequestMethodEnum.FILTER_UNLOCK_COINS:
+            return Errors.UnderDevelopment
+        case RequestMethodEnum.GET_ASSET_COINS:
+            return Errors.UnderDevelopment
+        case RequestMethodEnum.GET_ASSET_BALANCE:
+            return Errors.UnderDevelopment
+        case RequestMethodEnum.SIGN_COIN_SPENDS:
+            return Errors.UnderDevelopment
+        case RequestMethodEnum.SING_MESSAGE:
+            return Errors.UnderDevelopment
+        case RequestMethodEnum.SEND_TRANSACTION:
+            return Errors.UnderDevelopment
         default:
-            return {
-                error: true,
-                code: 401,
-                message: 'Under development',
-            }
+            return Errors.InvalidParamsError
     }
 }
 

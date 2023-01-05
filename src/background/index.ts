@@ -1,3 +1,4 @@
+import * as Errors from '~/api/extension/errors'
 import { createPopup, createTab } from '~/api/extension/extension'
 import Messaging, { BackgroundController } from '~/api/extension/messaging'
 import { requestHandler } from '~/api/extension/request'
@@ -12,11 +13,7 @@ controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
     if (!keyring) {
         sendResponse({
             ...request,
-            data: {
-                error: true,
-                code: 401,
-                message: 'Please create a wallet first',
-            },
+            data: Errors.UnauthorizedError,
             sender: SenderEnum.EXTENSION,
             target: SenderEnum.WEBPAGE,
         })
