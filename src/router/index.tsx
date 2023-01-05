@@ -3,7 +3,6 @@ import {
     createBrowserRouter,
     createMemoryRouter,
     defer,
-    redirect,
     RouteObject,
 } from 'react-router-dom'
 
@@ -106,7 +105,7 @@ export const routes: RouteObject[] = [
         loader: async () => {
             await rootStore.walletStore.init()
             if (!rootStore.walletStore.isWalletExisted) {
-                Messaging.toBackground<MethodEnum.MNEMONIC>({
+                await Messaging.toBackground<MethodEnum.MNEMONIC>({
                     sender: SenderEnum.EXTENSION,
                     origin: chrome.runtime.getURL(''),
                     method: MethodEnum.MNEMONIC,

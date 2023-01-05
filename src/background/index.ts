@@ -10,6 +10,7 @@ import {
     SenderEnum,
 } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
+console.log('Service worker reload!')
 const controller = new BackgroundController()
 
 controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {

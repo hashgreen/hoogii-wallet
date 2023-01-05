@@ -10,7 +10,11 @@ import {
     runInAction,
 } from 'mobx'
 
-import { getDataFromMemory, lock, savePassword } from '~/api/extension'
+import {
+    getDataFromMemory,
+    lockFromBackground,
+    savePassword,
+} from '~/api/extension'
 import { IAddress, IConnectedSite, WalletDexie } from '~/db'
 import { walletTo0x02 } from '~/db/migrations'
 import rootStore from '~/store'
@@ -109,11 +113,11 @@ class WalletStore {
 
     init = async () => {
         const chain = await retrieveChain()
-        const password = await getDataFromMemory('password')
+        const password = await getDataFromMemory<string>('password')
         const keyring = await getStorage<string>('keyring')
 
-        if (keyring && !password) {
-            await this.lock()
+        if (keyring && password === '') {
+            this.locked = true
             return
         }
         const seed = await retrieveSeed(password)
@@ -206,7 +210,7 @@ class WalletStore {
     }
 
     lock = async () => {
-        await lock()
+        await lockFromBackground()
         runInAction(() => {
             this.locked = true
         })

@@ -21,8 +21,8 @@ export const WelcomeBack = observer(() => {
         walletStore: { checkPassword },
     } = rootStore
 
-    const resetPassword = () => {
-        Messaging.toBackground<MethodEnum.RESET_PASSWORD>({
+    const resetPassword = async () => {
+        await Messaging.toBackground<MethodEnum.RESET_PASSWORD>({
             sender: SenderEnum.EXTENSION,
             origin: chrome.runtime.getURL(''),
             method: MethodEnum.RESET_PASSWORD,
