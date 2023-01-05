@@ -83,7 +83,7 @@ const Header = ({ className }: IProps) => {
                                     </button>
                                 </div>
                                 <div className="text-body3 text-primary-100">
-                                    {xchBalance.toString()} {XCH.code}
+                                    {xchBalance.toFixed()} {XCH.code}
                                 </div>
                                 <hr className="absolute bottom-0 w-full h-px border-primary" />
                             </div>
