@@ -1,4 +1,4 @@
-import { request } from '~/api/extension/webpage'
+import { isConnected, request } from '~/api/extension/webpage'
 
 import pkg from '../../package.json'
 window.chia = {
@@ -13,7 +13,7 @@ window.chia = {
         }
         return res?.data
     },
-    // isConnected: async () => await isConnected(),
+    isConnected: async () => await isConnected(),
     // lock: async () => await lock(),
     // unlock: async () => await unlock(),
     // enable: async () => {
