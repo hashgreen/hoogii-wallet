@@ -151,7 +151,7 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
     const keyring = await getStorage<string>('keyring')
     const password = controller?.password
     const isLocked = !password && !!keyring
-    console.log('first', keyring)
+
     sendResponse({
         ...request,
         data: isLocked,
