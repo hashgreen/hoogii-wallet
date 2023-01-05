@@ -63,7 +63,7 @@ export enum RequestMethodEnum {
     GET_ASSET_COINS = 'getAssetCoins',
     GET_ASSET_BALANCE = 'getAssetBalance',
     SIGN_COIN_SPENDS = 'signCoinSpends',
-    SING_MESSAGE = 'signMessage',
+    SIGN_MESSAGE = 'signMessage',
     SEND_TRANSACTION = 'sendTransaction',
 }
 

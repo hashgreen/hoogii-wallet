@@ -66,7 +66,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
             return Errors.UnderDevelopment
         case RequestMethodEnum.SIGN_COIN_SPENDS:
             return Errors.UnderDevelopment
-        case RequestMethodEnum.SING_MESSAGE:
+        case RequestMethodEnum.SIGN_MESSAGE:
             return Errors.UnderDevelopment
         case RequestMethodEnum.SEND_TRANSACTION:
             return Errors.UnderDevelopment
