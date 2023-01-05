@@ -17,7 +17,6 @@ import {
 } from '~/api/extension'
 import { IAddress, IConnectedSite, WalletDexie } from '~/db'
 import { walletTo0x02 } from '~/db/migrations'
-import rootStore from '~/store'
 import { ChainEnum, IChain } from '~/types/chia'
 import { bcryptHash, bcryptVerify } from '~/utils'
 import { chains } from '~/utils/constants'
@@ -166,7 +165,6 @@ class WalletStore {
         runInAction(() => {
             this.chain = chain
         })
-        rootStore.assetsStore.addDefaultAsset()
     }
 
     checkPassword = async (password: string) => {

@@ -4,7 +4,7 @@ export const permission = {
         [MethodEnum.LOCK]: MethodEnum.LOCK,
         [MethodEnum.UNLOCK]: MethodEnum.UNLOCK,
     },
-    DoubleCheck: {
+    Confirm: {
         [RequestMethodEnum.WALLET_SWITCH_CHAIN]:
             RequestMethodEnum.WALLET_SWITCH_CHAIN,
     },

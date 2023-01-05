@@ -26,6 +26,7 @@ interface INext {
     text: string
     to?: string
     onClick?: () => void
+    disabled?: boolean
 }
 
 interface IProps {
@@ -83,7 +84,7 @@ export const SubLayout = ({
                                     ref={nextRef}
                                     onClick={next.onClick}
                                     className="btn btn-CTA_landing btn-large"
-                                    disabled={!next.onClick}
+                                    disabled={!next.onClick || next.disabled}
                                 >
                                     {next.text}
                                 </button>

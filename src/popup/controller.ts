@@ -88,11 +88,37 @@ export class InternalControllerStore {
         } as InternalReturnType)
     }
 
-    checkIsConnectedSite = () => {
+    connectedSite = async () => {
+        let connectedSites =
+            await rootStore.walletStore.db.connectedSites.toArray()
+
+        if (connectedSites.some((site) => site.url === this.request?.origin)) {
+            runInAction(() => {
+                this.connected = true
+            })
+
+            return
+        }
+
+        if (this.request?.origin) {
+            await rootStore.walletStore.db.connectedSites.add({
+                name: this.request?.origin,
+                url: this.request?.origin,
+            })
+
+            connectedSites =
+                await rootStore.walletStore.db.connectedSites.toArray()
+            runInAction(() => {
+                this.connected = connectedSites.some(
+                    (site) => site.url === this.request?.origin
+                )
+            })
+
+            return
+        }
+
         runInAction(() => {
-            this.connected = connectedSitesStore.isConnectedSite(
-                this.request?.origin
-            )
+            this.connected = false
         })
     }
 }
