@@ -148,10 +148,10 @@ controller.add(MethodEnum.RESET_PASSWORD, async (request) => {
 })
 
 controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
-    const keyString = await getStorage<string>('keyString')
+    const keyring = await getStorage<string>('keyring')
     const password = controller?.password
-    const isLocked = !password && !!keyString
-
+    const isLocked = !password && !!keyring
+    console.log('first', keyring)
     sendResponse({
         ...request,
         data: isLocked,
