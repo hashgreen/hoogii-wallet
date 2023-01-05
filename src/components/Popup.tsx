@@ -32,7 +32,7 @@ const Popup = ({
                 </div>
                 <div className="gap-4 flex-center pb-7">
                     <button className="btn btn-secondary" onClick={close}>
-                        {t('btn-cancel')}
+                        {actionButton ? t('btn-cancel') : t('btn-close')}
                     </button>
                     {actionButton}
                 </div>
