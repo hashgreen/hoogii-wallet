@@ -74,8 +74,9 @@ const CreateMnemonic = ({ verifying = false }: { verifying?: boolean }) => {
                         schema={Joi.object({
                             phrases: schema,
                         }).messages({
-                            'any.invalid': '',
-                            'any.only': '',
+                            'any.invalid': 'error-mnemonic-invalid',
+                            'any.only': 'error-mnemonic-invalid',
+                            'array.includes': 'error-mnemonic-invalid',
                         })}
                         disabled={disabled}
                         readOnly={readOnly}

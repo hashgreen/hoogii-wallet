@@ -3,7 +3,12 @@ import classNames from 'classnames'
 import Joi from 'joi'
 import { range } from 'lodash-es'
 import { ClipboardEvent, useEffect } from 'react'
-import { useFieldArray, useForm, useWatch } from 'react-hook-form'
+import {
+    FieldErrorsImpl,
+    useFieldArray,
+    useForm,
+    useWatch,
+} from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import words from '~config/wordlist_en.json'
@@ -19,7 +24,7 @@ interface IProps {
     disabled?: boolean | boolean[]
     readOnly?: boolean | boolean[]
     schema?: Joi.ObjectSchema
-    onChange?: (isValid: boolean, ˇs: string[]) => void
+    onChange?: (isValid: boolean, s: string[]) => void
 }
 
 function Mnemonic({
@@ -58,7 +63,7 @@ function Mnemonic({
     const length = fields.length
     const values = useWatch({ control, name: 'phrases' })
     const [error, field] = Array.isArray(errors.phrases)
-        ? [errors.phrases.find((item) => item), 'value']
+        ? [{ value: errors.phrases.find((item) => item) }, 'value']
         : [errors, 'phrases']
 
     const nextField = (currentIndex: number = -1) => {
@@ -154,10 +159,10 @@ function Mnemonic({
                             className={`input input-mnemonics ${classNames({
                                 'input-error':
                                     errors.phrases?.[index] ||
-                                    (values[index].value &&
+                                    (values[index]?.value &&
                                         !words.some(
                                             (word) =>
-                                                word === values[index].value
+                                                word === values[index]?.value
                                         )),
                             })}`}
                             disabled={disabled[index] ?? disabled}
@@ -169,15 +174,20 @@ function Mnemonic({
                                     nextField(index)
                                 }
                             }}
-                            onPaste={(e) => onPaste(index, e)}
+                            onPaste={(e) => {
+                                if (!disabled) {
+                                    onPaste(index, e)
+                                }
+                            }}
                         />
                     </div>
                 ))}
             </form>
+
             {!isValid && (
                 <ErrorMessage
                     field={{ key: field }}
-                    errors={error}
+                    errors={error as FieldErrorsImpl}
                     t={t}
                     className="w-full mt-4 text-center"
                 />
