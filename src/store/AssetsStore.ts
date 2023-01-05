@@ -27,6 +27,7 @@ class AssetsStore {
     walletStore: WalletStore
     availableAssets: ICryptocurrency[] = []
     existedAssets: IAsset[] = []
+    allAssets: IAsset[] = []
 
     balancesData: IFetchData<{ [key: string]: number }> = {
         isFetching: true,

@@ -10,6 +10,7 @@ import {
     SenderEnum,
 } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
+console.log('Service worker reload!')
 const controller = new BackgroundController()
 
 controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
@@ -147,9 +148,9 @@ controller.add(MethodEnum.RESET_PASSWORD, async (request) => {
 })
 
 controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
-    const mnemonic = await getStorage<string>('mnemonic')
+    const keyString = await getStorage<string>('keyString')
     const password = controller?.password
-    const isLocked = !password && !mnemonic
+    const isLocked = !password && !!keyString
 
     sendResponse({
         ...request,

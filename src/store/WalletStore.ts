@@ -10,9 +10,14 @@ import {
     runInAction,
 } from 'mobx'
 
-import { getDataFromMemory, lock, savePassword } from '~/api/extension'
+import {
+    getDataFromMemory,
+    lockFromBackground,
+    savePassword,
+} from '~/api/extension'
 import { IAddress, IConnectedSite, WalletDexie } from '~/db'
 import { walletTo0x02 } from '~/db/migrations'
+import rootStore from '~/store'
 import { ChainEnum, IChain } from '~/types/chia'
 import { bcryptHash, bcryptVerify } from '~/utils'
 import { chains } from '~/utils/constants'
@@ -31,7 +36,6 @@ class WalletStore {
     locked: boolean = false
     db: WalletDexie = new WalletDexie(ChainEnum.Mainnet)
     name?: string
-    password: string = ''
     chain: IChain = chains[0]
     address: string = ''
     puzzleHash: string = ''
@@ -109,12 +113,11 @@ class WalletStore {
 
     init = async () => {
         const chain = await retrieveChain()
-        const password = await getDataFromMemory('password')
+        const password = await getDataFromMemory<string>('password')
         const keyring = await getStorage<string>('keyring')
-        if (keyring && !password) {
-            runInAction(() => {
-                this.locked = true
-            })
+
+        if (keyring && password === '') {
+            this.locked = true
             return
         }
         const seed = await retrieveSeed(password)
@@ -157,6 +160,8 @@ class WalletStore {
     }
 
     switchChain = async (chain: IChain) => {
+        rootStore.historyStore.history = []
+        rootStore.historyStore.pendingHistory = []
         await setStorage({ chainId: chain.id })
         runInAction(() => {
             this.chain = chain
@@ -169,8 +174,7 @@ class WalletStore {
             const result = await bcryptVerify(password, passwordHash)
 
             if (result) {
-                this.unlock(password)
-                this.password = password
+                await this.unlock(password)
             }
             return result
         } catch (error) {
@@ -205,7 +209,7 @@ class WalletStore {
     }
 
     lock = async () => {
-        await lock()
+        await lockFromBackground()
         runInAction(() => {
             this.locked = true
         })
@@ -217,7 +221,7 @@ class WalletStore {
             this.encryptKeyPatch(mnemonic, password)
         }
 
-        savePassword(password)
+        await savePassword(password)
 
         runInAction(() => {
             this.locked = false

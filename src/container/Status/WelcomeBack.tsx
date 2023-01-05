@@ -21,8 +21,8 @@ export const WelcomeBack = observer(() => {
         walletStore: { checkPassword },
     } = rootStore
 
-    const resetPassword = () => {
-        Messaging.toBackground<MethodEnum.RESET_PASSWORD>({
+    const resetPassword = async () => {
+        await Messaging.toBackground<MethodEnum.RESET_PASSWORD>({
             sender: SenderEnum.EXTENSION,
             origin: chrome.runtime.getURL(''),
             method: MethodEnum.RESET_PASSWORD,
@@ -34,7 +34,9 @@ export const WelcomeBack = observer(() => {
             <form
                 onSubmit={async (e) => {
                     e.preventDefault()
+
                     const isValid = await checkPassword(password)
+
                     setIsValid(isValid)
                     if (isValid) navigate('/')
                     else setError(t('error-password-incorrect'))
