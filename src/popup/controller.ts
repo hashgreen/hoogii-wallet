@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
-import { lock, savePassword } from '~/api/extension'
-import rootStore from '~/store'
+import { lockFromBackground, savePassword } from '~/api/extension'
+import connectedSitesStore from '~/store/ConnectedSitesStore'
 import {
     ConnectionName,
     IMessage,
@@ -31,7 +31,7 @@ export class InternalControllerStore {
     }
 
     lock = async () => {
-        await lock()
+        await lockFromBackground()
         runInAction(() => {
             this.locked = true
         })

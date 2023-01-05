@@ -47,13 +47,14 @@ const Transaction = ({
     const [open, setOpen] = useState(false)
     const {
         walletStore: { chain },
-        assetsStore: { assets, XCH },
+        assetsStore: { availableAssets, XCH },
     } = rootStore
-
     const asset = useMemo(
-        () => assets.find((asset) => '0x' + asset.assetId === assetId),
-        [assetId, assets]
+        () =>
+            availableAssets.find((asset) => '0x' + asset.asset_id === assetId),
+        [assetId, availableAssets]
     )
+
     const isTransfer =
         txType === ITxType.TX_TYPE_CAT_TRANSFER ||
         txType === ITxType.TX_TYPE_STANDARD_TRANSFER

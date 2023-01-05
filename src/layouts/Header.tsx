@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import CopyTooltip from '~/components/CopyTooltip'
 import Account from '~/layouts/Account'
@@ -25,7 +25,7 @@ const Header = ({ className }: IProps) => {
     const { t } = useTranslation()
     const [open, setOpen] = useState(false)
     const {
-        walletStore: { chain, lock, address, puzzleHash, name, locked },
+        walletStore: { chain, lock, address, puzzleHash, name },
         assetsStore: { XCH, getBalanceByPuzzleHash },
     } = rootStore
     const shortenAddress = useMemo(() => shortenHash(address), [address])
@@ -125,7 +125,6 @@ const Header = ({ className }: IProps) => {
                 </Menu>
                 {open && <Account open={open} setOpen={setOpen} />}
             </div>
-            {locked && <Navigate to="/locked" replace={true} />}
         </nav>
     )
 }
