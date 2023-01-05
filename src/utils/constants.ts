@@ -21,10 +21,10 @@ export const apiEndpointSets: {
 } = {
     [ChainEnum.Mainnet]: {
         jarvan: 'https://prod-jarvan.hash.green/api/v1',
-        zed: 'https://testnet10.hash.green/api/v1',
+        zed: 'https://hash.green/api/v1',
     },
     [ChainEnum.Testnet]: {
         jarvan: 'https://stg-jarvan.hash.green/api/v1',
-        zed: 'https://testnet10.hash.green/api/v1',
+        zed: 'https://testnet-dex.hash.green/api/v1',
     },
 } as const

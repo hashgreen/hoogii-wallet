@@ -127,10 +127,8 @@ export const callGetAblyAccessToken = (formData) =>
 /** -------------------------- Zed API -------------------------- */
 export const callGetMarkets = async () =>
     apiHandler<AxiosResponse<IMarket[]>>({
-        url:
-            (await getStorage<string>('chainId')) === ChainEnum.Mainnet
-                ? 'https://hash.green/api/v1/markets'
-                : 'https://testnet10.hash.green/api/v1/markets',
+        url: apiEndpointSets[await getStorage<string>('chainId')]?.zed,
+
         method: 'get',
     })
 
