@@ -107,7 +107,7 @@ export const AddressBookItem = ({
         <Item as="div" {...rest}>
             <div>
                 {name && <div className="mb-1 text-subtitle1">{name}</div>}
-                <div className="text-body1 text-primary-100">
+                <div className="text-body3 text-primary-100">
                     {shortenHash(address)}
                 </div>
             </div>
