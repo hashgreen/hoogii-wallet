@@ -37,7 +37,7 @@ const walletSwitchChain = async (params: {
     }
 }
 const requestConfirmHandler = async (request: IMessage<RequestArguments>) => {
-    if (permission.DoubleCheck[request.data?.method as RequestMethodEnum]) {
+    if (permission.Confirm[request.data?.method as RequestMethodEnum]) {
         const tab = await createPopup(PopupEnum.INTERNAL)
         const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
         return res?.data
