@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
 import { lockFromBackground, savePassword } from '~/api/extension'
-import connectedSitesStore from '~/store/ConnectedSitesStore'
+import rootStore from '~/store'
 import {
     ConnectionName,
     IMessage,
