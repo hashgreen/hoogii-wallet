@@ -123,6 +123,7 @@ class WalletStore {
         const seed = await retrieveSeed(password)
         const name = await getStorage<string>('name')
         runInAction(() => {
+            this.db = new WalletDexie(chain.id)
             this.chain = chain
             this.seed = seed
             this.name = name

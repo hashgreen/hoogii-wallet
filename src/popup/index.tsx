@@ -89,7 +89,7 @@ const App = observer(() => {
 })
 
 render(
-    <Suspense fallback="Loading...">
+    <Suspense fallback={<div className="full bg-main" />}>
         <MemoryRouter>
             <App />
         </MemoryRouter>

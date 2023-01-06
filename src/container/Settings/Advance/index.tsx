@@ -46,7 +46,7 @@ const Advance = () => {
                                 className="justify-between flex-row-center py-2.5 capitalize"
                             >
                                 {item.title}
-                                <RightIcon className="w-3 h-3 text-active" />
+                                <RightIcon className="w-5 h-5 text-active" />
                             </a>
                         ) : (
                             <Link
@@ -54,7 +54,7 @@ const Advance = () => {
                                 className="justify-between flex-row-center py-2.5 capitalize"
                             >
                                 {item.title}
-                                <RightIcon className="w-3 h-3 text-active" />
+                                <RightIcon className="w-5 h-5 text-active" />
                             </Link>
                         )}
                     </li>

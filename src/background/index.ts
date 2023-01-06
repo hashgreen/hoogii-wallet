@@ -1,14 +1,9 @@
+import * as Errors from '~/api/extension/errors'
 import { createPopup, createTab } from '~/api/extension/extension'
 import Messaging, { BackgroundController } from '~/api/extension/messaging'
 import { requestHandler } from '~/api/extension/request'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
-import {
-    IMessage,
-    MethodEnum,
-    PopupEnum,
-    RequestArguments,
-    SenderEnum,
-} from '~/types/extension'
+import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
 console.log('Service worker reload!')
 const controller = new BackgroundController()
@@ -18,11 +13,7 @@ controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
     if (!keyring) {
         sendResponse({
             ...request,
-            data: {
-                error: true,
-                code: 401,
-                message: 'Please create a wallet first',
-            },
+            data: Errors.UnauthorizedError,
             sender: SenderEnum.EXTENSION,
             target: SenderEnum.WEBPAGE,
         })
@@ -148,9 +139,9 @@ controller.add(MethodEnum.RESET_PASSWORD, async (request) => {
 })
 
 controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
-    const keyString = await getStorage<string>('keyString')
+    const keyring = await getStorage<string>('keyring')
     const password = controller?.password
-    const isLocked = !password && !!keyString
+    const isLocked = !password && !!keyring
 
     sendResponse({
         ...request,
@@ -160,32 +151,12 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
     })
 })
 
-const authHandler = async (request: IMessage<RequestArguments>) => {
-    if (!request?.isConnected || request?.isLocked) {
-        const tab = await createPopup(PopupEnum.INTERNAL)
-        const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
-        return res.data
-    }
-
-    return true
-}
-
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
-    const auth = await authHandler(request)
-
-    const data = auth
-        ? await requestHandler(request)
-        : {
-              error: true,
-              code: 4002,
-              message: 'user rejected request',
-          }
-
     sendResponse({
         ...request,
         sender: SenderEnum.EXTENSION,
         target: SenderEnum.WEBPAGE,
-        data,
+        data: await requestHandler(request),
     })
 })
 

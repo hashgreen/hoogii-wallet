@@ -42,7 +42,8 @@ class HistoryStore {
         const item = this.history[0]
         if (item) {
             return puzzleHashToAddress(
-                item.action === IType.Send ? item.receiver : item.sender
+                item.action === IType.Send ? item.receiver : item.sender,
+                this.walletStore.chain.prefix
             )
         }
         return undefined
