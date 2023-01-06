@@ -86,7 +86,8 @@ export class CAT extends Program {
         } = await callGetBalance({
             puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
         })
-
+        console.log('data>', data)
+        console.log('spendAmount>', spendAmount)
         if (BigInt(data) * BigInt(Math.pow(10, 3)) < spendAmount) {
             throw new Error("You don't have enough coin to spend")
         }

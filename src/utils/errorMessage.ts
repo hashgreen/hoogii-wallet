@@ -15,6 +15,10 @@ export const getErrorMessage = (error: AxiosError) => {
     if (error?.response?.status) {
         return `${error?.response?.status} ${message || API_ERROR_MESSAGE}`
     }
+    if (error.message) {
+        return `${error.message}`
+    }
+
     return API_TIME_OUT
 }
 export const ToastOption: ToastOptions = {
