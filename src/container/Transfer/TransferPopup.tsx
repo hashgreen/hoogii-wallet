@@ -58,14 +58,10 @@ const TransferPopup = ({
 
     const onSubmit = async (data: IForm) => {
         const { fee } = data
-        try {
-            if (asset?.assetId === 'XCH') {
-                await sendXCHTx?.(address.address, amount, memo, fee)
-            } else {
-                await sendCATTx?.(address.address, asset, amount, memo, fee)
-            }
-        } catch (e) {
-            throw new Error(e)
+        if (asset?.assetId === 'XCH') {
+            await sendXCHTx?.(address.address, amount, memo, fee)
+        } else {
+            await sendCATTx?.(address.address, asset, amount, memo, fee)
         }
     }
 
