@@ -3,7 +3,7 @@ import rootStore from '~/store'
 import { MethodEnum, SenderEnum } from '~/types/extension'
 import { bcryptHash } from '~/utils'
 import { setStorage } from '~/utils/storage'
-const idlePeriod = import.meta.env.VITE_LOCK_AFTER * 60
+const idlePeriod = 15 * 60
 
 chrome.idle.setDetectionInterval(idlePeriod)
 chrome.idle.onStateChanged.addListener(async (newState) => {

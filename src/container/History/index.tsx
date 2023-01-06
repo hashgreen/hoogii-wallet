@@ -35,11 +35,11 @@ const History = () => {
             ),
         [history]
     )
-
+    console.log('history>', history)
     return (
         <div className="pb-5">
             {fetching && <TransactionLoading />}
-            {isAblyConnected && (
+            {isAblyConnected && puzzleHash && (
                 <Ably
                     channelName={'0x' + puzzleHash}
                     callback={(message) => {
@@ -77,8 +77,11 @@ const History = () => {
                             <div className="ml-3 capitalize text-body3 text-primary-100">
                                 {title}
                             </div>
-                            {items.map((detail) => (
-                                <Transaction key={detail.txId} {...detail} />
+                            {items.map((detail, index) => (
+                                <Transaction
+                                    key={`${detail.txId}_${index}`}
+                                    {...detail}
+                                />
                             ))}
                         </div>
                     ))}
