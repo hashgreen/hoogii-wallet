@@ -66,7 +66,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
     return (
         <div className="relative flex flex-col h-full bg-main">
             <Header className="sticky left-0 right-0" />
-            {isAblyConnected && (
+            {isAblyConnected && puzzleHash && (
                 <Ably
                     channelName={'0x' + puzzleHash}
                     callback={(message) => {

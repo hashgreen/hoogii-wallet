@@ -25,6 +25,6 @@ export const apiEndpointSets: {
     },
     [ChainEnum.Testnet]: {
         jarvan: 'https://stg-jarvan.hash.green/api/v1',
-        zed: 'https://testnet-dex.hash.green/api/v1',
+        zed: 'https://testnet10.hash.green/api/v1',
     },
 } as const

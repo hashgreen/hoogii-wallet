@@ -8,7 +8,8 @@ import { callGetAblyAccessToken } from '~/api/api'
 import LoadingComponent from '~/components/Loading'
 import { memoryRouter } from '~/router'
 import rootStore from '~/store'
-
+import { apiEndpointSets } from '~/utils/constants'
+import { getStorage } from '~/utils/extension/storage'
 const App = () => {
     const {
         walletStore: { puzzleHash },
@@ -31,20 +32,32 @@ const App = () => {
     }, [])
 
     useEffect(() => {
-        if (puzzleHash) {
-            configureAbly({
-                authUrl: `${import.meta.env.BASE_URL}/api/v1/auth`,
-                authCallback: async (data, callback) => {
-                    const formData = new FormData()
-                    formData.append('puzzle_hash', puzzleHash)
-                    const tokenData = await callGetAblyAccessToken(formData)
-                    const ablyToken = tokenData.data.data.token
-                    // eslint-disable-next-line n/no-callback-literal
-                    callback('', ablyToken)
-                },
-            })
-            rootStore.walletStore.isAblyConnected = true
-        }
+        ;(async () => {
+            if (puzzleHash) {
+                try {
+                    const chainId: string = await getStorage<string>('chainId')
+
+                    configureAbly({
+                        authUrl: `${
+                            apiEndpointSets[chainId || '0x01'].jarvan
+                        }/auth`,
+                        authCallback: async (data, callback) => {
+                            const formData = new FormData()
+                            formData.append('puzzle_hash', puzzleHash)
+                            const tokenData = await callGetAblyAccessToken(
+                                formData
+                            )
+                            const ablyToken = tokenData.data.data.token
+                            // eslint-disable-next-line n/no-callback-literal
+                            callback('', ablyToken)
+                        },
+                    })
+                    rootStore.walletStore.isAblyConnected = true
+                } catch (e) {
+                    console.log('e>>', e)
+                }
+            }
+        })()
     }, [puzzleHash])
 
     return (

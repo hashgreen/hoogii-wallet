@@ -2,12 +2,12 @@
 # yarn lockfile v1
 
 
-"@ably-labs/react-hooks@1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@ably-labs/react-hooks/-/react-hooks-1.1.8.tgz#7fa0b731007353338f05b5bf67476fecd29625cb"
-  integrity sha512-BQq+SJpcEH9IbwXGOtmhFq8YeikWu1fylD/CzLqxbmUMNW2VZObUBKZKi/lo/oF+MeR1vuoi0qUVAiyLanybew==
+"@ably-labs/react-hooks@2.0.11":
+  version "2.0.11"
+  resolved "https://registry.yarnpkg.com/@ably-labs/react-hooks/-/react-hooks-2.0.11.tgz#edb14073d4a472481c8724e35425d1c235ee2f09"
+  integrity sha512-KqU8JnKDeTa+bWFImb/ghs6YIXQoYlK6PuLCUOO2hP3yGWsu2Xv3+5P/V3HBuZvA49jo9rxT0SdLQMSk4Uialw==
   dependencies:
-    ably "^1.2.14"
+    ably "^1.2.27"
 
 "@ably/msgpack-js@^0.4.0":
   version "0.4.0"
@@ -1300,10 +1300,10 @@
   resolved "https://registry.yarnpkg.com/@webcomponents/custom-elements/-/custom-elements-1.5.1.tgz#48029f6c62b94a4b49be061ca1dae04ab9681ace"
   integrity sha512-6T/XT3S1UHDlRWFSxRXdeSoYWczEl78sygNPS7jDyHVrfZcF/pUtWGYgxF4uviH59iPVw1eOWbhubm8CqO0MpA==
 
-ably@^1.2.14:
-  version "1.2.33"
-  resolved "https://registry.yarnpkg.com/ably/-/ably-1.2.33.tgz#aa7afc774eadccc699319bcac62ebd76026fd153"
-  integrity sha512-wGLZc8clP0LSDAzo9QNDiMbQLLBKWyAldigvylq0G/3KuMh6ohAh/xl4V+69JK1oHyjCsGwHyhcS/dClHy6pVw==
+ably@^1.2.27:
+  version "1.2.34"
+  resolved "https://registry.yarnpkg.com/ably/-/ably-1.2.34.tgz#5e78dd9a6b358b893678e860014c72cb9a1b03a7"
+  integrity sha512-ERc9kxp9eLtqwWjjdzUzEbKZ1ydup3BWGNH8toNcCpimGq/y/+3zuR5xO9VXlEWGFf5oYXLdSbudj/mTU/cp3w==
   dependencies:
     "@ably/msgpack-js" "^0.4.0"
     got "^11.8.2"
@@ -4802,11 +4802,6 @@ react-dom@^17.0.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     scheduler "^0.20.2"
-
-react-ga4@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/react-ga4/-/react-ga4-1.4.1.tgz#6ee2a2db115ed235b2f2092bc746b4eeeca9e206"
-  integrity sha512-ioBMEIxd4ePw4YtaloTUgqhQGqz5ebDdC4slEpLgy2sLx1LuZBC9iYCwDymTXzcntw6K1dHX183ulP32nNdG7w==
 
 react-hook-form@^7.31.2:
   version "7.39.5"
