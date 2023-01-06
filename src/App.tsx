@@ -34,22 +34,28 @@ const App = () => {
     useEffect(() => {
         ;(async () => {
             if (puzzleHash) {
-                const chainId: string = await getStorage<string>('chainId')
+                try {
+                    const chainId: string = await getStorage<string>('chainId')
 
-                configureAbly({
-                    authUrl: `${
-                        apiEndpointSets[chainId || '0x01'].jarvan
-                    }/auth`,
-                    authCallback: async (data, callback) => {
-                        const formData = new FormData()
-                        formData.append('puzzle_hash', puzzleHash)
-                        const tokenData = await callGetAblyAccessToken(formData)
-                        const ablyToken = tokenData.data.data.token
-                        // eslint-disable-next-line n/no-callback-literal
-                        callback('', ablyToken)
-                    },
-                })
-                rootStore.walletStore.isAblyConnected = true
+                    configureAbly({
+                        authUrl: `${
+                            apiEndpointSets[chainId || '0x01'].jarvan
+                        }/auth`,
+                        authCallback: async (data, callback) => {
+                            const formData = new FormData()
+                            formData.append('puzzle_hash', puzzleHash)
+                            const tokenData = await callGetAblyAccessToken(
+                                formData
+                            )
+                            const ablyToken = tokenData.data.data.token
+                            // eslint-disable-next-line n/no-callback-literal
+                            callback('', ablyToken)
+                        },
+                    })
+                    rootStore.walletStore.isAblyConnected = true
+                } catch (e) {
+                    console.log('e>>', e)
+                }
             }
         })()
     }, [puzzleHash])
