@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import Mnemonic from '~/components/Mnemonic'
+import { isDev } from '~/utils'
 import { SubLayout } from '~tabs/layout'
 import rootStore from '~tabs/store'
 
@@ -16,7 +17,7 @@ const CreateMnemonic = ({ verifying = false }: { verifying?: boolean }) => {
     const [randomInputs = {}] = useMemo(
         () =>
             verifying && createRandomInputs
-                ? createRandomInputs(import.meta.env.VITE_RANDOM_INPUT ?? 6)
+                ? createRandomInputs(isDev ? 1 : 6)
                 : [],
 
         [verifying, createRandomInputs]

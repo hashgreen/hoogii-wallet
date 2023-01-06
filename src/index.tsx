@@ -14,7 +14,7 @@ window.Buffer = Buffer
 ReactDOM.render(
     <>
         <App />
-        {import.meta.env.VITE_BUILD_TARGET !== 'extension' && <Components />}
+        <Components />
     </>,
     document.getElementById('root')
 )
