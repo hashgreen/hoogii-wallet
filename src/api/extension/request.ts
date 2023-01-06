@@ -46,6 +46,7 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     }
 
     const account = puzzleHashToAddress(puzzleHash, chain.prefix)
+
     return [account]
 }
 
