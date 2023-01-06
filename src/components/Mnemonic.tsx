@@ -175,7 +175,7 @@ function Mnemonic({
                                 }
                             }}
                             onPaste={(e) => {
-                                if (!disabled) {
+                                if (!disabled && !readOnly[index]) {
                                     onPaste(index, e)
                                 }
                             }}
