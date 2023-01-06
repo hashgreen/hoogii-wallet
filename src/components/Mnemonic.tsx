@@ -44,6 +44,7 @@ function Mnemonic({
         setFocus,
         setValue,
         formState: { errors, dirtyFields, isValid },
+        clearErrors,
     } = useForm<IForm>({
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -98,6 +99,7 @@ function Mnemonic({
         let lastIndex = 0
         const phrases = e.clipboardData.getData('text').split(' ')
         if (phrases.length === length) {
+            clearErrors()
             setValue(
                 'phrases',
                 phrases.map((phrase) => ({
@@ -139,9 +141,11 @@ function Mnemonic({
     useEffect(() => {
         onChange?.(
             isValid,
-            values.map((e) => e.value)
+            values?.map((e) => e.value)
         )
     }, [isValid, values])
+
+    console.log('values', errors)
 
     return (
         <>
@@ -159,7 +163,8 @@ function Mnemonic({
                             className={`input input-mnemonics ${classNames({
                                 'input-error':
                                     errors.phrases?.[index] ||
-                                    (values[index]?.value &&
+                                    (values &&
+                                        values[index]?.value &&
                                         !words.some(
                                             (word) =>
                                                 word === values[index]?.value
