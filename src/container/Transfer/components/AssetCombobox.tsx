@@ -21,7 +21,7 @@ const AssetCombobox = forwardRef<
     return (
         <Combobox
             as="div"
-            value={value}
+            // value={value}
             onChange={onChange}
             className="relative flex flex-col"
         >

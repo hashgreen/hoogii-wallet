@@ -35,7 +35,7 @@ const History = () => {
             ),
         [history]
     )
-
+    console.log('history>', history)
     return (
         <div className="pb-5">
             {fetching && <TransactionLoading />}
@@ -77,8 +77,11 @@ const History = () => {
                             <div className="ml-3 capitalize text-body3 text-primary-100">
                                 {title}
                             </div>
-                            {items.map((detail) => (
-                                <Transaction key={detail.txId} {...detail} />
+                            {items.map((detail, index) => (
+                                <Transaction
+                                    key={`${detail.txId}_${index}`}
+                                    {...detail}
+                                />
                             ))}
                         </div>
                     ))}
