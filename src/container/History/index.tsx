@@ -39,7 +39,7 @@ const History = () => {
     return (
         <div className="pb-5">
             {fetching && <TransactionLoading />}
-            {isAblyConnected && (
+            {isAblyConnected && puzzleHash && (
                 <Ably
                     channelName={'0x' + puzzleHash}
                     callback={(message) => {
