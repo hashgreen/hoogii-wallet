@@ -145,8 +145,6 @@ function Mnemonic({
         )
     }, [isValid, values])
 
-    console.log('values', errors)
-
     return (
         <>
             <form className="grid grid-cols-3 gap-3 [&>:not(div)]:absolute">
@@ -163,8 +161,7 @@ function Mnemonic({
                             className={`input input-mnemonics ${classNames({
                                 'input-error':
                                     errors.phrases?.[index] ||
-                                    (values &&
-                                        values[index]?.value &&
+                                    (values?.[index]?.value &&
                                         !words.some(
                                             (word) =>
                                                 word === values[index]?.value
