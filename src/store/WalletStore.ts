@@ -19,6 +19,7 @@ import { IAddress, IConnectedSite, WalletDexie } from '~/db'
 import { walletTo0x02 } from '~/db/migrations'
 import rootStore from '~/store'
 import { ChainEnum, IChain } from '~/types/chia'
+import { StorageEnum } from '~/types/storage'
 import { bcryptHash, bcryptVerify } from '~/utils'
 import { chains } from '~/utils/constants'
 import { bytesToString, decrypt, encrypt } from '~/utils/encryption'
@@ -30,7 +31,6 @@ import {
     removeItemsFromStorage,
     setStorage,
 } from '~/utils/storage'
-
 class WalletStore {
     isAblyConnected = false
     locked: boolean = false
@@ -144,7 +144,8 @@ class WalletStore {
         if (!this.chain) return
 
         const puzzleHash = seedToPuzzle(seed).hashHex()
-        if (await getStorage<string>('puzzleHash')) {
+
+        if (!(await getStorage<string>(StorageEnum.puzzleHash))) {
             await setStorage({ puzzleHash })
         }
 
