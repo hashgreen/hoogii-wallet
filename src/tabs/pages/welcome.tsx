@@ -10,7 +10,7 @@ const Welcome = () => {
                 alt="logo"
                 className="mb-5 mt-20 w-[120px]"
             />
-            <div className="w-full text-primary-100 mb-10">
+            <div className="w-full  mb-10">
                 <div className="capitalize text-headline2 mb-3">
                     {t('welcome-title')}
                 </div>
