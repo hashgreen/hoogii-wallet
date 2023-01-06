@@ -7,6 +7,7 @@ import { makeAutoObservable } from 'mobx'
 import { getSpendableCoins, sendTx } from '~/api/api'
 import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
+import { xchToMojo } from '~/utils/CoinConverter'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { addressToPuzzleHash, getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
@@ -30,10 +31,12 @@ class TransactionStore {
             const res = await getSpendableCoins({
                 puzzle_hash,
             })
-            return res?.data?.data.map((record) => ({
-                ...record.coin,
-                amount: record.coin.amount || 0,
-            }))
+            return (
+                res?.data?.data?.map((record) => ({
+                    ...record.coin,
+                    amount: record.coin.amount || 0,
+                })) ?? []
+            )
         } catch (error) {
             throw new Error(getErrorMessage(error as AxiosError))
         }
@@ -53,30 +56,31 @@ class TransactionStore {
         const spendableCoinList = await this.coinList(
             addressToPuzzleHash(address)
         )
+        try {
+            const XCHspendsList = await Wallet.generateXCHSpendList({
+                puzzleReveal,
+                amount,
+                memo,
+                fee,
+                address,
+                targetAddress,
+                spendableCoinList,
+            })
 
-        const XCHspendsList = await Wallet.generateXCHSpendList({
-            puzzleReveal,
-            amount,
-            memo,
-            fee,
-            address,
-            targetAddress,
-            spendableCoinList,
-        })
-
-        const XCHsignatures = AugSchemeMPL.aggregate(
-            XCHspendsList.map((spend) =>
-                Wallet.signCoinSpend(
-                    spend,
-                    Buffer.from(agg_sig_me_additional_data, 'hex'),
-                    Wallet.derivePrivateKey(PrivateKey.fromSeed(seed)),
-                    Wallet.derivePrivateKey(PrivateKey.fromSeed(seed)).getG1()
+            const XCHsignatures = AugSchemeMPL.aggregate(
+                XCHspendsList.map((spend) =>
+                    Wallet.signCoinSpend(
+                        spend,
+                        Buffer.from(agg_sig_me_additional_data, 'hex'),
+                        Wallet.derivePrivateKey(PrivateKey.fromSeed(seed)),
+                        Wallet.derivePrivateKey(
+                            PrivateKey.fromSeed(seed)
+                        ).getG1()
+                    )
                 )
             )
-        )
 
-        const spendBundle = new SpendBundle(XCHspendsList, XCHsignatures)
-        try {
+            const spendBundle = new SpendBundle(XCHspendsList, XCHsignatures)
             await sendTx({
                 data: { spend_bundle: spendBundle.getObj() },
             })
@@ -133,7 +137,7 @@ class TransactionStore {
         )
         const signatureList = [CATsignatures]
 
-        if (BigInt(fee) > 0) {
+        if (BigInt(xchToMojo(fee).toString()) > 0) {
             const spendableCoinList = await this.coinList(
                 addressToPuzzleHash(address)
             )
