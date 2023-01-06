@@ -9,7 +9,7 @@ import {
 } from '~/types/extension'
 import { chains } from '~/utils/constants'
 import { decrypt, stringToBytes } from '~/utils/encryption'
-import { getStorage, setStorage } from '~/utils/storage'
+import { getStorage, setStorage } from '~/utils/extension/storage'
 
 export const retrieveChain = async () => {
     const chainId = await getStorage<string>('chainId')

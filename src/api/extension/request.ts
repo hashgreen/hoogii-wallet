@@ -12,13 +12,14 @@ import {
 } from '~/types/extension'
 import { apiEndpointSets } from '~/utils/constants'
 import { decrypt, stringToBytes } from '~/utils/encryption'
+import { getChainId } from '~/utils/extension'
 import { getStorage, setStorage } from '~/utils/extension/storage'
 
 import * as Errors from './errors'
 import { permission } from './permission'
 
 const chainId = async (): Promise<string | Errors.Error> => {
-    const chainId: string = await getStorage<string>('chainId')
+    const chainId = await getChainId()
     return chainId || Errors.InvalidParamsError
 }
 
