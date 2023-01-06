@@ -1,7 +1,6 @@
 import { createPopup } from '~/api/extension/extension'
-import Messaging, { BackgroundController } from '~/api/extension/messaging'
+import Messaging from '~/api/extension/messaging'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
-import RequestStore from '~/store/RequestStore'
 import { ChainEnum } from '~/types/chia'
 import {
     IMessage,
@@ -10,16 +9,17 @@ import {
     RequestArguments,
     RequestMethodEnum,
 } from '~/types/extension'
-import { apiEndpointSets } from '~/utils/constants'
-import { decrypt, stringToBytes } from '~/utils/encryption'
-import { getChainId } from '~/utils/extension'
+import { StorageEnum } from '~/types/storage'
+import { apiEndpointSets, chains } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/extension/storage'
+import { puzzleHashToAddress } from '~/utils/signature'
 
 import * as Errors from './errors'
 import { permission } from './permission'
 
 const chainId = async (): Promise<string | Errors.Error> => {
-    const chainId = await getChainId()
+    const chainId = await getStorage<string>(StorageEnum.chainId)
+
     return chainId || Errors.InvalidParamsError
 }
 
@@ -37,20 +37,16 @@ const walletSwitchChain = async (params: {
     return Errors.InvalidParamsError
 }
 
-const accounts = async (password: string): Promise<any> => {
-    const chainId: string = await getStorage<string>('chainId')
-
-    const keyring = await getStorage('keyring')
-    const { salt, cipherText } = keyring
-    const plainText = await decrypt(salt, password, cipherText)
-
-    const seed = stringToBytes(plainText)
-    const account = await RequestStore.getAddress(seed, chainId)
-
-    if (account) {
-        return [account]
+const accounts = async (): Promise<string[] | Errors.Error> => {
+    const chainId = await getStorage<string>(StorageEnum.chainId)
+    const puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
+    const chain = chains.find((chain) => chain.id === chainId)
+    if (!puzzleHash || !chain) {
+        return Errors.NoSecretKeyError
     }
-    return Errors.NoSecretKeyError
+
+    const account = puzzleHashToAddress(puzzleHash, chain.prefix)
+    return [account]
 }
 
 const authHandler = async (request: IMessage<RequestArguments>) => {
@@ -66,10 +62,7 @@ const authHandler = async (request: IMessage<RequestArguments>) => {
 
     return true
 }
-export const requestHandler = async (
-    request: IMessage<RequestArguments>,
-    controller: BackgroundController
-) => {
+export const requestHandler = async (request: IMessage<RequestArguments>) => {
     const auth = await authHandler(request)
     if (!auth) {
         return Errors.UserRejectedRequestError
@@ -83,7 +76,7 @@ export const requestHandler = async (
         case RequestMethodEnum.WALLET_SWITCH_CHAIN:
             return walletSwitchChain(request.data.params)
         case RequestMethodEnum.ACCOUNTS:
-            return accounts(controller?.password)
+            return accounts()
         case RequestMethodEnum.GET_PUBLIC_KEYS:
             return Errors.UnderDevelopment
         case RequestMethodEnum.FILTER_UNLOCK_COINS:
