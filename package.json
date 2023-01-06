@@ -26,7 +26,7 @@
         ]
     },
     "dependencies": {
-        "@ably-labs/react-hooks": "1.1.8",
+        "@ably-labs/react-hooks": "2.0.11",
         "@emotion/react": "^11.10.0",
         "@emotion/styled": "^11.10.0",
         "@extend-chrome/storage": "^1.5.0",

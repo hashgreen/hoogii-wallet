@@ -7,7 +7,11 @@ interface IProps {
 }
 
 const Ably = ({ channelName, callback }: IProps) => {
-    useChannel(channelName, callback)
+    try {
+        useChannel(channelName, callback)
+    } catch (e) {
+        console.log('e>>', e)
+    }
     return <></>
 }
 
