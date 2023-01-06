@@ -142,11 +142,17 @@ class WalletStore {
 
     generateAddress = async (seed: Uint8Array): Promise<void> => {
         if (!this.chain) return
+
+        const puzzleHash = seedToPuzzle(seed).hashHex()
+        if (await getStorage<string>('puzzleHash')) {
+            await setStorage({ puzzleHash })
+        }
+
         runInAction(() => {
             this.seed = seed
             this.privateKey = PrivateKey.fromSeed(seed)
             this.address = seedToAddress(seed, this.chain?.prefix ?? 'txch')
-            this.puzzleHash = seedToPuzzle(seed).hashHex()
+            this.puzzleHash = puzzleHash
         })
     }
 
