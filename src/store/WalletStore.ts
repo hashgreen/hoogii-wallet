@@ -144,7 +144,7 @@ class WalletStore {
         if (!this.chain) return
 
         const puzzleHash = seedToPuzzle(seed).hashHex()
-        await setStorage({ puzzleHash })
+
         if (!(await getStorage<string>(StorageEnum.puzzleHash))) {
             await setStorage({ puzzleHash })
         }
