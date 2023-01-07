@@ -20,3 +20,13 @@ export const request = async <T = any>({
     method: RequestMethodEnum
     params?: T
 }) => await Messaging.toContent(MethodEnum.REQUEST, { method, params })
+
+export const event = (eventName: string, callback: (arg: any) => void) => {
+    const handler = (event) => callback(event.detail)
+
+    const events = window.chia._events[eventName] || []
+
+    window.chia._events[eventName] = [...events, [callback, handler]]
+
+    window.addEventListener(`hoogii${eventName}`, handler)
+}

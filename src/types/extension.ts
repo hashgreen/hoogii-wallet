@@ -47,6 +47,7 @@ export enum MethodEnum {
     SAVE_DATA = 'SAVE_DATA',
     REFUSE = 'REFUSE',
     REQUEST = 'REQUEST',
+    EVENT = 'EVENT',
     // internal
     REQUEST_DATA = 'REQUEST_DATA',
     RETURN_DATA = 'RETURN_DATA',
@@ -67,6 +68,10 @@ export enum RequestMethodEnum {
     SEND_TRANSACTION = 'sendTransaction',
 }
 
+export enum EventEnum {
+    CHAIN_CHANGED = 'chainChanged',
+}
+
 export interface RequestArguments {
     method: RequestMethodEnum
     params?: any
@@ -78,6 +83,7 @@ export type MethodDataType<T extends MethodEnum> = {
         iconUrl: string
     }
     REQUEST: RequestArguments
+    EVENT: { method: EventEnum }
     LOCK: undefined
     UNLOCK: undefined
     IS_LOCK: any
@@ -105,6 +111,7 @@ interface IIsValidWallet {
 export type MethodReturnDataType<T extends MethodEnum> = {
     ENABLE: boolean
     REQUEST: any
+    EVENT: void
     LOCK: ILock
     UNLOCK: ILock
     IS_LOCK: boolean

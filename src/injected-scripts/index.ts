@@ -1,4 +1,4 @@
-import { isConnected, request } from '~/api/extension/webpage'
+import { event, isConnected, request } from '~/api/extension/webpage'
 
 import pkg from '../../package.json'
 window.chia = {
@@ -14,14 +14,8 @@ window.chia = {
         return res?.data
     },
     isConnected: async () => await isConnected(),
-    // lock: async () => await lock(),
-    // unlock: async () => await unlock(),
-    // enable: async () => {
-    //     if (await enable()) {
-    //         return {
-    //             lock,
-    //             unlock,
-    //         }
-    //     }
-    // },
+    on: (eventName, callback) => {
+        event(eventName, callback)
+    },
+    _events: {},
 }
