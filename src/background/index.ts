@@ -157,7 +157,7 @@ controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
         ...request,
         sender: SenderEnum.EXTENSION,
         target: SenderEnum.WEBPAGE,
-        data: await requestHandler(request, controller),
+        data: await requestHandler(request),
     })
 })
 
