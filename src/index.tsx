@@ -11,10 +11,5 @@ import App from './App'
 
 window.global = window
 window.Buffer = Buffer
-ReactDOM.createRoot(
-    <>
-        <App />
-        {/* <Components /> */}
-    </>,
-    document.getElementById('root')
-)
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)
