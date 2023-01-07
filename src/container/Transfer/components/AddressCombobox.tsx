@@ -50,7 +50,7 @@ const AddressCombobox = forwardRef<
     return (
         <Combobox
             as="div"
-            // value={value}
+            value={value?.name || value?.address}
             onChange={onChange}
             className="relative flex flex-col"
             nullable
@@ -58,7 +58,6 @@ const AddressCombobox = forwardRef<
             <Combobox.Button>
                 <Combobox.Input<'input', IAddress>
                     ref={ref}
-                    displayValue={(value) => value?.name || value?.address}
                     onChange={onInputChange}
                     onKeyDownCapture={({ key }) => {
                         if (
