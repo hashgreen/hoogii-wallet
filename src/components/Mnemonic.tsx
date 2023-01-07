@@ -143,7 +143,7 @@ function Mnemonic({
             isValid,
             values?.map((e) => e.value)
         )
-    }, [isValid, values])
+    }, [isValid, JSON.stringify(values)])
 
     return (
         <>

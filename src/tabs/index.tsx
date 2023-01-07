@@ -4,7 +4,7 @@ import '~/utils/i18n'
 import { Buffer } from 'buffer'
 import { observer } from 'mobx-react-lite'
 import { Suspense, useEffect } from 'react'
-import { render } from 'react-dom'
+import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 
 import rootStore from '~tabs/store'
@@ -29,5 +29,4 @@ const App = observer(() => {
         <></>
     )
 })
-
-render(<App />, document.getElementById('tabs'))
+ReactDOM.createRoot(document.getElementById('tabs')).render(<App />)

@@ -76,6 +76,8 @@
     "mnemonic-reset_password-title": "Enter Backup Phrase to reset your password",
     "mnemonic-reset_password-popup-title": "Not the current Backup Phrase",
     "mnemonic-reset_password-popup-description": "This Backup Phrase is not the current one you used! Please enter backup phrase you use now to reset your password.",
+    "mnemonic-create-popup-title": "Not the current Backup Phrase",
+    "mnemonic-create-popup-description": "This Backup Phrase is not correct! Please enter the correct backup phrase to create a new wallet.",
     "password-title": "Set Password",
     "password-description": "Password is for locking/unlocking account and some authorizations.",
     "password-reset_password-title": "Reset Password",
