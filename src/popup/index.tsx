@@ -3,7 +3,7 @@ import '~/utils/i18n'
 
 import { observer } from 'mobx-react-lite'
 import { Suspense, useEffect } from 'react'
-import { render } from 'react-dom'
+import ReactDOM from 'react-dom/client'
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
 import { MethodEnum, PopupEnum, RequestMethodEnum } from '~/types/extension'
@@ -87,14 +87,12 @@ const App = observer(() => {
         </Routes>
     )
 })
-
-render(
+ReactDOM.createRoot(document.getElementById(PopupEnum.INTERNAL)).render(
     <Suspense fallback={<div className="full bg-main" />}>
         <MemoryRouter>
             <App />
         </MemoryRouter>
-    </Suspense>,
-    document.getElementById(PopupEnum.INTERNAL)
+    </Suspense>
 )
 
 export default App
