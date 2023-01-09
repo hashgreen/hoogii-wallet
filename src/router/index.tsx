@@ -104,7 +104,7 @@ export const routes: RouteObject[] = [
         index: true,
         loader: async () => {
             await rootStore.walletStore.init()
-            if (!rootStore.walletStore.isWalletExisted) {
+            if (!(await rootStore.walletStore.isWalletExisted())) {
                 await Messaging.toBackground<MethodEnum.MNEMONIC>({
                     sender: SenderEnum.EXTENSION,
                     origin: chrome.runtime.getURL(''),

@@ -5,6 +5,7 @@ import { requestHandler } from '~/api/extension/request'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
+
 console.log('Service worker reload!')
 const controller = new BackgroundController()
 
@@ -152,12 +153,21 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
 })
 
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
-    sendResponse({
-        ...request,
-        sender: SenderEnum.EXTENSION,
-        target: SenderEnum.WEBPAGE,
-        data: await requestHandler(request),
-    })
+    try {
+        sendResponse({
+            ...request,
+            sender: SenderEnum.EXTENSION,
+            target: SenderEnum.WEBPAGE,
+            data: await requestHandler(request),
+        })
+    } catch (error) {
+        sendResponse({
+            ...request,
+            sender: SenderEnum.EXTENSION,
+            target: SenderEnum.WEBPAGE,
+            data: error,
+        })
+    }
 })
 
 controller.listen()
