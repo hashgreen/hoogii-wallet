@@ -153,12 +153,21 @@ controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
 })
 
 controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
-    sendResponse({
-        ...request,
-        sender: SenderEnum.EXTENSION,
-        target: SenderEnum.WEBPAGE,
-        data: await requestHandler(request),
-    })
+    try {
+        sendResponse({
+            ...request,
+            sender: SenderEnum.EXTENSION,
+            target: SenderEnum.WEBPAGE,
+            data: await requestHandler(request),
+        })
+    } catch (error) {
+        sendResponse({
+            ...request,
+            sender: SenderEnum.EXTENSION,
+            target: SenderEnum.WEBPAGE,
+            data: error,
+        })
+    }
 })
 
 controller.listen()

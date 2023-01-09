@@ -17,10 +17,13 @@ import { puzzleHashToAddress } from '~/utils/signature'
 import * as Errors from './errors'
 import { permission } from './permission'
 
-const chainId = async (): Promise<string | Errors.Error> => {
+const chainId = async (): Promise<string> => {
     const chainId = await getStorage<string>(StorageEnum.chainId)
 
-    return chainId || Errors.InvalidParamsError
+    if (!chainId) {
+        throw Errors.InvalidParamsError
+    }
+    return chainId
 }
 
 const connect = (origin: string): boolean => {
@@ -34,7 +37,7 @@ const walletSwitchChain = async (params: {
         await setStorage({ chainId: params.chainId })
         return true
     }
-    return Errors.InvalidParamsError
+    throw Errors.InvalidParamsError
 }
 
 const accounts = async (): Promise<string[] | Errors.Error> => {
@@ -42,7 +45,7 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     const puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
     const chain = chains.find((chain) => chain.id === chainId)
     if (!puzzleHash || !chain) {
-        return Errors.NoSecretKeyError
+        throw Errors.NoSecretKeyError
     }
 
     const account = puzzleHashToAddress(puzzleHash, chain.prefix)
@@ -66,7 +69,7 @@ const authHandler = async (request: IMessage<RequestArguments>) => {
 export const requestHandler = async (request: IMessage<RequestArguments>) => {
     const auth = await authHandler(request)
     if (!auth) {
-        return Errors.UserRejectedRequestError
+        throw Errors.UserRejectedRequestError
     }
 
     switch (request.data?.method) {
@@ -79,21 +82,21 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.ACCOUNTS:
             return accounts()
         case RequestMethodEnum.GET_PUBLIC_KEYS:
-            return Errors.UnderDevelopment
+            throw Errors.UnderDevelopment
         case RequestMethodEnum.FILTER_UNLOCK_COINS:
-            return Errors.UnderDevelopment
+            throw Errors.UnderDevelopment
         case RequestMethodEnum.GET_ASSET_COINS:
-            return Errors.UnderDevelopment
+            throw Errors.UnderDevelopment
         case RequestMethodEnum.GET_ASSET_BALANCE:
-            return Errors.UnderDevelopment
+            throw Errors.UnderDevelopment
         case RequestMethodEnum.SIGN_COIN_SPENDS:
-            return Errors.UnderDevelopment
+            throw Errors.UnderDevelopment
         case RequestMethodEnum.SIGN_MESSAGE:
-            return Errors.UnderDevelopment
+            throw Errors.UnderDevelopment
         case RequestMethodEnum.SEND_TRANSACTION:
-            return Errors.UnderDevelopment
+            throw Errors.UnderDevelopment
         default:
-            return Errors.InvalidParamsError
+            throw Errors.InvalidParamsError
     }
 }
 
