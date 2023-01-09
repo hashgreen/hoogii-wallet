@@ -104,8 +104,6 @@ export const routes: RouteObject[] = [
         index: true,
         loader: async () => {
             await rootStore.walletStore.init()
-            console.log('seed>', rootStore.walletStore.seed)
-            console.log('seed length>', rootStore.walletStore.seed.length)
             if (!(await rootStore.walletStore.isWalletExisted())) {
                 await Messaging.toBackground<MethodEnum.MNEMONIC>({
                     sender: SenderEnum.EXTENSION,
