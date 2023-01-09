@@ -7,11 +7,7 @@ window.chia = {
     version: pkg.version,
     isHoogii: true,
     request: async (arg) => {
-        const res = await request(arg)
-        if (res?.data.error) {
-            throw res?.data
-        }
-        return res?.data
+        return (await request(arg))?.data
     },
     isConnected: async () => await isConnected(),
     // lock: async () => await lock(),
