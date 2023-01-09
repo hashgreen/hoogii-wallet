@@ -20,6 +20,7 @@ const Account = ({ open, setOpen }: IProps) => {
         [walletStore.address]
     )
     const [name, setName] = useState(walletStore.name ?? '')
+    const [isEdit, setIsEdit] = useState(false)
     const [password, setPassword] = useState('')
     const [confirm, setConfirm] = useState('')
     const isValid = useMemo(() => password === confirm, [password, confirm])
@@ -46,7 +47,7 @@ const Account = ({ open, setOpen }: IProps) => {
                 <button
                     onClick={onSubmit}
                     className="btn btn-primary"
-                    disabled={disabled}
+                    disabled={disabled || !isEdit}
                 >
                     {t('btn-save')}
                 </button>
@@ -62,7 +63,10 @@ const Account = ({ open, setOpen }: IProps) => {
                         type="text"
                         placeholder={address}
                         value={name}
-                        onChange={(e) => setName(e.currentTarget.value)}
+                        onChange={(e) => {
+                            setName(e.currentTarget.value)
+                            setIsEdit(true)
+                        }}
                         className="input"
                     />
                     <div className="mt-1 text-left text-caption text-primary-100">
@@ -74,7 +78,10 @@ const Account = ({ open, setOpen }: IProps) => {
                         type="password"
                         placeholder={t('input-new_password-placeholder')}
                         value={password}
-                        onChange={(e) => setPassword(e.currentTarget.value)}
+                        onChange={(e) => {
+                            setPassword(e.currentTarget.value)
+                            setIsEdit(true)
+                        }}
                         className="mb-2 input"
                     />
                     <div>
@@ -84,7 +91,10 @@ const Account = ({ open, setOpen }: IProps) => {
                                 'input-confirm_password-placeholder'
                             )}
                             value={confirm}
-                            onChange={(e) => setConfirm(e.currentTarget.value)}
+                            onChange={(e) => {
+                                setConfirm(e.currentTarget.value)
+                                setIsEdit(true)
+                            }}
                             className={classNames(
                                 'input',
                                 isError && 'input-error'
