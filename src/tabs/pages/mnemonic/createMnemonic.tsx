@@ -56,7 +56,6 @@ const CreateMnemonic = ({ verifying = false }: { verifying?: boolean }) => {
                 : false,
         [randomInputs, mnemonics]
     )
-    console.log('currentMnemonic>', currentMnemonic)
 
     return (
         <SubLayout
