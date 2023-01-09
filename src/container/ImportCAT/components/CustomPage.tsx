@@ -21,7 +21,7 @@ const CustomPage = () => {
     const [checked, setChecked] = useState(false)
 
     const {
-        assetsStore: { existedAssets, availableAssets },
+        assetsStore: { existedAssets },
     } = rootStore
 
     const schema = joi
