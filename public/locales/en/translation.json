@@ -53,7 +53,7 @@
     "error-invalid": "{{field}} is invalid.",
     "error-password-not_match": "Passwords do not match.",
     "error-password-incorrect": "Password is incorrect.",
-    "error-address_already_existed": "Address already existed",
+    "error-address_already_existed": "This address already exists.",
     "error-mnemonic-invalid": "*Backup Phrases are incorrect.",
     "error-code-invalid": "Code length must between 1 and 12",
     "error-assetId-invalid": "This Asset ID is invalid.",
