@@ -134,12 +134,13 @@ class Messaging {
                     }
                     console.log('to content << ' + JSON.stringify(response))
 
+                    window.removeEventListener('message', responseHandler)
+
                     if (response.data?.error) {
                         throw response.data
                     }
 
                     resolve(response)
-                    window.removeEventListener('message', responseHandler)
                 }
             )
             console.log('to content >> ' + JSON.stringify(data))
