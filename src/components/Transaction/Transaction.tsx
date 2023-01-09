@@ -140,7 +140,7 @@ const Transaction = ({
                                           amount?.toString() ?? '0'
                                       ).toFixed()}
                             </span>{' '}
-                            {existAsset?.code ||
+                            {existAsset?.code ??
                                 (assetId
                                     ? asset?.code ?? 'unknown token'
                                     : XCH.code)}
