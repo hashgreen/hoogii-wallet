@@ -36,9 +36,12 @@ const History = () => {
             ),
         [history]
     )
+
+    const isFetching = fetching || availableAssets.isFetching
+
     return (
         <div className="pb-5">
-            {(fetching || availableAssets.isFetching) && <TransactionLoading />}
+            {isFetching && <TransactionLoading />}
             {isAblyConnected && puzzleHash && (
                 <Ably
                     channelName={'0x' + puzzleHash}
@@ -47,9 +50,7 @@ const History = () => {
                     }}
                 />
             )}
-            {!(pendingHistory?.length || history?.length) &&
-            !fetching &&
-            !availableAssets.isFetching ? (
+            {!(pendingHistory?.length || history?.length) && !isFetching ? (
                 <div className="mb-2 ml-3 text-body3 text-primary-100">
                     {t('no_result-activities')}
                 </div>
