@@ -160,8 +160,8 @@ function Mnemonic({
                             defaultValue={field.value}
                             className={`input input-mnemonics ${classNames({
                                 'input-error':
-                                    errors.phrases?.[index] ||
-                                    (values?.[index]?.value &&
+                                    values?.[index]?.value &&
+                                    (errors.phrases?.[index] ||
                                         !words.some(
                                             (word) =>
                                                 word === values[index]?.value
