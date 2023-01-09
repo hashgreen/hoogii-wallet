@@ -46,8 +46,12 @@ const Transaction = ({
     const [open, setOpen] = useState(false)
     const {
         walletStore: { chain },
-        assetsStore: { availableAssets, XCH },
+        assetsStore: { availableAssets, XCH, existedAssets },
     } = rootStore
+    const existAsset = existedAssets.find(
+        (asset) => '0x' + asset.assetId === assetId
+    )
+
     const asset = useMemo(
         () =>
             availableAssets.data.find(
@@ -136,7 +140,10 @@ const Transaction = ({
                                           amount?.toString() ?? '0'
                                       ).toFixed()}
                             </span>{' '}
-                            {assetId ? asset?.code : XCH.code}
+                            {existAsset?.code ||
+                                (assetId
+                                    ? asset?.code ?? 'unknown token'
+                                    : XCH.code)}
                         </div>
                         {action === IType.Send && (
                             <div className="mt-1 text-body3 text-primary-100">

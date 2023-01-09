@@ -27,7 +27,6 @@ class AssetsStore {
     walletStore: WalletStore
 
     existedAssets: IAsset[] = []
-    allAssets: IAsset[] = []
 
     availableAssets: IFetchData<ICryptocurrency[]> = {
         isFetching: true,
