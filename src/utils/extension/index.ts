@@ -9,7 +9,7 @@ import {
 } from '~/types/extension'
 import { chains } from '~/utils/constants'
 import { decrypt, stringToBytes } from '~/utils/encryption'
-import { getStorage, setStorage } from '~/utils/storage'
+import { getStorage, setStorage } from '~/utils/extension/storage'
 
 export const retrieveChain = async () => {
     const chainId = await getStorage<string>('chainId')
@@ -19,11 +19,7 @@ export const retrieveChain = async () => {
     const chain = chains.find((item) => item.id === chainId) ?? chains[0]
     return chain
 }
-export const retrieveSeed = async (
-    password
-): Promise<Uint8Array | undefined> => {
-    const keyring = await getStorage('keyring')
-    if (!keyring) return undefined
+export const retrieveSeed = async (password, keyring): Promise<Uint8Array> => {
     const { salt, cipherText } = keyring
     const plainText = await decrypt(salt, password, cipherText)
 
