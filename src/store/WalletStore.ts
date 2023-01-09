@@ -41,7 +41,7 @@ class WalletStore {
     puzzleHash: string = ''
     addresses: IAddress[] = []
     connectedSites: IConnectedSite[] = []
-    seed?: Uint8Array = new Uint8Array([])
+    seed: Uint8Array = new Uint8Array()
     privateKey: PrivateKey = new PrivateKey(0n)
 
     editName = async (name?: string) => {
@@ -86,7 +86,7 @@ class WalletStore {
         )
 
         autorun(() => {
-            if (this.seed && this.seed?.length > 0 && !this.locked) {
+            if (this.seed?.length > 0 && !this.locked) {
                 this.generateAddress(this.seed)
             }
         })
@@ -107,20 +107,25 @@ class WalletStore {
         return this.chain?.id === ChainEnum.Mainnet
     }
 
-    get isWalletExisted(): boolean {
-        return !!this.seed
+    async isWalletExisted(): Promise<boolean> {
+        const keyring = await getStorage<string>('keyring')
+        return !!keyring
     }
 
     init = async () => {
+        const keyring = await getStorage<string>('keyring')
+        if (!keyring) {
+            this.logout()
+            return
+        }
         const chain = await retrieveChain()
         const password = await getDataFromMemory<string>('password')
-        const keyring = await getStorage<string>('keyring')
 
         if (keyring && password === '') {
             this.locked = true
             return
         }
-        const seed = await retrieveSeed(password)
+        const seed = await retrieveSeed(password, keyring)
         const name = await getStorage<string>('name')
         runInAction(() => {
             this.db = new WalletDexie(chain.id)
@@ -160,11 +165,7 @@ class WalletStore {
     logout = async () => {
         await clearStorage()
         await this.db.delete()
-        if (chrome.runtime) {
-            chrome.runtime.reload()
-        } else {
-            location.reload()
-        }
+        chrome.runtime.reload()
     }
 
     switchChain = async (chain: IChain) => {
