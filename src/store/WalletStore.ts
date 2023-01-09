@@ -169,8 +169,7 @@ class WalletStore {
     }
 
     switchChain = async (chain: IChain) => {
-        rootStore.historyStore.history = []
-        rootStore.historyStore.pendingHistory = []
+        rootStore.historyStore.reset()
         await setStorage({ chainId: chain.id })
         runInAction(() => {
             this.chain = chain
