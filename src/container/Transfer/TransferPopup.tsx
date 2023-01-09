@@ -40,7 +40,7 @@ const TransferPopup = ({
         handleSubmit,
         watch,
         setFocus,
-        formState: { isSubmitting, isSubmitSuccessful },
+        formState: { isSubmitting },
     } = useForm<IForm>({
         defaultValues: {
             fee: '0',
@@ -52,10 +52,6 @@ const TransferPopup = ({
         setFocus('fee')
     }, [])
 
-    useEffect(() => {
-        if (isSubmitSuccessful) navigate(-1)
-    }, [isSubmitSuccessful])
-
     const onSubmit = async (data: IForm) => {
         const { fee } = data
         if (asset?.assetId === 'XCH') {
@@ -63,6 +59,7 @@ const TransferPopup = ({
         } else {
             await sendCATTx?.(address.address, asset, amount, memo, fee)
         }
+        navigate(-1)
     }
 
     return (
