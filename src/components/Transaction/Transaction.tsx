@@ -1,4 +1,3 @@
-import { sanitizeHex } from '@rigidity/chia'
 import classNames from 'classnames'
 import { format } from 'date-fns'
 import { observer } from 'mobx-react-lite'
@@ -51,8 +50,10 @@ const Transaction = ({
     } = rootStore
     const asset = useMemo(
         () =>
-            availableAssets.find((asset) => '0x' + asset.asset_id === assetId),
-        [assetId, availableAssets]
+            availableAssets.data.find(
+                (asset) => '0x' + asset.asset_id === assetId
+            ),
+        [assetId, availableAssets.data]
     )
 
     const isTransfer =
@@ -135,7 +136,7 @@ const Transaction = ({
                                           amount?.toString() ?? '0'
                                       ).toFixed()}
                             </span>{' '}
-                            {asset?.code ?? XCH.code}
+                            {assetId ? asset?.code : XCH.code}
                         </div>
                         {action === IType.Send && (
                             <div className="mt-1 text-body3 text-primary-100">

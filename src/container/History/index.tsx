@@ -21,6 +21,7 @@ const History = () => {
             loadMore,
             completeHistory,
         },
+        assetsStore: { availableAssets },
         walletStore: { puzzleHash, isAblyConnected },
     } = rootStore
 
@@ -35,10 +36,9 @@ const History = () => {
             ),
         [history]
     )
-    console.log('history>', history)
     return (
         <div className="pb-5">
-            {fetching && <TransactionLoading />}
+            {(fetching || availableAssets.isFetching) && <TransactionLoading />}
             {isAblyConnected && puzzleHash && (
                 <Ably
                     channelName={'0x' + puzzleHash}
@@ -47,7 +47,9 @@ const History = () => {
                     }}
                 />
             )}
-            {!(pendingHistory?.length || history?.length) && !fetching ? (
+            {!(pendingHistory?.length || history?.length) &&
+            !fetching &&
+            !availableAssets.isFetching ? (
                 <div className="mb-2 ml-3 text-body3 text-primary-100">
                     {t('no_result-activities')}
                 </div>

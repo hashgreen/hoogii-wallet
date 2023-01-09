@@ -25,9 +25,14 @@ import defaultCATs from '~config/defaultCATs.json'
 import WalletStore from './WalletStore'
 class AssetsStore {
     walletStore: WalletStore
-    availableAssets: ICryptocurrency[] = []
+
     existedAssets: IAsset[] = []
     allAssets: IAsset[] = []
+
+    availableAssets: IFetchData<ICryptocurrency[]> = {
+        isFetching: true,
+        data: [],
+    }
 
     balancesData: IFetchData<{ [key: string]: number }> = {
         isFetching: true,
@@ -53,7 +58,8 @@ class AssetsStore {
                     (market) => market[market.info_ccy_name] as ICryptocurrency
                 )
                 runInAction(() => {
-                    this.availableAssets = assets
+                    this.availableAssets.data = assets
+                    this.availableAssets.isFetching = false
                 })
             } catch (error) {}
         })
