@@ -204,11 +204,8 @@ export class BackgroundController {
         >
     }
 
-    password: string
-
     constructor() {
         this.methods = {}
-        this.password = ''
     }
 
     add = <T extends MethodEnum>(

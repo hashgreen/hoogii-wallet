@@ -1,6 +1,10 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
-import { lockFromBackground, savePassword } from '~/api/extension'
+import {
+    getDataFromMemory,
+    lockFromBackground,
+    savePassword,
+} from '~/api/extension'
 import rootStore from '~/store'
 import {
     ConnectionName,
@@ -12,8 +16,6 @@ import {
     ReturnDataProps,
 } from '~/types/extension'
 import { bcryptVerify } from '~/utils'
-import { getStorage } from '~/utils/extension/storage'
-
 export class InternalControllerStore {
     private port: chrome.runtime.Port
     private tabId?: number
@@ -46,7 +48,7 @@ export class InternalControllerStore {
 
     checkPassword = async (password: string) => {
         try {
-            const passwordHash = (await getStorage<string>('password')) || ''
+            const passwordHash = (await getDataFromMemory('password')) || ''
             const result = await bcryptVerify(password, passwordHash)
 
             if (result) this.unlock(password)
