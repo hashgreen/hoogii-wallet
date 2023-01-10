@@ -116,7 +116,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
                         <div className="flex">
                             {isMainnet && (
                                 <a
-                                    href={`https://ramp.stably.io/?network=chia&asset=USDS&filter=true&address=${puzzleHashToAddress(
+                                    href={`https://ramp.stably.io/?network=chia&asset=USDS&integrationId=hashgreen-a0300641&filter=true&address=${puzzleHashToAddress(
                                         puzzleHash,
                                         chain?.prefix
                                     )}`}
