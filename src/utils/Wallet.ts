@@ -14,6 +14,7 @@ import { Program } from '@rigidity/clvm'
 import Decimal from 'decimal.js-light'
 
 import { callGetBalance } from '~/api/api'
+import TransactionStore from '~/store/TransactionStore'
 import { addressToPuzzleHash } from '~/utils/signature'
 
 import { xchToMojo } from './CoinConverter'
@@ -270,7 +271,6 @@ export class Wallet extends Program {
         fee,
         address,
         targetAddress,
-        spendableCoinList,
     }: {
         puzzleReveal: string
         amount: string
@@ -278,7 +278,6 @@ export class Wallet extends Program {
         fee: string
         address: string
         targetAddress: string
-        spendableCoinList: Coin[]
     }): Promise<CoinSpend[]> => {
         const spendAmount = BigInt(
             xchToMojo(amount).add(xchToMojo(fee)).toString()
@@ -289,9 +288,13 @@ export class Wallet extends Program {
             },
             { isShowToast: false }
         )
+
         if (balance.data.data < spendAmount) {
             throw new Error("You don't have enough balance to send")
         }
+        const spendableCoinList = await TransactionStore.coinList(
+            addressToPuzzleHash(address)
+        )
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
