@@ -1,6 +1,10 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
-import { lockFromBackground, savePassword } from '~/api/extension'
+import {
+    
+    lockFromBackground,
+    savePassword,
+} from '~/api/extension'
 import rootStore from '~/store'
 import {
     ConnectionName,
@@ -13,7 +17,6 @@ import {
 } from '~/types/extension'
 import { bcryptVerify } from '~/utils'
 import { getStorage } from '~/utils/extension/storage'
-
 export class InternalControllerStore {
     private port: chrome.runtime.Port
     private tabId?: number

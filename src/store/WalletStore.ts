@@ -119,7 +119,7 @@ class WalletStore {
             return
         }
         const chain = await retrieveChain()
-        const password = await getDataFromMemory<string>('password')
+        const password = await getDataFromMemory('password')
 
         if (keyring && password === '') {
             this.locked = true
@@ -209,7 +209,7 @@ class WalletStore {
         savePassword(password)
         const keyring = await getStorage('keyring')
         const { salt, cipherText } = keyring
-        const oldPassword = await getDataFromMemory<string>('password')
+        const oldPassword = await getDataFromMemory('password')
         const plainText = await decrypt(salt, oldPassword, cipherText)
         const encryptedData = await encrypt(password, plainText)
 
