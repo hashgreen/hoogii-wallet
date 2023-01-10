@@ -107,7 +107,7 @@ class TransactionStore {
 
         const assetId = fromHex(asset.assetId)
         const cat = new CAT(assetId, wallet)
-        const spendableCATList = await this.coinList(
+        const spendableCATList = await TransactionStore.coinList(
             Program.fromBytes(cat.hash()).toHex()
         )
 
@@ -133,9 +133,6 @@ class TransactionStore {
         const signatureList = [CATsignatures]
 
         if (BigInt(xchToMojo(fee).toString()) > 0) {
-            const spendableCoinList = await this.coinList(
-                addressToPuzzleHash(address)
-            )
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzleReveal,
                 amount: '0',
@@ -143,7 +140,6 @@ class TransactionStore {
                 fee,
                 address,
                 targetAddress: address,
-                spendableCoinList,
             })
             spendList.push(...XCHspendsList)
             const XCHsignatures = AugSchemeMPL.aggregate(
