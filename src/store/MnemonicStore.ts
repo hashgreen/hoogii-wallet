@@ -203,6 +203,8 @@ export class ResetMnemonicStore extends MnemonicStore {
 
         if (password) {
             await savePassword(password)
+
+            this.walletStore.saveKeyring(this.mnemonics?.join(' '), password)
         }
     }
 }
