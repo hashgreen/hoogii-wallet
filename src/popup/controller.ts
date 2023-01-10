@@ -15,7 +15,6 @@ import {
 import { StorageEnum } from '~/types/storage'
 import { bcryptVerify } from '~/utils'
 import { getStorage } from '~/utils/extension/storage'
-
 export class InternalControllerStore {
     private port: chrome.runtime.Port
     private tabId?: number
