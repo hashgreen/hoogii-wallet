@@ -109,7 +109,7 @@ export class InternalControllerStore {
                 url: this.request?.origin,
             })
 
-            connectedSites = await await db.connectedSites.toArray()
+            connectedSites = await db.connectedSites.toArray()
             runInAction(() => {
                 this.connected = connectedSites.some(
                     (site) => site.url === this.request?.origin
