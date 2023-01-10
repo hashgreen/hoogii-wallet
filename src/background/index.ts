@@ -27,7 +27,7 @@ controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
     }
 })
 controller.add(MethodEnum.ENABLE, async (request, sendResponse) => {
-    if (connectedSitesStore.isConnectedSite(request.origin)) {
+    if (await connectedSitesStore.isConnectedSite(request.origin)) {
         sendResponse({
             ...request,
             data: true,
@@ -96,7 +96,7 @@ controller.add(MethodEnum.REQUEST_DATA, async (request, sendResponse) => {
 controller.add(MethodEnum.IS_CONNECTED, async (request, sendResponse) => {
     sendResponse({
         ...request,
-        data: connectedSitesStore.isConnectedSite(request.origin),
+        data: await connectedSitesStore.isConnectedSite(request.origin),
         sender: SenderEnum.EXTENSION,
         target: SenderEnum.WEBPAGE,
     })

@@ -1,17 +1,20 @@
 import { liveQuery } from 'dexie'
 import { makeAutoObservable, onBecomeUnobserved } from 'mobx'
 
-import { IConnectedSite } from '~/db'
-import rootStore from '~/store'
-
+import { IConnectedSite, WalletDexie } from '~/db'
+import { ChainEnum } from '~/types/chia'
+import { StorageEnum } from '~/types/storage'
+import { getStorage } from '~/utils/storage'
 class ConnectedSitesStore {
     connectedSites: IConnectedSite[] = []
 
     unsubscribeConnectedSites = () => {}
     subscribeConnectedSites = () => {
-        const observable = liveQuery(() =>
-            rootStore.walletStore.db.connectedSites.toArray()
-        )
+        const observable = liveQuery(async () => {
+            const chainId = await getStorage<string>(StorageEnum.chainId)
+            const db = new WalletDexie(chainId ?? ChainEnum.Mainnet)
+            return db.connectedSites.toArray()
+        })
         const subscription = observable.subscribe({
             next: (result) => (this.connectedSites = result),
         })
@@ -28,7 +31,11 @@ class ConnectedSitesStore {
         )
     }
 
-    isConnectedSite = (origin) => {
+    isConnectedSite = async (origin) => {
+        const chainId = await getStorage<string>(StorageEnum.chainId)
+        console.log('chainId', chainId)
+        // const db = new WalletDexie(chainId ?? ChainEnum.Mainnet)
+        // const connectedSites = db.connectedSites as IConnectedSite[]
         return this.connectedSites.some((site) => site.url === origin)
     }
 }
