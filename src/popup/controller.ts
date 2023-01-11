@@ -1,10 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
-import {
-    
-    lockFromBackground,
-    savePassword,
-} from '~/api/extension'
+import { lockFromBackground, savePassword } from '~/api/extension'
 import rootStore from '~/store'
 import {
     ConnectionName,
