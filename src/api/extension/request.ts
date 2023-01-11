@@ -69,7 +69,7 @@ const authHandler = async (request: IMessage<RequestArguments>) => {
 export const requestHandler = async (request: IMessage<RequestArguments>) => {
     // eager = true skip unlock
     if (
-        request.data?.method === RequestMethodEnum.CHAIN_ID &&
+        request.data?.method === RequestMethodEnum.CONNECT &&
         request?.data?.params?.eager
     ) {
         request.isLocked = false
@@ -81,10 +81,10 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
     }
 
     switch (request.data?.method) {
-        case RequestMethodEnum.CHAIN_ID:
-            return await chainId()
         case RequestMethodEnum.CONNECT:
             return connect(request.origin)
+        case RequestMethodEnum.CHAIN_ID:
+            return await chainId()
         case RequestMethodEnum.WALLET_SWITCH_CHAIN:
             return walletSwitchChain(request.data.params)
         case RequestMethodEnum.ACCOUNTS:
