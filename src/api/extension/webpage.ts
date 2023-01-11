@@ -1,6 +1,7 @@
 import Messaging from '~/api/extension/messaging'
 import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 
+import pkg from '../../../package.json'
 export const enable = async () => {
     const response = await Messaging.toContent(MethodEnum.ENABLE)
     return response.data
@@ -28,5 +29,5 @@ export const event = (eventName: string, callback: (arg: any) => void) => {
 
     window.chia._events[eventName] = [...events, [callback, handler]]
 
-    window.addEventListener(`hoogii${eventName}`, handler)
+    window.addEventListener(`${pkg.name}${eventName}`, handler)
 }

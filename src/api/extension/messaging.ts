@@ -21,8 +21,8 @@ class Messaging {
         console.log('listen to messages from extension')
         chrome.runtime.onMessage.addListener(async (response: IMessage) => {
             if (
-                response.target !== SenderEnum.WEBPAGE ||
-                response.sender !== SenderEnum.EXTENSION
+                response.sender !== SenderEnum.EXTENSION ||
+                response.target !== SenderEnum.WEBPAGE
             ) {
                 return
             }
