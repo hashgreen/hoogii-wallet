@@ -121,7 +121,7 @@ class WalletStore {
         const chain = await retrieveChain()
         const password = await getDataFromMemory('password')
 
-        if (keyring && password === '') {
+        if (keyring && !password) {
             this.locked = true
             return
         }
@@ -169,8 +169,8 @@ class WalletStore {
     }
 
     switchChain = async (chain: IChain) => {
-        rootStore.historyStore.reset()
         await setStorage({ chainId: chain.id })
+        rootStore.historyStore.reset()
         runInAction(() => {
             this.chain = chain
         })
