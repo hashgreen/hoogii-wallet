@@ -6,8 +6,8 @@ window.chia = {
     apiVersion: '1.0.0',
     version: pkg.version,
     isHoogii: true,
-    request: async (arg) => {
-        return (await request(arg))?.data
+    request: async (...arg) => {
+        return (await request(...arg))?.data
     },
     isConnected: async () => (await isConnected()).data,
     // lock: async () => await lock(),
