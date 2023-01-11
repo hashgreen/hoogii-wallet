@@ -21,7 +21,6 @@ export class RootStore {
     }
 
     reset() {
-        this.walletStore = new WalletStore()
         this.transactionStore = new TransactionStore(this.walletStore)
         this.assetsStore = new AssetsStore(this.walletStore)
         this.historyStore = new HistoryStore(this.walletStore)

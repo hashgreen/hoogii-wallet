@@ -113,7 +113,6 @@ export const routes: RouteObject[] = [
                 window.close()
                 return
             }
-
             await rootStore.assetsStore.retrieveExistedAssets()
             const balances = rootStore.assetsStore.getAllBalances()
             return defer({ balances })
