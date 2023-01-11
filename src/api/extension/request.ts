@@ -26,7 +26,7 @@ const chainId = async (): Promise<string> => {
     return chainId
 }
 
-const connect = (origin: string): boolean => {
+const connect = async (origin: string): Promise<boolean> => {
     return connectedSitesStore.isConnectedSite(origin)
 }
 

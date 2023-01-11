@@ -9,7 +9,7 @@ window.chia = {
     request: async (arg) => {
         return (await request(arg))?.data
     },
-    isConnected: async () => await isConnected(),
+    isConnected: async () => (await isConnected()).data,
     // lock: async () => await lock(),
     // unlock: async () => await unlock(),
     // enable: async () => {
