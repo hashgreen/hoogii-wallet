@@ -13,6 +13,8 @@ import {
     SendResponse,
 } from '~/types/extension'
 
+import pkg from '../../../package.json'
+
 class Messaging {
     static createProxyController = () => {
         // handle messages from extension
@@ -28,6 +30,12 @@ class Messaging {
                 '[content script]:from extension >> ' + JSON.stringify(response)
             )
             // TODO: catch messages from extension
+
+            const event = new CustomEvent(`${pkg.name}${response.event}`, {
+                detail: response.data,
+            })
+
+            window.dispatchEvent(event)
         })
 
         // handle messages from websites

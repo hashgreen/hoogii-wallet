@@ -7,6 +7,7 @@ export interface IMessage<T = any> {
     method: MethodEnum
     isLocked: boolean
     isConnected?: boolean
+    event?: string
     data?: T
 }
 
@@ -53,6 +54,7 @@ export enum MethodEnum {
     RETURN_DATA = 'RETURN_DATA',
     MNEMONIC = 'MNEMONIC',
     RESET_PASSWORD = 'RESET_PASSWORD',
+    SWITCH_CHAIN = 'SWITCH_CHAIN',
 }
 
 export enum RequestMethodEnum {
@@ -100,6 +102,7 @@ export type MethodDataType<T extends MethodEnum> = {
     SAVE_DATA: {
         password?: string
     }
+    SWITCH_CHAIN: undefined
 }[T]
 interface ILock {
     success: boolean
@@ -126,6 +129,7 @@ export type MethodReturnDataType<T extends MethodEnum> = {
     }
     RETURN_DATA: undefined
     SAVE_DATA: undefined
+    SWITCH_CHAIN: { chainId: string }
 }[T]
 export enum StorageEnum {
     ASSETS = 'assets',
