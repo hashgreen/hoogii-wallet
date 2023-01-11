@@ -1,7 +1,8 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
 import { lockFromBackground, savePassword } from '~/api/extension'
-import rootStore from '~/store'
+import { WalletDexie } from '~/db'
+import { ChainEnum } from '~/types/chia'
 import {
     ConnectionName,
     IMessage,
@@ -11,6 +12,7 @@ import {
     PopupEnum,
     ReturnDataProps,
 } from '~/types/extension'
+import { StorageEnum } from '~/types/storage'
 import { bcryptVerify } from '~/utils'
 import { getStorage } from '~/utils/extension/storage'
 export class InternalControllerStore {
@@ -88,8 +90,9 @@ export class InternalControllerStore {
     }
 
     connectedSite = async () => {
-        let connectedSites =
-            await rootStore.walletStore.db.connectedSites.toArray()
+        const chainId = await getStorage<string>(StorageEnum.chainId)
+        const db = new WalletDexie(chainId ?? ChainEnum.Mainnet)
+        let connectedSites = await db.connectedSites.toArray()
 
         if (connectedSites.some((site) => site.url === this.request?.origin)) {
             runInAction(() => {
@@ -100,13 +103,12 @@ export class InternalControllerStore {
         }
 
         if (this.request?.origin) {
-            await rootStore.walletStore.db.connectedSites.add({
+            await db.connectedSites.add({
                 name: this.request?.origin,
                 url: this.request?.origin,
             })
 
-            connectedSites =
-                await rootStore.walletStore.db.connectedSites.toArray()
+            connectedSites = await db.connectedSites.toArray()
             runInAction(() => {
                 this.connected = connectedSites.some(
                     (site) => site.url === this.request?.origin
