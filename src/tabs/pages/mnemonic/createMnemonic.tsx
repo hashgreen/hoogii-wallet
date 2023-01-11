@@ -2,17 +2,28 @@ import Joi from 'joi'
 import { observer } from 'mobx-react-lite'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import Mnemonic from '~/components/Mnemonic'
+import { ErrorPopup } from '~/components/Popup'
 import { isDev } from '~/utils'
 import { SubLayout } from '~tabs/layout'
 import rootStore from '~tabs/store'
 
 const CreateMnemonic = ({ verifying = false }: { verifying?: boolean }) => {
     const [isValid, setIsValid] = useState(false)
+    const [currentMnemonic, setCurrentMnemonic] = useState<string[]>([''])
+    const navigate = useNavigate()
+    const [open, setOpen] = useState(false)
+
     const { t } = useTranslation()
     const {
-        createMnemonicStore: { mnemonics, schema, createRandomInputs },
+        createMnemonicStore: {
+            mnemonics,
+            schema,
+            createRandomInputs,
+            validate,
+        },
     } = rootStore
     const [randomInputs = {}] = useMemo(
         () =>
@@ -60,11 +71,15 @@ const CreateMnemonic = ({ verifying = false }: { verifying?: boolean }) => {
             }
             next={{
                 text: t('btn-next'),
-                to: verifying
-                    ? isValid
-                        ? '/mnemonic/create/password'
-                        : undefined
-                    : '/mnemonic/create/verify',
+                onClick: () => {
+                    if (validate(currentMnemonic)) {
+                        navigate('/mnemonic/create/password')
+                    } else {
+                        setOpen(true)
+                    }
+                },
+                disabled: !isValid,
+                to: verifying ? undefined : '/mnemonic/create/verify',
             }}
             back={!verifying}
         >
@@ -81,7 +96,17 @@ const CreateMnemonic = ({ verifying = false }: { verifying?: boolean }) => {
                         })}
                         disabled={disabled}
                         readOnly={readOnly}
-                        onChange={setIsValid}
+                        onChange={(isValid, mnemonics) => {
+                            setIsValid(isValid)
+                            setCurrentMnemonic(mnemonics)
+                        }}
+                    />
+                )}
+                {open && (
+                    <ErrorPopup
+                        title={t('mnemonic-create-popup-title')}
+                        description={t('mnemonic-create-popup-description')}
+                        close={() => setOpen(false)}
                     />
                 )}
             </div>

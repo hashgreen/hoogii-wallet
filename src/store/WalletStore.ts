@@ -19,6 +19,7 @@ import { IAddress, IConnectedSite, WalletDexie } from '~/db'
 import { walletTo0x02 } from '~/db/migrations'
 import rootStore from '~/store'
 import { ChainEnum, IChain } from '~/types/chia'
+import { StorageEnum } from '~/types/storage'
 import { bcryptHash, bcryptVerify } from '~/utils'
 import { chains } from '~/utils/constants'
 import { bytesToString, decrypt, encrypt } from '~/utils/encryption'
@@ -30,7 +31,6 @@ import {
     removeItemsFromStorage,
     setStorage,
 } from '~/utils/storage'
-
 class WalletStore {
     isAblyConnected = false
     locked: boolean = false
@@ -41,7 +41,7 @@ class WalletStore {
     puzzleHash: string = ''
     addresses: IAddress[] = []
     connectedSites: IConnectedSite[] = []
-    seed?: Uint8Array = new Uint8Array([])
+    seed: Uint8Array = new Uint8Array()
     privateKey: PrivateKey = new PrivateKey(0n)
 
     editName = async (name?: string) => {
@@ -86,7 +86,7 @@ class WalletStore {
         )
 
         autorun(() => {
-            if (this.seed && !this.locked) {
+            if (this.seed?.length > 0 && !this.locked) {
                 this.generateAddress(this.seed)
             }
         })
@@ -107,20 +107,25 @@ class WalletStore {
         return this.chain?.id === ChainEnum.Mainnet
     }
 
-    get isWalletExisted(): boolean {
-        return !!this.seed
+    async isWalletExisted(): Promise<boolean> {
+        const keyring = await getStorage<string>('keyring')
+        return !!keyring
     }
 
     init = async () => {
+        const keyring = await getStorage('keyring')
+        if (!keyring) {
+            this.logout()
+            return
+        }
         const chain = await retrieveChain()
-        const password = await getDataFromMemory<string>('password')
-        const keyring = await getStorage<string>('keyring')
+        const password = await getDataFromMemory('password')
 
-        if (keyring && password === '') {
+        if (keyring && !password) {
             this.locked = true
             return
         }
-        const seed = await retrieveSeed(password)
+        const seed = await retrieveSeed(password, keyring)
         const name = await getStorage<string>('name')
         runInAction(() => {
             this.db = new WalletDexie(chain.id)
@@ -142,28 +147,30 @@ class WalletStore {
 
     generateAddress = async (seed: Uint8Array): Promise<void> => {
         if (!this.chain) return
+
+        const puzzleHash = seedToPuzzle(seed).hashHex()
+
+        if (!(await getStorage<string>(StorageEnum.puzzleHash))) {
+            await setStorage({ puzzleHash })
+        }
+
         runInAction(() => {
             this.seed = seed
             this.privateKey = PrivateKey.fromSeed(seed)
             this.address = seedToAddress(seed, this.chain?.prefix ?? 'txch')
-            this.puzzleHash = seedToPuzzle(seed).hashHex()
+            this.puzzleHash = puzzleHash
         })
     }
 
     logout = async () => {
         await clearStorage()
         await this.db.delete()
-        if (chrome.runtime) {
-            chrome.runtime.reload()
-        } else {
-            location.reload()
-        }
+        chrome.runtime.reload()
     }
 
     switchChain = async (chain: IChain) => {
-        rootStore.historyStore.history = []
-        rootStore.historyStore.pendingHistory = []
         await setStorage({ chainId: chain.id })
+        rootStore.reset()
         runInAction(() => {
             this.chain = chain
         })
@@ -202,7 +209,7 @@ class WalletStore {
         savePassword(password)
         const keyring = await getStorage('keyring')
         const { salt, cipherText } = keyring
-        const oldPassword = await getDataFromMemory<string>('password')
+        const oldPassword = await getDataFromMemory('password')
         const plainText = await decrypt(salt, oldPassword, cipherText)
         const encryptedData = await encrypt(password, plainText)
 

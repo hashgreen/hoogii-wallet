@@ -29,10 +29,10 @@ function ImportCAT() {
         () =>
             search<ICryptocurrency>(
                 keyword,
-                availableAssets,
+                availableAssets.data,
                 fuseOptions(['asset_id', 'code', 'name'])
             ),
-        [keyword, availableAssets]
+        [keyword, availableAssets.data]
     )
 
     useEffect(() => {

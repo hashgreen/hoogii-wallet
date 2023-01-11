@@ -26,7 +26,7 @@ class TransactionStore {
         return !!this.walletStore.seed
     }
 
-    coinList = async (puzzle_hash: string): Promise<Coin[]> => {
+    static coinList = async (puzzle_hash: string): Promise<Coin[]> => {
         try {
             const res = await getSpendableCoins({
                 puzzle_hash,
@@ -52,10 +52,6 @@ class TransactionStore {
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
         const puzzleReveal = getProgramBySeed(seed).serializeHex()
-
-        const spendableCoinList = await this.coinList(
-            addressToPuzzleHash(address)
-        )
         try {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzleReveal,
@@ -64,7 +60,6 @@ class TransactionStore {
                 fee,
                 address,
                 targetAddress,
-                spendableCoinList,
             })
 
             const XCHsignatures = AugSchemeMPL.aggregate(
@@ -112,7 +107,7 @@ class TransactionStore {
 
         const assetId = fromHex(asset.assetId)
         const cat = new CAT(assetId, wallet)
-        const spendableCATList = await this.coinList(
+        const spendableCATList = await TransactionStore.coinList(
             Program.fromBytes(cat.hash()).toHex()
         )
 
@@ -138,9 +133,6 @@ class TransactionStore {
         const signatureList = [CATsignatures]
 
         if (BigInt(xchToMojo(fee).toString()) > 0) {
-            const spendableCoinList = await this.coinList(
-                addressToPuzzleHash(address)
-            )
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzleReveal,
                 amount: '0',
@@ -148,7 +140,6 @@ class TransactionStore {
                 fee,
                 address,
                 targetAddress: address,
-                spendableCoinList,
             })
             spendList.push(...XCHspendsList)
             const XCHsignatures = AugSchemeMPL.aggregate(

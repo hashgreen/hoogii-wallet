@@ -104,7 +104,7 @@ export const routes: RouteObject[] = [
         index: true,
         loader: async () => {
             await rootStore.walletStore.init()
-            if (!rootStore.walletStore.isWalletExisted) {
+            if (!(await rootStore.walletStore.isWalletExisted())) {
                 await Messaging.toBackground<MethodEnum.MNEMONIC>({
                     sender: SenderEnum.EXTENSION,
                     origin: chrome.runtime.getURL(''),
@@ -113,7 +113,6 @@ export const routes: RouteObject[] = [
                 window.close()
                 return
             }
-
             await rootStore.assetsStore.retrieveExistedAssets()
             const balances = rootStore.assetsStore.getAllBalances()
             return defer({ balances })

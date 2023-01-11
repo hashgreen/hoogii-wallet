@@ -54,7 +54,7 @@ const AddressBook = () => {
                 onChange={(e) => setQuery(e.currentTarget.value)}
                 placeholder={t('search-address_book-placeholder')}
             />
-            <div className="flex flex-col pt-5 gap-[25px] overflow-auto">
+            <div className="flex flex-col mt-5 gap-[25px] overflow-auto">
                 {sortBy(Object.keys(grouped)).map((group) => (
                     <div key={group} className="flex flex-col gap-1">
                         <span className="text-center uppercase text-subtitle1 text-primary-100">

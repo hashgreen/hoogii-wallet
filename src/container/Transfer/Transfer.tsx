@@ -1,4 +1,5 @@
 import { joiResolver } from '@hookform/resolvers/joi'
+import Decimal from 'decimal.js-light'
 import * as joi from 'joi'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
@@ -150,19 +151,21 @@ const Transfer = () => {
                                 onChange: (e) => {
                                     const fixed =
                                         asset.assetId === XCH.assetId ? 12 : 3
-                                    const min = Math.pow(10, -fixed)
+                                    const value = new Decimal(e.target.value)
+
                                     setValue(
                                         'amount',
                                         !isNaN(Number(e.target.value))
                                             ? Number(e.target.value) === 0 ||
-                                              Number(e.target.value) > min
+                                              value.decimalPlaces() < fixed
                                                 ? e.target.value
-                                                : min.toFixed(fixed)
+                                                : value.toFixed(fixed)
                                             : amount
                                     )
                                 },
                             })}
                         />
+                        {/* Decimal */}
                     </div>
                     <hr className="my-5 w-full h-px border-primary/30 " />
                     <input

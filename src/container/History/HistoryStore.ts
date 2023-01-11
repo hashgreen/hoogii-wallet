@@ -13,8 +13,6 @@ class HistoryStore {
     pendingHistory: ITransaction[] = []
     page: number = 1
     count: number = 10
-    rowCount: number = 0
-
     total: number = 0
 
     constructor(walletStore: WalletStore) {
@@ -154,6 +152,14 @@ class HistoryStore {
                         : 'receive') || '',
             })
         )
+
+    reset = () => {
+        this.history = []
+        this.pendingHistory = []
+        this.page = 1
+        this.count = 10
+        this.total = 0
+    }
 
     updateData = (dataKey: string, value: any): void => {
         runInAction(() => {
