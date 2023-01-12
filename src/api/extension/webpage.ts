@@ -25,9 +25,9 @@ export const request = async <T = any>({
 export const event = (eventName: string, callback: (arg: any) => void) => {
     const handler = (event) => callback(event.detail)
 
-    const events = window.chia._events[eventName] || []
+    const events = window.chia.hoogii._events[eventName] || []
 
-    window.chia._events[eventName] = [...events, [callback, handler]]
+    window.chia.hoogii._events[eventName] = [...events, [callback, handler]]
 
     window.addEventListener(`${pkg.name}${eventName}`, handler)
 }
