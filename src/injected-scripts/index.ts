@@ -6,8 +6,8 @@ window.chia = {
     apiVersion: '1.0.0', // chip02 version
     version: pkg.version,
     isHoogii: true,
-    request: async (arg) => {
-        return (await request(arg))?.data
+    request: async (...arg) => {
+        return (await request(...arg))?.data
     },
     on: (eventName, callback) => {
         event(eventName, callback)
