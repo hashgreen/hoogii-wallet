@@ -13,14 +13,16 @@ import {
     SendResponse,
 } from '~/types/extension'
 
+import pkg from '../../../package.json'
+
 class Messaging {
     static createProxyController = () => {
         // handle messages from extension
         console.log('listen to messages from extension')
         chrome.runtime.onMessage.addListener(async (response: IMessage) => {
             if (
-                response.target !== SenderEnum.WEBPAGE ||
-                response.sender !== SenderEnum.EXTENSION
+                response.sender !== SenderEnum.EXTENSION ||
+                response.target !== SenderEnum.WEBPAGE
             ) {
                 return
             }
@@ -28,6 +30,12 @@ class Messaging {
                 '[content script]:from extension >> ' + JSON.stringify(response)
             )
             // TODO: catch messages from extension
+
+            const event = new CustomEvent(`${pkg.name}${response.event}`, {
+                detail: response.data,
+            })
+
+            window.dispatchEvent(event)
         })
 
         // handle messages from websites

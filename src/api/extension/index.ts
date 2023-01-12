@@ -1,6 +1,6 @@
 import Messaging from '~/api/extension/messaging'
 import rootStore from '~/store'
-import { MethodEnum, SenderEnum } from '~/types/extension'
+import { EventEnum, MethodEnum, SenderEnum } from '~/types/extension'
 import { bcryptHash } from '~/utils'
 import { setStorage } from '~/utils/storage'
 const idlePeriod = 15 * 60
@@ -26,4 +26,18 @@ export const savePassword = async (password): Promise<void> => {
 }
 export const getDataFromMemory = async (key: string): Promise<any> => {
     return (await chrome.storage.session.get(key))?.[key]
+}
+export const switchChainToBackground = async (chainId: string) => {
+    chrome.tabs.query({}, (tabs) => {
+        tabs.forEach((tab) => {
+            if (tab?.id) {
+                chrome.tabs.sendMessage(tab.id, {
+                    data: chainId,
+                    target: SenderEnum.WEBPAGE,
+                    sender: SenderEnum.EXTENSION,
+                    event: EventEnum.CHAIN_CHANGED,
+                })
+            }
+        })
+    })
 }
