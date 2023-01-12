@@ -14,7 +14,7 @@ import {
     getDataFromMemory,
     lockFromBackground,
     savePassword,
-    switchChainToBackground,
+    switchChainToEventListener,
 } from '~/api/extension'
 import { IAddress, IConnectedSite, WalletDexie } from '~/db'
 import { walletTo0x02 } from '~/db/migrations'
@@ -171,8 +171,8 @@ class WalletStore {
 
     switchChain = async (chain: IChain) => {
         await setStorage({ chainId: chain.id })
+        await switchChainToEventListener(chain.id)
         rootStore.reset()
-        await switchChainToBackground(chain.id)
         runInAction(() => {
             this.chain = chain
         })

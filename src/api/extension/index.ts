@@ -27,7 +27,7 @@ export const savePassword = async (password): Promise<void> => {
 export const getDataFromMemory = async (key: string): Promise<any> => {
     return (await chrome.storage.session.get(key))?.[key]
 }
-export const switchChainToBackground = async (chainId: string) => {
+export const switchChainToEventListener = async (chainId: string) => {
     chrome.tabs.query({}, (tabs) => {
         tabs.forEach((tab) => {
             if (tab?.id) {
