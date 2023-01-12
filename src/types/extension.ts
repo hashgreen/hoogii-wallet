@@ -115,7 +115,7 @@ interface IIsValidWallet {
 export type MethodReturnDataType<T extends MethodEnum> = {
     ENABLE: boolean
     REQUEST: any
-    EVENT: void
+    EVENT: boolean
     LOCK: ILock
     UNLOCK: ILock
     IS_LOCK: boolean
