@@ -115,6 +115,8 @@ class WalletStore {
     init = async () => {
         const keyring = await getStorage('keyring')
         if (!keyring) {
+            clearStorage()
+            this.db.delete()
             return
         }
         const chain = await retrieveChain()
