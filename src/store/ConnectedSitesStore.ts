@@ -9,11 +9,15 @@ class ConnectedSitesStore {
         makeAutoObservable(this)
     }
 
-    isConnectedSite = async (origin) => {
+    getConnectedSite = async () => {
         const chainId = await getStorage<string>(StorageEnum.chainId)
         const db = new WalletDexie(chainId ?? ChainEnum.Mainnet)
-        const connectedSites = await db.connectedSites.toArray()
-        return connectedSites.some((site) => site.url === origin)
+        return await db.connectedSites.toArray()
+    }
+
+    isConnectedSite = async (url: string) => {
+        const connectedSites = await this.getConnectedSite()
+        return connectedSites.some((site) => site.url === url)
     }
 }
 
