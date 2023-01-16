@@ -29,6 +29,17 @@ class Messaging {
             console.log(
                 '[content script]:from extension >> ' + JSON.stringify(response)
             )
+
+            const isConnectedRes = await this.toBackground<MethodEnum>({
+                sender: SenderEnum.BACKGROUND,
+                origin: response.origin,
+                method: MethodEnum.IS_CONNECTED,
+            })
+
+            if (!isConnectedRes.data) {
+                return
+            }
+
             const event = new CustomEvent(`${pkg.name}${response.event}`, {
                 detail: response.data,
             })

@@ -30,12 +30,14 @@ export const getDataFromMemory = async (key: string): Promise<any> => {
 export const switchChainToEventListener = async (chainId: string) => {
     chrome.tabs.query({}, (tabs) => {
         tabs.forEach((tab) => {
-            if (tab?.id) {
+            if (tab?.id && tab?.url) {
+                const url = new URL(tab?.url)
                 chrome.tabs.sendMessage(tab.id, {
                     data: chainId,
                     target: SenderEnum.WEBPAGE,
                     sender: SenderEnum.EXTENSION,
                     event: EventEnum.CHAIN_CHANGED,
+                    origin: url.origin,
                 })
             }
         })
