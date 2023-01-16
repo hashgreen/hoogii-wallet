@@ -115,7 +115,6 @@ class WalletStore {
     init = async () => {
         const keyring = await getStorage('keyring')
         if (!keyring) {
-            this.logout()
             return
         }
         const chain = await retrieveChain()
