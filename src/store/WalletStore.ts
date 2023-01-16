@@ -113,15 +113,15 @@ class WalletStore {
     }
 
     init = async () => {
-        const keyring = await getStorage<string>('keyring')
+        const keyring = await getStorage('keyring')
         if (!keyring) {
             this.logout()
             return
         }
         const chain = await retrieveChain()
-        const password = await getDataFromMemory<string>('password')
+        const password = await getDataFromMemory('password')
 
-        if (keyring && password === '') {
+        if (keyring && !password) {
             this.locked = true
             return
         }
@@ -169,8 +169,8 @@ class WalletStore {
     }
 
     switchChain = async (chain: IChain) => {
-        rootStore.historyStore.reset()
         await setStorage({ chainId: chain.id })
+        rootStore.reset()
         runInAction(() => {
             this.chain = chain
         })
@@ -209,7 +209,7 @@ class WalletStore {
         savePassword(password)
         const keyring = await getStorage('keyring')
         const { salt, cipherText } = keyring
-        const oldPassword = await getDataFromMemory<string>('password')
+        const oldPassword = await getDataFromMemory('password')
         const plainText = await decrypt(salt, oldPassword, cipherText)
         const encryptedData = await encrypt(password, plainText)
 

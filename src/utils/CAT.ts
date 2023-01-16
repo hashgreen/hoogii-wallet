@@ -87,7 +87,7 @@ export class CAT extends Program {
             puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
         })
 
-        if (BigInt(data) * BigInt(Math.pow(10, 3)) < spendAmount) {
+        if (BigInt(data) < spendAmount) {
             throw new Error("You don't have enough coin to spend")
         }
 

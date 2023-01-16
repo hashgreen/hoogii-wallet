@@ -17,6 +17,10 @@ import { puzzleHashToAddress } from '~/utils/signature'
 import * as Errors from './errors'
 import { permission } from './permission'
 
+const connect = async (origin: string): Promise<boolean> => {
+    return connectedSitesStore.isConnectedSite(origin)
+}
+
 const chainId = async (): Promise<string> => {
     const chainId = await getStorage<string>(StorageEnum.chainId)
 
@@ -24,10 +28,6 @@ const chainId = async (): Promise<string> => {
         throw Errors.InvalidParamsError
     }
     return chainId
-}
-
-const connect = (origin: string): boolean => {
-    return connectedSitesStore.isConnectedSite(origin)
 }
 
 const walletSwitchChain = async (params: {
@@ -67,16 +67,24 @@ const authHandler = async (request: IMessage<RequestArguments>) => {
     return true
 }
 export const requestHandler = async (request: IMessage<RequestArguments>) => {
+    // eager = true skip unlock
+    if (
+        request.data?.method === RequestMethodEnum.CONNECT &&
+        request?.data?.params?.eager
+    ) {
+        request.isLocked = false
+    }
+
     const auth = await authHandler(request)
     if (!auth) {
         throw Errors.UserRejectedRequestError
     }
 
     switch (request.data?.method) {
-        case RequestMethodEnum.CHAIN_ID:
-            return await chainId()
         case RequestMethodEnum.CONNECT:
             return connect(request.origin)
+        case RequestMethodEnum.CHAIN_ID:
+            return await chainId()
         case RequestMethodEnum.WALLET_SWITCH_CHAIN:
             return walletSwitchChain(request.data.params)
         case RequestMethodEnum.ACCOUNTS:

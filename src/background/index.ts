@@ -27,7 +27,7 @@ controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
     }
 })
 controller.add(MethodEnum.ENABLE, async (request, sendResponse) => {
-    if (connectedSitesStore.isConnectedSite(request.origin)) {
+    if (await connectedSitesStore.isConnectedSite(request.origin)) {
         sendResponse({
             ...request,
             data: true,
@@ -53,7 +53,7 @@ controller.add(MethodEnum.ENABLE, async (request, sendResponse) => {
 })
 
 controller.add(MethodEnum.LOCK, async (request, sendResponse) => {
-    controller.password = ''
+    await chrome.storage.session.set({ password: '' })
 
     sendResponse({
         ...request,
@@ -76,15 +76,7 @@ controller.add(MethodEnum.UNLOCK, async (request, sendResponse) => {
         })
     } catch (error) {}
 })
-controller.add(MethodEnum.SAVE_DATA, async (request, sendResponse) => {
-    controller.password = request.data?.password || ''
-    sendResponse({
-        ...request,
-        data: undefined,
-        sender: SenderEnum.EXTENSION,
-        target: SenderEnum.WEBPAGE,
-    })
-})
+
 controller.add(MethodEnum.REQUEST_DATA, async (request, sendResponse) => {
     sendResponse({
         ...request,
@@ -96,7 +88,7 @@ controller.add(MethodEnum.REQUEST_DATA, async (request, sendResponse) => {
 controller.add(MethodEnum.IS_CONNECTED, async (request, sendResponse) => {
     sendResponse({
         ...request,
-        data: connectedSitesStore.isConnectedSite(request.origin),
+        data: await connectedSitesStore.isConnectedSite(request.origin),
         sender: SenderEnum.EXTENSION,
         target: SenderEnum.WEBPAGE,
     })
@@ -141,7 +133,7 @@ controller.add(MethodEnum.RESET_PASSWORD, async (request) => {
 
 controller.add(MethodEnum.IS_LOCK, async (request, sendResponse) => {
     const keyring = await getStorage<string>('keyring')
-    const password = controller?.password
+    const password = (await chrome.storage.session.get('password'))?.password
     const isLocked = !password && !!keyring
 
     sendResponse({
