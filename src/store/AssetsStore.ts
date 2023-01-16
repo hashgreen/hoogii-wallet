@@ -117,6 +117,7 @@ class AssetsStore {
     }
 
     getBalance = async (puzzleHashes: string[]) => {
+        console.log('puzzleHashes>', puzzleHashes)
         if (!puzzleHashes.length) {
             return []
         }
@@ -168,6 +169,7 @@ class AssetsStore {
                 this.assetIdToPuzzleHash(asset.assetId)
             ),
         ]
+        console.log('getAllBalances>', puzzleHashes)
         const balances = await this.getBalance(puzzleHashes)
         return balances
     }
