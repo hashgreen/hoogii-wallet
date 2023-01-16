@@ -168,6 +168,7 @@ class AssetsStore {
                 this.assetIdToPuzzleHash(asset.assetId)
             ),
         ]
+
         const balances = await this.getBalance(puzzleHashes)
         return balances
     }
