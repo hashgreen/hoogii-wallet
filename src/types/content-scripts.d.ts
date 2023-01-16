@@ -15,6 +15,7 @@ interface IChia {
         isHoogii: boolean
         request(RequestArguments): Promise<any>
         on(eventName: string, callback: (arg: any) => void): void
+        off(eventName: string, callback: (arg: any) => void): void
         isConnected?: () => IHoogiiApi
         lock?: () => IHoogiiApi
         unlock?: () => IHoogiiApi
