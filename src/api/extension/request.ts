@@ -54,6 +54,10 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     return [account]
 }
 
+const createOffer = async () => {
+    return 1
+}
+
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
         !request?.isConnected ||
@@ -104,6 +108,11 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
             throw Errors.UnderDevelopment
         case RequestMethodEnum.SEND_TRANSACTION:
             throw Errors.UnderDevelopment
+        case RequestMethodEnum.CREATE_OFFER:
+            return createOffer()
+        case RequestMethodEnum.TAKE_OFFER:
+            throw Errors.UnderDevelopment
+
         default:
             throw Errors.InvalidParamsError
     }
