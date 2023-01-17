@@ -13,6 +13,7 @@ import Connecting from './pages/connecting'
 import Locked from './pages/locked'
 import Refuse from './pages/refuse'
 import SwitchChain from './pages/switchChain'
+import Transaction from './pages/transaction'
 
 const App = observer(() => {
     const navigate = useNavigate()
@@ -36,6 +37,9 @@ const App = observer(() => {
                 switch (request.data?.method) {
                     case RequestMethodEnum.WALLET_SWITCH_CHAIN:
                         navigate('/switchChain')
+                        break
+                    case RequestMethodEnum.CREATE_OFFER:
+                        navigate('/transaction')
                         break
 
                     default:
@@ -81,6 +85,15 @@ const App = observer(() => {
                                 />
                             }
                         />
+                        <Route
+                            path="transaction"
+                            element={
+                                <Transaction
+                                    request={request}
+                                    controller={controller}
+                                />
+                            }
+                        />
                     </>
                 )}
             </Route>
@@ -88,7 +101,7 @@ const App = observer(() => {
     )
 })
 ReactDOM.createRoot(document.getElementById(PopupEnum.INTERNAL)).render(
-    <Suspense fallback={<div className="full bg-main" />}>
+    <Suspense fallback={<div className="full bg-main bg-cover" />}>
         <MemoryRouter>
             <App />
         </MemoryRouter>
