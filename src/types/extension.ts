@@ -161,3 +161,11 @@ export const APIError = {
             'The request was refused due to lack of access - e.g. wallet disconnects.',
     },
 } as const
+export interface OfferAsset {
+    amount: number
+    assetId?: string
+}
+export interface OfferParams {
+    requestAssets: OfferAsset[]
+    offerAssets: OfferAsset[]
+}

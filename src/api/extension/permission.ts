@@ -7,5 +7,7 @@ export const permission = {
     Confirm: {
         [RequestMethodEnum.WALLET_SWITCH_CHAIN]:
             RequestMethodEnum.WALLET_SWITCH_CHAIN,
+        [RequestMethodEnum.CREATE_OFFER]: RequestMethodEnum.CREATE_OFFER,
+        [RequestMethodEnum.TAKE_OFFER]: RequestMethodEnum.TAKE_OFFER,
     },
 }

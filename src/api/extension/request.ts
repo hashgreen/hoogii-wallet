@@ -5,6 +5,7 @@ import { ChainEnum } from '~/types/chia'
 import {
     IMessage,
     MethodEnum,
+    OfferParams,
     PopupEnum,
     RequestArguments,
     RequestMethodEnum,
@@ -54,8 +55,8 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     return [account]
 }
 
-const createOffer = async () => {
-    return 1
+const createOffer = async (params: OfferParams) => {
+    return params
 }
 
 const authHandler = async (request: IMessage<RequestArguments>) => {
@@ -109,7 +110,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.SEND_TRANSACTION:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.CREATE_OFFER:
-            return createOffer()
+            return createOffer(request.data.params)
         case RequestMethodEnum.TAKE_OFFER:
             throw Errors.UnderDevelopment
 
