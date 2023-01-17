@@ -61,11 +61,14 @@ const Transaction = ({
                     <div className="text-left text-caption text-primary-100">
                         Offer
                     </div>
-                    <div className="flex flex-row">
+                    <div className="flex mb-1 flex-row justify-between">
                         <div>ABC</div>
-                        <div>100</div>
+                        <div className="text-status-receive">+100</div>
                     </div>
-                    <div className="">Offer</div>
+                    <div className="flex mb-1 flex-row justify-between">
+                        <div>ABC</div>
+                        <div className="text-status-send">-100</div>
+                    </div>
                 </div>
             </div>
             <div>
