@@ -9,6 +9,7 @@ import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 import { MethodEnum, PopupEnum, RequestMethodEnum } from '~/types/extension'
 
 import controller from './controller'
+import Layout from './layout'
 import Connecting from './pages/connecting'
 import Locked from './pages/locked'
 import Refuse from './pages/refuse'
@@ -56,46 +57,48 @@ const App = observer(() => {
         <Routes>
             <Route>
                 <Route index element={<Locked />} />
-                {request && (
-                    <>
-                        <Route
-                            path="refuse"
-                            element={
-                                <Refuse
-                                    request={request}
-                                    controller={controller}
-                                />
-                            }
-                        />
-                        <Route
-                            path="connecting"
-                            element={
-                                <Connecting
-                                    request={request}
-                                    controller={controller}
-                                />
-                            }
-                        />
-                        <Route
-                            path="switchChain"
-                            element={
-                                <SwitchChain
-                                    request={request}
-                                    controller={controller}
-                                />
-                            }
-                        />
-                        <Route
-                            path="transaction"
-                            element={
-                                <Transaction
-                                    request={request}
-                                    controller={controller}
-                                />
-                            }
-                        />
-                    </>
-                )}
+                <Route path="/" element={<Layout />}>
+                    {request && (
+                        <>
+                            <Route
+                                path="refuse"
+                                element={
+                                    <Refuse
+                                        request={request}
+                                        controller={controller}
+                                    />
+                                }
+                            />
+                            <Route
+                                path="connecting"
+                                element={
+                                    <Connecting
+                                        request={request}
+                                        controller={controller}
+                                    />
+                                }
+                            />
+                            <Route
+                                path="switchChain"
+                                element={
+                                    <SwitchChain
+                                        request={request}
+                                        controller={controller}
+                                    />
+                                }
+                            />
+                            <Route
+                                path="transaction"
+                                element={
+                                    <Transaction
+                                        request={request}
+                                        controller={controller}
+                                    />
+                                }
+                            />
+                        </>
+                    )}
+                </Route>
             </Route>
         </Routes>
     )
