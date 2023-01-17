@@ -55,8 +55,8 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     return [account]
 }
 
-const createOffer = async (params: OfferParams) => {
-    return params
+const createOffer = async (params: OfferParams, res: { fee: string }) => {
+    return { ...params, ...res }
 }
 
 const authHandler = async (request: IMessage<RequestArguments>) => {
@@ -81,8 +81,8 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         request.isLocked = false
     }
 
-    const auth = await authHandler(request)
-    if (!auth) {
+    const response = await authHandler(request)
+    if (!response) {
         throw Errors.UserRejectedRequestError
     }
 
@@ -110,7 +110,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.SEND_TRANSACTION:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.CREATE_OFFER:
-            return createOffer(request.data.params)
+            return createOffer(request.data.params, response)
         case RequestMethodEnum.TAKE_OFFER:
             throw Errors.UnderDevelopment
 

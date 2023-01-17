@@ -25,7 +25,10 @@ const Transaction = ({
     const fee = watch('fee')
 
     const onSubmit = async (data) => {
-        console.log('data', data)
+        controller.returnData({
+            data: { fee: data?.fee },
+        })
+        window.close()
     }
 
     return (
