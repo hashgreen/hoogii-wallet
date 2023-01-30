@@ -10,14 +10,16 @@ const hoogii = {
     request: async (arg) => {
         return (await request(arg))?.data
     },
-    on: (eventName, callback) => {
-        event(eventName, callback)
-    },
-    off: (eventName, callback) => {
-        eventOff(eventName, callback)
-    },
     isConnected: async () => (await isConnected()).data,
-    _events: {},
+    __proto__: {
+        on: (eventName, callback) => {
+            event(eventName, callback)
+        },
+        off: (eventName, callback) => {
+            eventOff(eventName, callback)
+        },
+        _events: {},
+    },
 }
 
 if (window.chia) {
