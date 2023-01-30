@@ -19,11 +19,9 @@ interface IChia {
         lock?: () => IHoogiiApi
         unlock?: () => IHoogiiApi
         enable?: () => IHoogiiApi
-        __proto__: {
-            on(eventName: string, callback: (arg: any) => void): void
-            off(eventName: string, callback: (arg: any) => void): void
-            _events: {}
-        }
+        _events: {}
+        on(eventName: string, callback: (arg: any) => void): void
+        off(eventName: string, callback: (arg: any) => void): void
     }
 }
 
