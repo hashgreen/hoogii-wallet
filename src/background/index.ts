@@ -161,27 +161,4 @@ controller.add(MethodEnum.REQUEST, async (request, sendResponse) => {
         })
     }
 })
-
-controller.add(MethodEnum.EVENT, async (request, sendResponse) => {
-    const keyring = await getStorage<string>('keyring')
-    const password = (await chrome.storage.session.get('password'))?.password
-    const isLocked = !password && !!keyring
-    const isConnected = await connectedSitesStore.isConnectedSite(
-        request.origin
-    )
-    let data = true
-    if (!isConnected || isLocked) {
-        const tab = await createPopup(PopupEnum.INTERNAL)
-        const res = await Messaging.toInternal<MethodEnum.EVENT>(tab, request)
-        data = res.data ?? false
-    }
-
-    sendResponse({
-        ...request,
-        data,
-        sender: SenderEnum.EXTENSION,
-        target: SenderEnum.WEBPAGE,
-    })
-})
-
 controller.listen()
