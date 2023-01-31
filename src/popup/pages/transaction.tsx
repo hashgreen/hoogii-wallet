@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import rootStore from '~/store'
 import { MethodEnum } from '~/types/extension'
+import { createOffer } from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
@@ -25,10 +26,9 @@ const Transaction = ({
     const fee = watch('fee')
 
     const onSubmit = async (data) => {
-        controller.returnData({
-            data: { fee: data?.fee },
-        })
-        window.close()
+        // window.close()
+
+        await createOffer(request.data?.params, data?.fee)
     }
 
     return (

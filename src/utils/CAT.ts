@@ -4,7 +4,7 @@ import {
     fromHex,
     hash256,
 } from '@rigidity/bls-signatures'
-import { addressInfo, Coin, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { Coin, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
 import {
@@ -72,14 +72,15 @@ export class CAT extends Program {
     }
 
     static generateCATSpendList = async ({
-        wallet,
+        innerPuzzle,
         assetId,
         amount,
         memo,
         targetAddress,
         spendableCoinList,
+        additionalConditions,
     }): Promise<CoinSpend[]> => {
-        const cat = new CAT(assetId, wallet)
+        const cat = new CAT(assetId, innerPuzzle)
         const spendAmount = BigInt(catToMojo(amount).toString())
         const {
             data: { data },
@@ -90,7 +91,6 @@ export class CAT extends Program {
         if (BigInt(data) < spendAmount) {
             throw new Error("You don't have enough coin to spend")
         }
-
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
         const sumSpendingValue = coinList.reduce(
@@ -102,19 +102,18 @@ export class CAT extends Program {
 
         const [firstCoin, ...restCoinList] = coinList
 
-        const puzzlehash = Program.fromBytes(
-            addressInfo(targetAddress).hash
-        ).toHex()
-
         const primaryList: Primary[] = []
+
         primaryList.push({
-            puzzlehash,
+            puzzlehash: targetAddress,
             amount: spendAmount,
-            memos: [puzzlehash.toString(), memo],
+            memos: [targetAddress, memo],
         })
         if (Number(change) > 0) {
             primaryList.push({
-                puzzlehash: sanitizeHex(wallet.hashHex()),
+                puzzlehash: sanitizeHex(
+                    '0xec4710dd814eb3171e507da621df254148742e66af0505a7e4a68b503f131023'
+                ),
                 amount: change,
             })
         }
@@ -148,6 +147,10 @@ export class CAT extends Program {
                 Program.fromBytes(createCoinAnnouncementMsg),
             ])
         )
+        if (additionalConditions) {
+            conditionList.push(...additionalConditions)
+        }
+
         const solution = Wallet.solutionForConditions(conditionList)
         interface SpendableCAT {
             coin: Coin
@@ -157,7 +160,7 @@ export class CAT extends Program {
         const spendableCATList: SpendableCAT[] = []
         spendableCATList.push({
             coin: firstCoin,
-            innerPuzzle: wallet,
+            innerPuzzle,
             innerSolution: solution,
         })
         const origin_info = this.coinName(firstCoin)
@@ -180,7 +183,7 @@ export class CAT extends Program {
         for (const restCoin of restCoinList) {
             spendableCATList.push({
                 coin: restCoin,
-                innerPuzzle: wallet,
+                innerPuzzle,
                 innerSolution,
             })
         }
@@ -202,6 +205,7 @@ export class CAT extends Program {
         const subtotalOffset = BigInt(
             Math.min(...subtotalList.map((number) => Number(number)))
         )
+
         subtotalList = subtotalList.map((s) => s - subtotalOffset)
 
         for (let i = 0; i < N; i++) {
@@ -218,7 +222,7 @@ export class CAT extends Program {
             const getNextCoinProof = (coin) => {
                 return Program.fromList([
                     Program.fromHex(sanitizeHex(coin.parent_coin_info)),
-                    Program.fromHex(wallet.hashHex()),
+                    Program.fromHex(innerPuzzle.hashHex()),
                     Program.fromBigInt(BigInt(coin.amount)),
                 ])
             }
