@@ -3,7 +3,7 @@ import { addressInfo, toAddress } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
 import { puzzles } from './puzzles'
-import { Wallet } from './Wallet'
+import { Wallet } from './Wallet/Wallet'
 
 export const getProgramBySeed = (seed: Uint8Array): Program => {
     const masterPrivateKey = PrivateKey.fromSeed(seed)

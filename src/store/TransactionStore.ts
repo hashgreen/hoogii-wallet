@@ -11,7 +11,7 @@ import { xchToMojo } from '~/utils/CoinConverter'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { addressToPuzzleHash, getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
-import { Wallet } from '~/utils/Wallet'
+import { Wallet } from '~/utils/Wallet/Wallet'
 
 import WalletStore from './WalletStore'
 class TransactionStore {
