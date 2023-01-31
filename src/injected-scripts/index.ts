@@ -1,26 +1,25 @@
-import { isConnected, request } from '~/api/extension/webpage'
+import { event, eventOff, isConnected, request } from '~/api/extension/webpage'
 
 import pkg from '../../package.json'
-window.chia = {
-    ...(window.chia || {}),
-    hoogii: {
-        name: 'Hoogii',
-        apiVersion: '1.0.0',
-        version: pkg.version,
-        isHoogii: true,
-        request: async (...arg) => {
-            return (await request(...arg))?.data
-        },
-        isConnected: async () => (await isConnected()).data,
-        // lock: async () => await lock(),
-        // unlock: async () => await unlock(),
-        // enable: async () => {
-        //     if (await enable()) {
-        //         return {
-        //             lock,
-        //             unlock,
-        //         }
-        //     }
-        // },
-    },
+
+const hoogiiPrototype = {
+    on: event,
+    off: eventOff,
+    _events: {},
+}
+const hoogii = Object.create(hoogiiPrototype)
+Object.assign(hoogii, {
+    name: pkg.name,
+    apiVersion: '1.0.0', // chip02 version
+    version: pkg.version,
+    isHoogii: true,
+    request: async (arg) => (await request(arg))?.data,
+    isConnected: async () => (await isConnected())?.data,
+})
+if (window.chia) {
+    window.chia.hoogii = hoogii
+} else {
+    window.chia = {
+        hoogii,
+    }
 }

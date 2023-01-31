@@ -35,6 +35,7 @@ const walletSwitchChain = async (params: {
 }): Promise<any> => {
     if (apiEndpointSets[params.chainId]) {
         await setStorage({ chainId: params.chainId })
+
         return true
     }
     throw Errors.InvalidParamsError

@@ -7,6 +7,7 @@ export interface IMessage<T = any> {
     method: MethodEnum
     isLocked: boolean
     isConnected?: boolean
+    event?: string
     data?: T
 }
 
@@ -47,11 +48,13 @@ export enum MethodEnum {
     SAVE_DATA = 'SAVE_DATA',
     REFUSE = 'REFUSE',
     REQUEST = 'REQUEST',
+    EVENT = 'EVENT',
     // internal
     REQUEST_DATA = 'REQUEST_DATA',
     RETURN_DATA = 'RETURN_DATA',
     MNEMONIC = 'MNEMONIC',
     RESET_PASSWORD = 'RESET_PASSWORD',
+    SWITCH_CHAIN = 'SWITCH_CHAIN',
 }
 
 export enum RequestMethodEnum {
@@ -68,6 +71,10 @@ export enum RequestMethodEnum {
     SEND_TRANSACTION = 'sendTransaction',
 }
 
+export enum EventEnum {
+    CHAIN_CHANGED = 'chainChanged',
+}
+
 export interface RequestArguments {
     method: RequestMethodEnum
     params?: any
@@ -79,6 +86,7 @@ export type MethodDataType<T extends MethodEnum> = {
         iconUrl: string
     }
     REQUEST: RequestArguments
+    EVENT: { method: EventEnum }
     LOCK: undefined
     UNLOCK: undefined
     IS_LOCK: any
@@ -94,6 +102,7 @@ export type MethodDataType<T extends MethodEnum> = {
     SAVE_DATA: {
         password?: string
     }
+    SWITCH_CHAIN: undefined
 }[T]
 interface ILock {
     success: boolean
@@ -106,6 +115,7 @@ interface IIsValidWallet {
 export type MethodReturnDataType<T extends MethodEnum> = {
     ENABLE: boolean
     REQUEST: any
+    EVENT: boolean
     LOCK: ILock
     UNLOCK: ILock
     IS_LOCK: boolean
@@ -119,6 +129,7 @@ export type MethodReturnDataType<T extends MethodEnum> = {
     }
     RETURN_DATA: undefined
     SAVE_DATA: undefined
+    SWITCH_CHAIN: { chainId: string }
 }[T]
 export enum StorageEnum {
     ASSETS = 'assets',
