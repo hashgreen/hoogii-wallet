@@ -12,7 +12,7 @@ export default function coinSelect<T extends Coin, O extends Coin>(
     feeRate: FeeRate = 0
 ): CoinReturn<T, O> {
     coins = coins.sort(function (a, b) {
-        return coinScore<T>(b) - coinScore<T>(a)
+        return Number(coinScore<T>(b)) - Number(coinScore<T>(a))
     })
 
     const base = blackjack(coins, outputs, feeRate)

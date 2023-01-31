@@ -1,9 +1,9 @@
-import { Coin, CoinSpend } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
-import { Wallet } from './Wallet'
+import { Coin } from './Wallet/types'
+import { Wallet } from './Wallet/Wallet'
 
-class _CoinSpend implements CoinSpend {
+class _CoinSpend {
     coin: Coin
     puzzle_reveal: string
     solution: string
@@ -27,7 +27,7 @@ class _CoinSpend implements CoinSpend {
                     puzzle_hash: Program.fromBytes(
                         condition.rest.first.atom
                     ).toHex(),
-                    amount: condition.rest.rest.first.toInt(),
+                    amount: condition.rest.rest.first.toBigInt(),
                 })
             }
         })
