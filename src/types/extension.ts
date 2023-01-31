@@ -164,6 +164,7 @@ export const APIError = {
 export interface OfferAsset {
     amount: number
     assetId?: string
+    memo?: string
 }
 export interface OfferParams {
     requestAssets: OfferAsset[]
