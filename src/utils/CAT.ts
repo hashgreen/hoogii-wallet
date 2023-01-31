@@ -16,7 +16,7 @@ import { catToMojo } from '~/utils/CoinConverter'
 
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
-import { Primary, Wallet } from './Wallet'
+import { Primary, Wallet } from './Wallet/Wallet'
 
 export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
