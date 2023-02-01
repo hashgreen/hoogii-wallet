@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next'
 
 import { ErrorPopup } from '~/components/Popup'
 import rootStore from '~/store'
-import { MethodEnum } from '~/types/extension'
-import { createOffer } from '~/utils/Offer'
+import { MethodEnum, OfferParams } from '~/types/extension'
+import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
@@ -31,9 +31,26 @@ const Transaction = ({
         },
     })
     const fee = watch('fee')
+    const createOffer = async (
+        params: OfferParams,
+        fee?: string
+    ): Promise<Offer> => {
+        const { requestAssets, offerAssets } = params
+        const secureBundle = await Offer.generateSecureBundle(
+            requestAssets,
+            offerAssets,
+            fee
+        )
+
+        return new Offer(secureBundle)
+    }
 
     const onSubmit = async (data) => {
-        await createOffer(request.data?.params, data?.fee)
+        const offer = await createOffer(request.data?.params, data?.fee)
+        controller.returnData({
+            data: { offer: offer.encode(5) },
+        })
+        window.close()
     }
 
     return (

@@ -12,7 +12,7 @@ import { bech32m } from 'bech32'
 import zlib from 'react-zlib-js'
 
 import { getSpendableCoins } from '~/api/api'
-import { OfferAsset, OfferParams } from '~/types/extension'
+import { OfferAsset } from '~/types/extension'
 import Announcement from '~/utils/Announcement'
 import { CAT } from '~/utils/CAT'
 import CoinSpend from '~/utils/CoinSpend'
@@ -33,7 +33,7 @@ const initDict = [
     puzzles.cat.serializeHex(),
     puzzles.settlementPayments.serializeHex(),
 ]
-export class Offer {
+export default class Offer {
     public bundle: SpendBundle
 
     constructor(bundle: SpendBundle) {
@@ -302,21 +302,4 @@ export class Offer {
         const offer_compressed = bech32m.decode(offerString).words
         console.log('offer_compressed>', offer_compressed)
     }
-}
-export const createOffer = async (
-    params: OfferParams,
-    fee?: string
-): Promise<string> => {
-    const { requestAssets, offerAssets } = params
-    const secureBundle = await Offer.generateSecureBundle(
-        requestAssets,
-        offerAssets,
-        fee
-    )
-
-    console.log('secureBundle', secureBundle, fee)
-    const offer = new Offer(secureBundle)
-    const offerString = offer.encode(5)
-    console.log(offerString)
-    return ''
 }
