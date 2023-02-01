@@ -269,7 +269,7 @@ export class Wallet extends Program {
         additionalConditions,
     }: {
         puzzleReveal: Program
-        amount: string
+        amount: any
         fee: string
         targetAddress: string
         spendableCoinList: Coin[]
