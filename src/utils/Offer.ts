@@ -99,8 +99,9 @@ export class Offer {
     static async generateSecureBundle(
         requestAssets: OfferAsset[],
         offerPaymentList: OfferAsset[],
-        fee = '0'
+        fee: string = '0'
     ) {
+        // verify is unlock
         const seed = await Secure.getSeed()
         if (!seed) {
             throw new Error('Can not find secret')
@@ -109,8 +110,6 @@ export class Offer {
         if (!puzzleReveal) {
             throw new Error('Can not find public key')
         }
-
-        const spendList: CoinSpend[] = []
 
         const requestPaymentAnnouncements: Announcement[] = requestAssets.map(
             (payment) => {
@@ -123,6 +122,8 @@ export class Offer {
                 return new Announcement(settlement.hashHex(), message)
             }
         )
+        // bind coinSpend
+        const spendList: CoinSpend[] = []
         requestAssets.forEach(({ assetId, amount, memo }) => {
             const coin: Coin = {
                 parent_coin_info:
@@ -216,8 +217,9 @@ export class Offer {
 
                 spendList.push(...CATCoinSpendList)
             } else {
+                console.log('offerPayment.amount', offerPayment.amount)
                 const XCHSpendList = await Wallet.generateXCHSpendList({
-                    fee,
+                    fee: '0',
                     amount: offerPayment.amount,
                     targetAddress: settlement.hashHex(),
                     puzzleReveal,
@@ -227,6 +229,20 @@ export class Offer {
                     additionalConditions: announcementAssertions,
                 })
                 spendList.push(...XCHSpendList)
+            }
+
+            if (fee !== '0') {
+                const feeSpendList = await Wallet.generateXCHSpendList({
+                    fee,
+                    amount: 0,
+                    targetAddress: settlement.hashHex(),
+                    puzzleReveal,
+                    spendableCoinList: await this.getCoinList(
+                        puzzleReveal.hashHex()
+                    ),
+                    additionalConditions: announcementAssertions,
+                })
+                spendList.push(...feeSpendList)
             }
         }
 
@@ -293,18 +309,13 @@ export const createOffer = async (
     fee?: string
 ): Promise<string> => {
     const { requestAssets, offerAssets } = params
-    const puzzleReveal = await Secure.getPuzzleReveal()
-    if (!puzzleReveal) {
-        throw new Error('error')
-    }
-
     const secureBundle = await Offer.generateSecureBundle(
         requestAssets,
         offerAssets,
         fee
     )
 
-    console.log('secureBundle', secureBundle)
+    console.log('secureBundle', secureBundle, fee)
     const offer = new Offer(secureBundle)
     const offerString = offer.encode(5)
     console.log(offerString)
