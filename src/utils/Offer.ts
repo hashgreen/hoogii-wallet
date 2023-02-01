@@ -33,57 +33,6 @@ const initDict = [
     puzzles.cat.serializeHex(),
     puzzles.settlementPayments.serializeHex(),
 ]
-
-const generateSettlement = (assetId: string | undefined) => {
-    if (assetId) {
-        return new CAT(
-            fromHex(sanitizeHex(assetId)),
-            puzzles.settlementPaymentsOld
-        )
-    } else {
-        return puzzles.settlementPaymentsOld
-    }
-}
-
-const getNonce = () => {
-    const nonceArr = new Uint8Array(256 / 8)
-    // crypto.getRandomValues(nonceArr);
-    return nonceArr
-}
-
-const toMsg = ({
-    nonce,
-    payment: { amount, memo, assetId },
-    puzzle_hash,
-}: {
-    nonce: Uint8Array
-    payment: OfferAsset
-    puzzle_hash: string
-}): Program => {
-    return Program.fromList([
-        Program.fromBytes(nonce),
-        Program.fromList([
-            Program.fromHex(sanitizeHex(puzzle_hash)),
-            Program.fromBigInt(
-                BigInt(Number(amount) * Math.pow(10, assetId ? 3 : 12))
-            ),
-            Program.fromList([Program.fromText(memo || '')]),
-        ]),
-    ])
-}
-
-const getCoinList = async (puzzle_hash: string): Promise<Coin[]> => {
-    const res = await getSpendableCoins({
-        puzzle_hash,
-    })
-
-    return (
-        res?.data?.data?.map((record) => ({
-            ...record.coin,
-            amount: record.coin.amount || 0,
-        })) ?? []
-    )
-}
 export class Offer {
     public bundle: SpendBundle
 
@@ -97,31 +46,150 @@ export class Offer {
         )
     }
 
+    static async getCoinList(puzzle_hash: string): Promise<Coin[]> {
+        const res = await getSpendableCoins({
+            puzzle_hash,
+        })
+
+        return (
+            res?.data?.data?.map((record) => ({
+                ...record.coin,
+                amount: record.coin.amount || 0,
+            })) ?? []
+        )
+    }
+
+    static toMsg = ({
+        payment: { amount, memo, assetId },
+        puzzle_hash,
+    }: {
+        payment: OfferAsset
+        puzzle_hash: string
+    }): Program => {
+        const nonce = this.getNonce()
+        return Program.fromList([
+            Program.fromBytes(nonce),
+            Program.fromList([
+                Program.fromHex(sanitizeHex(puzzle_hash)),
+                Program.fromBigInt(
+                    BigInt(Number(amount) * Math.pow(10, assetId ? 3 : 12))
+                ),
+                Program.fromList([Program.fromText(memo || '')]),
+            ]),
+        ])
+    }
+
+    static getNonce = () => {
+        const nonceArr = new Uint8Array(256 / 8)
+
+        return nonceArr
+    }
+
+    static generateSettlement = (assetId: string | undefined) => {
+        if (assetId) {
+            return new CAT(
+                fromHex(sanitizeHex(assetId)),
+                puzzles.settlementPaymentsOld
+            )
+        } else {
+            return puzzles.settlementPaymentsOld
+        }
+    }
+
     static async generateSecureBundle(
-        announcements: Announcement[],
-        offerPaymentList,
+        requestAssets: OfferAsset[],
+        offerPaymentList: OfferAsset[],
         fee = '0'
     ) {
         const seed = await Secure.getSeed()
         if (!seed) {
-            throw new Error('')
+            throw new Error('Can not find secret')
         }
         const puzzleReveal = await Secure.getPuzzleReveal()
         if (!puzzleReveal) {
-            throw new Error('')
+            throw new Error('Can not find public key')
         }
+
         const spendList: CoinSpend[] = []
-        const announcementAssertions = announcements.map((announcement) =>
-            Program.fromList([
-                Program.fromHex(
-                    sanitizeHex(ConditionOpcode.ASSERT_PUZZLE_ANNOUNCEMENT)
-                ),
-                Program.fromHex(announcement.name().toHex()),
-            ])
+
+        const requestPaymentAnnouncements: Announcement[] = requestAssets.map(
+            (payment) => {
+                const message = Offer.toMsg({
+                    payment,
+                    puzzle_hash: puzzleReveal.hashHex(),
+                })
+
+                const settlement = Offer.generateSettlement(payment.assetId)
+                return new Announcement(settlement.hashHex(), message)
+            }
+        )
+        requestAssets.forEach(({ assetId, amount, memo }) => {
+            const coin: Coin = {
+                parent_coin_info:
+                    '0x0000000000000000000000000000000000000000000000000000000000000000',
+                puzzle_hash: this.generateSettlement(assetId).hashHex(),
+                amount: 0,
+            }
+            const nonce = this.getNonce()
+            if (assetId) {
+                const settlementSolution = Program.fromList([
+                    Program.fromList([
+                        Program.fromBytes(nonce),
+                        Program.fromList([
+                            Program.fromHex(
+                                sanitizeHex(puzzleReveal.hashHex())
+                            ),
+                            Program.fromBigInt(
+                                BigInt(amount * Math.pow(10, 3))
+                            ),
+                            Program.fromList([Program.fromText(memo || '')]),
+                        ]),
+                    ]),
+                ])
+
+                const coinSpend = new CoinSpend(
+                    coin,
+                    this.generateSettlement(assetId).serializeHex(),
+                    settlementSolution.serializeHex()
+                )
+                spendList.push(coinSpend)
+            } else {
+                const settlementSolution = Program.fromList([
+                    Program.fromList([
+                        Program.fromBytes(nonce),
+                        Program.fromList([
+                            Program.fromHex(
+                                sanitizeHex(puzzleReveal.hashHex())
+                            ),
+                            Program.fromBigInt(
+                                BigInt(amount * Math.pow(10, 12))
+                            ),
+                            Program.fromList([]),
+                        ]),
+                    ]),
+                ])
+
+                const coinSpend = new CoinSpend(
+                    coin,
+                    this.generateSettlement(undefined).serializeHex(),
+                    settlementSolution.serializeHex()
+                )
+                spendList.push(coinSpend)
+            }
+        })
+
+        const announcementAssertions = requestPaymentAnnouncements.map(
+            (announcement) =>
+                Program.fromList([
+                    Program.fromHex(
+                        sanitizeHex(ConditionOpcode.ASSERT_PUZZLE_ANNOUNCEMENT)
+                    ),
+                    Program.fromHex(announcement.name().toHex()),
+                ])
         )
         for (let i = 0; i < offerPaymentList.length; i++) {
             const offerPayment = offerPaymentList[i]
-            const settlement = generateSettlement(undefined)
+            const settlement = this.generateSettlement(undefined)
 
             if (offerPayment.assetId) {
                 const assetId = fromHex(offerPayment.assetId)
@@ -140,7 +208,7 @@ export class Offer {
                     innerPuzzle,
                     amount: offerPayment.amount,
                     targetAddress: settlement.hashHex(),
-                    spendableCoinList: await getCoinList(cat.hashHex()),
+                    spendableCoinList: await this.getCoinList(cat.hashHex()),
                     assetId,
                     additionalConditions: announcementAssertions,
                     memo: [offerPayment.memo],
@@ -153,7 +221,7 @@ export class Offer {
                     amount: offerPayment.amount,
                     targetAddress: settlement.hashHex(),
                     puzzleReveal,
-                    spendableCoinList: await getCoinList(
+                    spendableCoinList: await this.getCoinList(
                         puzzleReveal.hashHex()
                     ),
                     additionalConditions: announcementAssertions,
@@ -229,24 +297,13 @@ export const createOffer = async (
     if (!puzzleReveal) {
         throw new Error('error')
     }
-    const requestPaymentAnnouncements: Announcement[] = requestAssets.map(
-        (payment) => {
-            const nonce = getNonce()
-            const message = toMsg({
-                nonce,
-                payment,
-                puzzle_hash: puzzleReveal?.hashHex(),
-            })
-            const settlement = generateSettlement(payment.assetId)
-            return new Announcement(settlement.hashHex(), message)
-        }
-    )
 
     const secureBundle = await Offer.generateSecureBundle(
-        requestPaymentAnnouncements,
+        requestAssets,
         offerAssets,
         fee
     )
+
     console.log('secureBundle', secureBundle)
     const offer = new Offer(secureBundle)
     const offerString = offer.encode(5)
