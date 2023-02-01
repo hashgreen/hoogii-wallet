@@ -269,14 +269,18 @@ export class Wallet extends Program {
         additionalConditions,
     }: {
         puzzleReveal: Program
-        amount: any
+        amount: number
         fee: string
         targetAddress: string
         spendableCoinList: Coin[]
         additionalConditions: Program[]
     }): Promise<CoinSpend[]> => {
+        console.log(
+            'Number(amount) + Number(fee)',
+            Number(amount) + Number(fee)
+        )
         const spendAmount = BigInt(
-            (Number(amount) + Number(fee)) * Math.pow(10, 12)
+            Math.round((Number(amount) + Number(fee)) * Math.pow(10, 12))
         )
 
         const balance = await callGetBalance({
