@@ -4,8 +4,8 @@ import { Program } from '@rigidity/clvm'
 class Announcement {
     originInfo: string
     message: Program
-    morphBytes?
-    constructor(originInfo, message, morphBytes?) {
+    morphBytes: any
+    constructor(originInfo: string, message: Program, morphBytes?: any) {
         this.originInfo = originInfo
         this.message = message
         this.morphBytes = morphBytes
