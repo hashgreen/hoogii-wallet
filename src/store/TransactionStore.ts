@@ -1,16 +1,16 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
-import { Coin } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
-import { getSpendableCoins, sendTx } from '~/api/api'
+import { callGetBalance, getSpendableCoins, sendTx } from '~/api/api'
 import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
 import { xchToMojo } from '~/utils/CoinConverter'
 import { getErrorMessage } from '~/utils/errorMessage'
-import { addressToPuzzleHash, getProgramBySeed } from '~/utils/signature'
+import { getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
+import { Coin } from '~/utils/Wallet/types'
 import { Wallet } from '~/utils/Wallet/Wallet'
 
 import WalletStore from './WalletStore'
@@ -48,18 +48,30 @@ class TransactionStore {
         memo: string,
         fee: string
     ): Promise<void> => {
-        const { seed, address, chain } = this.walletStore
+        const { seed, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
-        const puzzleReveal = getProgramBySeed(seed).serializeHex()
+        const puzzleReveal = getProgramBySeed(seed)
+        const balance = await callGetBalance(
+            {
+                puzzle_hash: puzzleReveal.hashHex(),
+            },
+            { isShowToast: false }
+        )
+        if (balance.data.data < BigInt(amount) + BigInt(fee)) {
+            throw new Error("You don't have enough balance to send")
+        }
+        const spendableCoinList = await TransactionStore.coinList(
+            puzzleReveal.hashHex()
+        )
         try {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzleReveal,
                 amount,
                 memo,
                 fee,
-                address,
                 targetAddress,
+                spendableCoinList,
             })
 
             const XCHsignatures = AugSchemeMPL.aggregate(
