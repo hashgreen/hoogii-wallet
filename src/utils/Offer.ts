@@ -217,7 +217,6 @@ export class Offer {
 
                 spendList.push(...CATCoinSpendList)
             } else {
-                console.log('offerPayment.amount', offerPayment.amount)
                 const XCHSpendList = await Wallet.generateXCHSpendList({
                     fee: '0',
                     amount: offerPayment.amount,
@@ -231,7 +230,7 @@ export class Offer {
                 spendList.push(...XCHSpendList)
             }
 
-            if (fee !== '0') {
+            if (Number(fee) > 0) {
                 const feeSpendList = await Wallet.generateXCHSpendList({
                     fee,
                     amount: 0,
