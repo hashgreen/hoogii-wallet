@@ -2,8 +2,6 @@ import { hash256 } from '@rigidity/bls-signatures'
 import { Program } from '@rigidity/clvm'
 import bcrypt from 'bcryptjs'
 
-
-
 export const shortenHash = (
     hash: string,
     head: number = 5,
