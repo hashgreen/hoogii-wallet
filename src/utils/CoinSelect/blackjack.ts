@@ -4,14 +4,14 @@ import utils from './utils'
 export default function blackjack<T extends Coin, O extends Coin>(
     coins: T[],
     outputs: O[],
-    feeRate: FeeRate = 0
+    feeRate: FeeRate = 0n
 ): CoinReturn<T, O> {
-    if (!isFinite(utils.uintOrNaN(feeRate))) return {}
+    if (utils.uintOrNaN(feeRate)) return {}
 
-    let bytesAccum = 0 // 計算byte總和
+    let bytesAccum = 0n // 計算byte總和
     const outAccum = utils.sumOrNaN(outputs) // 輸出的加總
-    const threshold = 0 // utils.dustThreshold({}, feeRate)
-    let inAccum = 0 // 輸入的加總
+    const threshold = 0n // utils.dustThreshold({}, feeRate)
+    let inAccum = 0n // 輸入的加總
     const inputs: T[] = [] // 要輸入的coin
     for (let i = 0; i < coins.length; ++i) {
         const input: T = coins[i]

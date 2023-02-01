@@ -34,13 +34,19 @@
     "jsx": "react-jsx",
     "noImplicitAny": false,
     "useDefineForClassFields": true,
+        
   },
   "include": [
-    "src"
+    "src",
+    "global.d.ts"
   ],
   "types": [
     "src/**/*.d.ts",
     "unplugin-icons/types/react",
     "chrome"
-  ]
+  ],
+  "files": ["global.d.ts"]
+  /// <reference types="jest-extended" />
+
+
 }

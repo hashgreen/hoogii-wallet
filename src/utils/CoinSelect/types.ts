@@ -8,16 +8,16 @@ export interface CoinTarget {
     coin?: Coin
 }
 
-export type FeeRate = number
+export type FeeRate = bigint
 
 export interface CoinReturn<T extends Coin, O extends Coin> {
     coins?: T[]
     outputs?: O[]
-    fee?: number
+    fee?: bigint
 }
 
 export type CoinSelctFun<T extends Coin, O extends Coin> = (
     coins: T[],
     output: O[],
-    feeRate: number
-) => { coins?: T[]; output?: O[]; feeRate?: number }
+    feeRate: bigint
+) => { coins?: T[]; output?: O[]; feeRate?: bigint }
