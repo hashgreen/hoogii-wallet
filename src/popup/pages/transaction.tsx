@@ -1,7 +1,9 @@
 import classNames from 'classnames'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { ErrorPopup } from '~/components/Popup'
 import rootStore from '~/store'
 import { MethodEnum } from '~/types/extension'
 import { createOffer } from '~/utils/Offer'
@@ -14,11 +16,16 @@ const Transaction = ({
     request,
 }: IPopupPageProps<MethodEnum.REQUEST>) => {
     const { t } = useTranslation()
-
+    const [submitError, setSubmitError] = useState<Error>()
     const {
         assetsStore: { XCH },
     } = rootStore
-    const { register, handleSubmit, watch } = useForm({
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { isSubmitting },
+    } = useForm({
         defaultValues: {
             fee: '0',
         },
@@ -26,15 +33,17 @@ const Transaction = ({
     const fee = watch('fee')
 
     const onSubmit = async (data) => {
-        // window.close()
-
         await createOffer(request.data?.params, data?.fee)
     }
 
     return (
         <form
             id="confirm-form"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={(e) =>
+                handleSubmit(onSubmit)(e).catch((error) => {
+                    setSubmitError(error as Error)
+                })
+            }
             className="container flex flex-col justify-between  w-full h-full py-12"
         >
             <div className="flex flex-col gap-2 items-center">
@@ -146,6 +155,20 @@ const Transaction = ({
                     </button>
                 </div>
             </div>
+            {isSubmitting && (
+                <div className="z-50 fixed-full flex-center bg-overlay">
+                    <div className="w-[60px] h-[60px] loading"></div>
+                </div>
+            )}
+            {submitError && (
+                <ErrorPopup
+                    title={t('send-error-title')}
+                    description={submitError.message}
+                    close={() => {
+                        setSubmitError(undefined)
+                    }}
+                />
+            )}
         </form>
     )
 }
