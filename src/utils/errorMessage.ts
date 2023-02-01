@@ -20,9 +20,9 @@ export const getErrorMessage = (error: AxiosError) => {
     if (error.message) {
         return `${error.message}`
     }
-    if (isDev) {
-        console.log(error) // log the error reason for debug
-    }
+    // if (isDev) {
+    //     console.log(error) // log the error reason for debug
+    // }
 
     return API_TIME_OUT
 }
