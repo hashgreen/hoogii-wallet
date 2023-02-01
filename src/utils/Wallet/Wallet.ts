@@ -87,6 +87,7 @@ export class Wallet extends Program {
             defaultHiddenPuzzleHash
         )
         finalKeyPairs.set(syntheticPublicKey, syntheticPrivateKey)
+
         const conditions = Program.deserializeHex(
             sanitizeHex(coinSpend.puzzle_reveal)
         )
@@ -257,14 +258,14 @@ export class Wallet extends Program {
                     puzzle_hash: '',
                 },
             ],
-            0 // feerate
+            0n // feerate
         )
 
         return usedCoinList || []
     }
 
     static generateXCHSpendList = async ({
-        puzzleReveal,
+        puzzle,
         amount,
         fee = '0',
         targetAddress,
@@ -275,18 +276,7 @@ export class Wallet extends Program {
         const spendAmount = BigInt(
             xchToMojo(amount).add(xchToMojo(fee)).toString()
         )
-        const balance = await callGetBalance(
-            {
-                puzzle_hash: puzzleReveal.hashHex(),
-            },
-            { isShowToast: false }
-        )
-        if (balance.data.data < spendAmount) {
-            throw new Error("You don't have enough balance to send")
-        }
-
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
-
         const sumSpendingValue = coinList.reduce((acc, cur) => {
             return BigInt(acc) + BigInt(cur.amount)
         }, 0n)
@@ -328,12 +318,15 @@ export class Wallet extends Program {
                     : []),
             ])
         })
-        conditionList.push(
-            Program.fromList([
-                Program.fromHex(sanitizeHex(ConditionOpcode.RESERVE_FEE)),
-                Program.fromBigInt(BigInt(Number(fee) * Math.pow(10, 12))),
-            ])
-        )
+
+        if (new Decimal(fee).comparedTo(0) === 1) {
+            conditionList.push(
+                Program.fromList([
+                    Program.fromHex(sanitizeHex(ConditionOpcode.RESERVE_FEE)),
+                    Program.fromBigInt(BigInt(Number(fee) * Math.pow(10, 12))),
+                ])
+            )
+        }
 
         const origin_info = this.coinName(firstCoin)
         const createCoinAnnouncement = hash256(
@@ -366,7 +359,7 @@ export class Wallet extends Program {
         const spendsList: CoinSpend[] = []
         const coinSpend = new CoinSpend(
             firstCoin,
-            puzzleReveal,
+            puzzle.serializeHex(),
             solution.serializeHex()
         )
         spendsList.push(coinSpend)
@@ -388,7 +381,7 @@ export class Wallet extends Program {
         for (const restCoin of restCoinList) {
             const coinSpend = new CoinSpend(
                 restCoin,
-                puzzleReveal,
+                puzzle.serializeHex(),
                 restSolution
             )
             spendsList.push(coinSpend)

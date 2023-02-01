@@ -5,7 +5,7 @@ export interface Coin {
     amount: bigint
 }
 export interface XCHPayload {
-    puzzleReveal: Program
+    puzzle: Program
     amount: string
     memo?: string
     fee?: string

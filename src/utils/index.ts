@@ -4,9 +4,9 @@ import bcrypt from 'bcryptjs'
 
 import { ModeEnum } from '~/types'
 
-export const isDev = import.meta.env.DEV
+// export const isDev = import.meta.env.DEV
 
-export const isExtension = import.meta.env.MODE !== ModeEnum.development
+// export const isExtension = import.meta.env.MODE !== ModeEnum.development
 
 export const shortenHash = (
     hash: string,
