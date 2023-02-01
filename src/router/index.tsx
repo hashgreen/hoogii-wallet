@@ -88,14 +88,10 @@ const settingRoutes = {
                 },
             ],
         },
-        ...(isDev
-            ? [
-                  {
-                      path: 'connectedSites',
-                      element: <ConnectedSites />,
-                  },
-              ]
-            : []),
+        {
+            path: 'connectedSites',
+            element: <ConnectedSites />,
+        },
     ],
 }
 
