@@ -127,14 +127,10 @@ const Settings = () => {
                         title: t('setting-address_book'),
                         to: 'addressBook',
                     },
-                    ...(isDev
-                        ? [
-                              {
-                                  title: t('setting-connected_sites'),
-                                  to: 'connectedSites',
-                              },
-                          ]
-                        : []),
+                    {
+                        title: t('setting-connected_sites'),
+                        to: 'connectedSites',
+                    },
                     { title: t('setting-advance'), to: 'advance' },
                 ].map((item) => (
                     <li key={item.title}>
