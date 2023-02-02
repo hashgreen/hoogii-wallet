@@ -46,7 +46,7 @@
     "chrome"
   ],
   "files": ["global.d.ts"]
-  /// <reference types="jest-extended" />
+  
 
 
 }

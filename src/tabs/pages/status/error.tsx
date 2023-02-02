@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { isDev } from '~/utils'
+import { isDev } from '~/utils/env'
 import { SubLayout } from '~tabs/layout'
 
 export const Error = () => {
