@@ -262,7 +262,7 @@ export class Wallet extends Program {
 
     static generateXCHSpendList = async ({
         puzzle,
-        amount = 0n,
+        amount,
         fee = 0n,
         targetAddress,
         spendableCoinList,
