@@ -1,6 +1,5 @@
 import { chains } from '~/utils/constants'
-
-import { isExtension } from '.'
+import { isExtension } from '~/utils/env'
 
 export const setStorage = async <T extends { [key: string]: any } = any>(
     item: T
