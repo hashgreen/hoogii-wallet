@@ -69,16 +69,3 @@ export const decrypt = async (
     )
     return new TextDecoder().decode(plainText)
 }
-
-// async function runTest() {
-//     // for testing
-//     const encrypted = await encrypt('p455w0rd', 'original text')
-//     console.log('encrypted', encrypted)
-
-//     const decrypted = await decrypt(
-//         encrypted.salt,
-//         'p455w0rd',
-//         encrypted.cipherText
-//     )
-//     console.log('decrypted', decrypted)
-// }

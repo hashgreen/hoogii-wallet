@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import { Slide, toast, ToastOptions } from 'react-toastify'
 
-import { isDev } from '~/utils'
+import { isDev } from '~/utils/env'
 
 const API_ERROR_MESSAGE = 'Api error'
 const API_TIME_OUT = 'Connection timed out'

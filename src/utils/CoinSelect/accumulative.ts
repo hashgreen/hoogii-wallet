@@ -4,12 +4,12 @@ import utils from './utils'
 export default function accumulative<T extends Coin, O extends Coin>(
     coins: T[],
     outputs: O[],
-    feeRate: FeeRate = 0
+    feeRate: FeeRate = 0n
 ): CoinReturn<T, O> {
-    if (!isFinite(utils.uintOrNaN(feeRate))) return {}
+    if (utils.uintOrNaN(feeRate)) return {}
 
-    let bytesAccum = 0 // 計算byte總和
-    let inAccum = 0
+    let bytesAccum = 0n // 計算byte總和
+    let inAccum = 0n
     const inputs: T[] = []
     const outAccum = utils.sumOrNaN(outputs)
     for (let i = 0; i < coins.length; ++i) {
@@ -32,7 +32,7 @@ export default function accumulative<T extends Coin, O extends Coin>(
 
         const fee = feeRate * bytesAccum
 
-        //   //當加總完畢還是小於目標 跳過
+        // 當加總完畢還是小於目標 跳過
         if (inAccum < outAccum + fee) continue
 
         return utils.finalize(inputs, outputs, feeRate)
