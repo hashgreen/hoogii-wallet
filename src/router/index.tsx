@@ -13,8 +13,6 @@ import Transfer from '~/container/Transfer/Transfer'
 import ClosablePageLayout from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 import { MethodEnum, SenderEnum } from '~/types/extension'
-import { isDev } from '~/utils'
-
 const ImportCAT = lazy(() => import('~/container/ImportCAT/ImportCAT'))
 
 // settings
@@ -88,14 +86,10 @@ const settingRoutes = {
                 },
             ],
         },
-        ...(isDev
-            ? [
-                  {
-                      path: 'connectedSites',
-                      element: <ConnectedSites />,
-                  },
-              ]
-            : []),
+        {
+            path: 'connectedSites',
+            element: <ConnectedSites />,
+        },
     ],
 }
 
