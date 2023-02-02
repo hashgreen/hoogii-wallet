@@ -2,6 +2,7 @@ import { AugSchemeMPL, PrivateKey } from '@rigidity/bls-signatures'
 import { Program } from '@rigidity/clvm'
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 
+import { xchToMojo } from '~/utils/CoinConverter'
 import { chains } from '~/utils/constants'
 import SpendBundle from '~/utils/SpendBundle'
 
@@ -40,7 +41,7 @@ test('Should create StandardTx SpendBundle without fee and check spendBundle is 
         puzzle: coinOwnerPuzzle,
         memo: 'test',
         spendableCoinList: mockCoinList,
-        amount: spendAmount,
+        amount: BigInt(xchToMojo(spendAmount).toString()),
         targetAddress: testTargetAddress,
     })
     const XCHsignatures = AugSchemeMPL.aggregate(

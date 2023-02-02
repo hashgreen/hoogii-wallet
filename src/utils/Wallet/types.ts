@@ -6,9 +6,9 @@ export interface Coin {
 }
 export interface XCHPayload {
     puzzle: Program
-    amount: string
+    amount: bigint
     memo?: string
-    fee?: string
+    fee?: bigint
     targetAddress: string
     spendableCoinList: Coin[]
     additionalConditions?: Program[]
