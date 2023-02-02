@@ -4,20 +4,20 @@ import {
     fromHex,
     hash256,
 } from '@rigidity/bls-signatures'
-import { addressInfo, Coin, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
-import {
-    callGetBalance,
-    getCoinRecordsByName,
-    getPuzzleAndSolution,
-} from '~/api/api'
-import { catToMojo } from '~/utils/CoinConverter'
+import { getCoinRecordsByName, getPuzzleAndSolution } from '~/api/api'
 
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
+import type { Coin, XCHPayload } from './Wallet/types'
 import { Primary, Wallet } from './Wallet/Wallet'
 
+interface CATPayload extends Omit<XCHPayload, 'puzzle'> {
+    wallet: Wallet
+    assetId: Uint8Array
+}
 export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
         super(
@@ -78,18 +78,9 @@ export class CAT extends Program {
         memo,
         targetAddress,
         spendableCoinList,
-    }): Promise<CoinSpend[]> => {
+    }: CATPayload): Promise<CoinSpend[]> => {
         const cat = new CAT(assetId, wallet)
-        const spendAmount = BigInt(catToMojo(amount).toString())
-        const {
-            data: { data },
-        } = await callGetBalance({
-            puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
-        })
-
-        if (BigInt(data) < spendAmount) {
-            throw new Error("You don't have enough coin to spend")
-        }
+        const spendAmount = amount
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
@@ -107,10 +98,14 @@ export class CAT extends Program {
         ).toHex()
 
         const primaryList: Primary[] = []
+        const memos = [puzzlehash.toString()]
+        if (memo) {
+            memos.push(memo)
+        }
         primaryList.push({
             puzzlehash,
             amount: spendAmount,
-            memos: [puzzlehash.toString(), memo],
+            memos,
         })
         if (Number(change) > 0) {
             primaryList.push({
