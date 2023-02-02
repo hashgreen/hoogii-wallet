@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import Popup from '~/components/Popup'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
-import { isDev } from '~/utils'
+import { isDev } from '~/utils/env'
 import RightIcon from '~icons/hoogii/right.jsx'
 
 const Advance = () => {
