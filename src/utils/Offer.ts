@@ -6,12 +6,12 @@ import {
     intToBytes,
     PrivateKey,
 } from '@rigidity/bls-signatures'
-import { Coin, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { bech32m } from 'bech32'
 import zlib from 'react-zlib-js'
 
-import { getSpendableCoins } from '~/api/api'
+import { callGetBalance, getSpendableCoins } from '~/api/api'
 import { OfferAsset } from '~/types/extension'
 import Announcement from '~/utils/Announcement'
 import { CAT } from '~/utils/CAT'
@@ -19,7 +19,8 @@ import CoinSpend from '~/utils/CoinSpend'
 import { puzzles } from '~/utils/puzzles'
 import Secure from '~/utils/Secure'
 import SpendBundle from '~/utils/SpendBundle'
-import { Wallet } from '~/utils/Wallet'
+import type { Coin } from '~/utils/Wallet/types'
+import { Wallet } from '~/utils/Wallet/Wallet'
 
 const initDict = [
     puzzles.wallet.serializeHex() + puzzles.catOld.serializeHex(),
@@ -129,7 +130,7 @@ export default class Offer {
                 parent_coin_info:
                     '0x0000000000000000000000000000000000000000000000000000000000000000',
                 puzzle_hash: this.generateSettlement(assetId).hashHex(),
-                amount: 0,
+                amount: 0n,
             }
             const nonce = this.getNonce()
             if (assetId) {
@@ -201,27 +202,36 @@ export default class Offer {
                 const walletPrivateKey =
                     Wallet.derivePrivateKey(masterPrivateKey)
                 const walletPublicKey = walletPrivateKey.getG1()
-                const innerPuzzle = new Wallet(walletPublicKey, {
+                const wallet = new Wallet(walletPublicKey, {
                     hardened: true,
                     index: 0,
                 })
+                const {
+                    data: { data },
+                } = await callGetBalance({
+                    puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
+                })
+
+                if (BigInt(data) < BigInt(offerPayment.amount)) {
+                    throw new Error("You don't have enough coin to spend")
+                }
                 const CATCoinSpendList = await CAT.generateCATSpendList({
-                    innerPuzzle,
-                    amount: offerPayment.amount,
+                    wallet,
+                    amount: BigInt(offerPayment.amount),
                     targetAddress: settlement.hashHex(),
                     spendableCoinList: await this.getCoinList(cat.hashHex()),
                     assetId,
                     additionalConditions: announcementAssertions,
-                    memo: [offerPayment.memo],
+                    memo: offerPayment.memo,
                 })
 
                 spendList.push(...CATCoinSpendList)
             } else {
                 const XCHSpendList = await Wallet.generateXCHSpendList({
-                    fee: '0',
-                    amount: offerPayment.amount,
+                    fee: 0n,
+                    amount: BigInt(offerPayment.amount),
                     targetAddress: settlement.hashHex(),
-                    puzzleReveal,
+                    puzzle: puzzleReveal,
                     spendableCoinList: await this.getCoinList(
                         puzzleReveal.hashHex()
                     ),
@@ -230,12 +240,12 @@ export default class Offer {
                 spendList.push(...XCHSpendList)
             }
 
-            if (Number(fee) > 0) {
+            if (BigInt(fee) > 0n) {
                 const feeSpendList = await Wallet.generateXCHSpendList({
-                    fee,
-                    amount: 0,
+                    fee: BigInt(fee),
+                    amount: 0n,
                     targetAddress: settlement.hashHex(),
-                    puzzleReveal,
+                    puzzle: puzzleReveal,
                     spendableCoinList: await this.getCoinList(
                         puzzleReveal.hashHex()
                     ),
