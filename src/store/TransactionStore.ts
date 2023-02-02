@@ -6,7 +6,7 @@ import { makeAutoObservable } from 'mobx'
 import { callGetBalance, getSpendableCoins, sendTx } from '~/api/api'
 import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
-import { xchToMojo } from '~/utils/CoinConverter'
+import { catToMojo, xchToMojo } from '~/utils/CoinConverter'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
@@ -58,7 +58,7 @@ class TransactionStore {
             },
             { isShowToast: false }
         )
-        if (balance.data.data < BigInt(amount) + BigInt(fee)) {
+        if (BigInt(balance.data.data) < BigInt(amount) + BigInt(fee)) {
             throw new Error("You don't have enough balance to send")
         }
         const spendableCoinList = await TransactionStore.coinList(
@@ -66,10 +66,10 @@ class TransactionStore {
         )
         try {
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                puzzleReveal,
-                amount,
+                puzzle: puzzleReveal,
+                amount: BigInt(xchToMojo(amount).toString()),
                 memo,
-                fee,
+                fee: BigInt(xchToMojo(fee).toString()),
                 targetAddress,
                 spendableCoinList,
             })
@@ -106,7 +106,7 @@ class TransactionStore {
         const { seed, address, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
-        const puzzleReveal = getProgramBySeed(seed).serializeHex()
+        const puzzleReveal = getProgramBySeed(seed)
 
         const masterPrivateKey = PrivateKey.fromSeed(seed)
         const walletPrivateKey = Wallet.derivePrivateKey(masterPrivateKey)
@@ -122,11 +122,20 @@ class TransactionStore {
         const spendableCATList = await TransactionStore.coinList(
             Program.fromBytes(cat.hash()).toHex()
         )
+        const {
+            data: { data },
+        } = await callGetBalance({
+            puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
+        })
+
+        if (BigInt(data) < BigInt(catToMojo(amount).toString())) {
+            throw new Error("You don't have enough coin to spend")
+        }
 
         const CATspendsList = await CAT.generateCATSpendList({
             wallet,
             assetId,
-            amount,
+            amount: BigInt(catToMojo(amount).toString()),
             memo,
             targetAddress,
             spendableCoinList: spendableCATList,
@@ -145,12 +154,15 @@ class TransactionStore {
         const signatureList = [CATsignatures]
 
         if (BigInt(xchToMojo(fee).toString()) > 0) {
+            const spendableCoinList = await TransactionStore.coinList(
+                puzzleReveal.hashHex()
+            )
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                puzzleReveal,
-                amount: '0',
+                puzzle: puzzleReveal,
+                amount: 0n,
                 memo: '', // memo is unnecessary for fee
-                fee,
-                address,
+                fee: BigInt(xchToMojo(fee).toString()),
+                spendableCoinList,
                 targetAddress: address,
             })
             spendList.push(...XCHspendsList)
