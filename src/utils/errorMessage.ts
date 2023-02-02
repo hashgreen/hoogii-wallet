@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import { Slide, toast, ToastOptions } from 'react-toastify'
 
-import { isDev } from '~/utils'
+import { isDev } from '~/utils/env'
 
 const API_ERROR_MESSAGE = 'Api error'
 const API_TIME_OUT = 'Connection timed out'
@@ -20,9 +20,9 @@ export const getErrorMessage = (error: AxiosError) => {
     if (error.message) {
         return `${error.message}`
     }
-    // if (isDev) {
-    //     console.log(error) // log the error reason for debug
-    // }
+    if (isDev) {
+        console.log(error) // log the error reason for debug
+    }
 
     return API_TIME_OUT
 }

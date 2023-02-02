@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-import { isDev } from '~/utils'
+import { isDev } from '~/utils/env'
 import { SubLayout } from '~tabs/layout'
 
 const Policy = ({ routeFor }: { routeFor: 'create' | 'import' }) => {
