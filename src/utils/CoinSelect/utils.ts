@@ -68,9 +68,7 @@ function finalize<T extends Coin, O extends Coin>(
 
     // is it worth a change output?
     if (remainderAfterExtraOutput > dustThreshold({}, feeRate)) {
-        outputs = outputs.concat({
-            amount: remainderAfterExtraOutput || 0,
-        } as unknown as O)
+        outputs = outputs.concat({ amount: remainderAfterExtraOutput } as O)
     }
     const fee = sumOrNaN(inputs) - sumOrNaN(outputs)
     if (fee) return { fee: feeRate * bytesAccum }
