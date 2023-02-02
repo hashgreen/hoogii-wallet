@@ -6,7 +6,7 @@ import { makeAutoObservable } from 'mobx'
 import { callGetBalance, getSpendableCoins, sendTx } from '~/api/api'
 import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
-import { xchToMojo } from '~/utils/CoinConverter'
+import { catToMojo, xchToMojo } from '~/utils/CoinConverter'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
@@ -122,11 +122,20 @@ class TransactionStore {
         const spendableCATList = await TransactionStore.coinList(
             Program.fromBytes(cat.hash()).toHex()
         )
+        const {
+            data: { data },
+        } = await callGetBalance({
+            puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
+        })
+
+        if (BigInt(data) < BigInt(catToMojo(amount).toString())) {
+            throw new Error("You don't have enough coin to spend")
+        }
 
         const CATspendsList = await CAT.generateCATSpendList({
             wallet,
             assetId,
-            amount,
+            amount: BigInt(catToMojo(amount).toString()),
             memo,
             targetAddress,
             spendableCoinList: spendableCATList,
