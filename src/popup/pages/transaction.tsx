@@ -48,7 +48,7 @@ const Transaction = ({
     const onSubmit = async (data) => {
         const offer = await createOffer(request.data?.params, data?.fee)
         controller.returnData({
-            data: { offer: offer.encode(5) },
+            data: { id: offer.getId(), offer: offer.encode(5) },
         })
         window.close()
     }

@@ -266,6 +266,10 @@ export default class Offer {
         return spendBundle
     }
 
+    getId() {
+        return this.bundle.getTXID()
+    }
+
     encode(ver: number, prefix = 'offer') {
         const offerName = concatBytes(
             intToBytes(this.bundle.coin_spends.length, 4, 'big'),
