@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { useClosablePage } from '~/layouts/ClosablePage'
-import { isDev } from '~/utils'
+import { isDev } from '~/utils/env'
 import BottomIcon from '~icons/hoogii/bottom.jsx'
 import DarkIcon from '~icons/hoogii/dark.jsx'
 import LightIcon from '~icons/hoogii/light.jsx'

@@ -13,7 +13,7 @@ import Transfer from '~/container/Transfer/Transfer'
 import ClosablePageLayout from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 import { MethodEnum, SenderEnum } from '~/types/extension'
-import { isDev } from '~/utils'
+import { isDev } from '~/utils/env'
 
 const ImportCAT = lazy(() => import('~/container/ImportCAT/ImportCAT'))
 
