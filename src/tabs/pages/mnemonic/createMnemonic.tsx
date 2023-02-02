@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import Mnemonic from '~/components/Mnemonic'
 import { ErrorPopup } from '~/components/Popup'
-import { isDev } from '~/utils'
+import { isDev } from '~/utils/env'
 import { SubLayout } from '~tabs/layout'
 import rootStore from '~tabs/store'
 

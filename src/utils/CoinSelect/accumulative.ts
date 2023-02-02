@@ -4,21 +4,21 @@ import utils from './utils'
 export default function accumulative<T extends Coin, O extends Coin>(
     coins: T[],
     outputs: O[],
-    feeRate: FeeRate = 0
+    feeRate: FeeRate = 0n
 ): CoinReturn<T, O> {
-    if (!isFinite(utils.uintOrNaN(feeRate))) return {}
+    if (utils.uintOrNaN(feeRate)) return {}
 
-    let bytesAccum = 0 // 計算byte總和
-    let inAccum = 0
+    let bytesAccum = 0n // Calculate byte summary
+    let inAccum = 0n
     const inputs: T[] = []
     const outAccum = utils.sumOrNaN(outputs)
     for (let i = 0; i < coins.length; ++i) {
         const coin = coins[i]
-        const coinBytes = utils.inputBytes(coin) // 輸入的bytes
-        const coinFee = feeRate * coinBytes // 輸入的bytes計算fee
-        const coinValue = utils.uintOrNaN(coin.amount) // utxo的價格
+        const coinBytes = utils.inputBytes(coin) // input bytes
+        const coinFee = feeRate * coinBytes // fee of   input bytes
+        const coinValue = utils.uintOrNaN(coin.amount) // utxo amount
 
-        // skip detrimental input 跳過有害輸入
+        // skip detrimental input
         if (coinFee > coin.amount) {
             if (i === coins.length - 1) {
                 return { fee: feeRate * (bytesAccum + coinBytes) }
@@ -32,7 +32,7 @@ export default function accumulative<T extends Coin, O extends Coin>(
 
         const fee = feeRate * bytesAccum
 
-        //   //當加總完畢還是小於目標 跳過
+        // When the sum is still less than the target, skip
         if (inAccum < outAccum + fee) continue
 
         return utils.finalize(inputs, outputs, feeRate)

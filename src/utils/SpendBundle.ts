@@ -56,5 +56,14 @@ class SpendBundle {
             )
         ).toHex()
     }
+
+    destruct(): string[][] {
+        return this.coin_spends.map((coin_spend) =>
+            Program.deserializeHex(coin_spend.puzzle_reveal)
+                .run(Program.deserializeHex(coin_spend.solution))
+                .value.toList()
+                .map((condition) => condition.toSource())
+        )
+    }
 }
 export default SpendBundle

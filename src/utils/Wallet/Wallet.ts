@@ -9,14 +9,13 @@ import {
     JacobianPoint,
     PrivateKey,
 } from '@rigidity/bls-signatures'
-import { Coin, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
-import { callGetBalance } from '~/api/api'
-
-import CoinSelect from './CoinSelect'
-import CoinSpend from './CoinSpend'
-import { puzzles } from './puzzles'
+import CoinSelect from '../CoinSelect'
+import CoinSpend from '../CoinSpend'
+import { puzzles } from '../puzzles'
+import { Coin, XCHPayload } from './types'
 
 const defaultHiddenPuzzleHash = puzzles.defaultHidden.hash()
 
@@ -84,6 +83,7 @@ export class Wallet extends Program {
             defaultHiddenPuzzleHash
         )
         finalKeyPairs.set(syntheticPublicKey, syntheticPrivateKey)
+
         const conditions = Program.deserializeHex(
             sanitizeHex(coinSpend.puzzle_reveal)
         )
@@ -237,7 +237,7 @@ export class Wallet extends Program {
 
     public static selectCoins(
         spendableCoinList: Coin[],
-        spendAmount: BigInt
+        spendAmount: bigint
     ): Coin[] {
         const matchCoin = spendableCoinList.find(
             (coin) => BigInt(coin.amount) === spendAmount
@@ -249,50 +249,29 @@ export class Wallet extends Program {
             spendableCoinList,
             [
                 {
-                    amount: Number(spendAmount),
+                    amount: spendAmount,
                     parent_coin_info: '',
                     puzzle_hash: '',
                 },
             ],
-            0 // feerate
+            0n // feerate
         )
 
         return usedCoinList || []
     }
 
     static generateXCHSpendList = async ({
-        puzzleReveal,
+        puzzle,
         amount,
-        fee,
+        fee = 0n,
         targetAddress,
         spendableCoinList,
-        additionalConditions,
-    }: {
-        puzzleReveal: Program
-        amount: number
-        fee: string
-        targetAddress: string
-        spendableCoinList: Coin[]
-        additionalConditions: Program[]
-    }): Promise<CoinSpend[]> => {
-        console.log(
-            'Number(amount) + Number(fee)',
-            Number(amount) + Number(fee)
-        )
-        const spendAmount = BigInt(
-            Math.round((Number(amount) + Number(fee)) * Math.pow(10, 12))
-        )
-
-        const balance = await callGetBalance({
-            puzzle_hash: puzzleReveal.hashHex(),
-        })
-
-        if (balance.data.data < spendAmount) {
-            throw new Error("You don't have enough balance to send")
-        }
+        memo = '',
+        additionalConditions = [],
+    }: XCHPayload): Promise<CoinSpend[]> => {
+        const spendAmount = amount + fee
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
-
         const sumSpendingValue = coinList.reduce((acc, cur) => {
             return BigInt(acc) + BigInt(cur.amount)
         }, 0n)
@@ -300,61 +279,72 @@ export class Wallet extends Program {
         const change = sumSpendingValue - spendAmount
 
         const [firstCoin, ...restCoinList] = coinList
+        const primaryList: Primary[] = []
 
-        interface primary {
-            puzzle_hash: string
-            amount: bigint
-        }
-        const primaryList: primary[] = []
-
-        if (Number(amount) > 0n) {
+        if (amount > 0n) {
             primaryList.push({
-                puzzle_hash: targetAddress,
-                amount: BigInt(Number(amount) * Math.pow(10, 12)),
+                puzzlehash: Program.fromBytes(
+                    addressInfo(targetAddress).hash
+                ).toHex(),
+                amount,
+                memos: [memo],
             })
         }
 
+        // memo is unnecessary for change
         primaryList.push({
-            puzzle_hash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
-            amount: change,
+            puzzlehash: sanitizeHex(firstCoin.puzzle_hash), // change's puzzlehash
+            amount: change, // memo is unnecessary for change
         })
 
         const conditionList: Program[] = primaryList.map((primary) => {
             return Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
-                Program.fromHex(primary.puzzle_hash),
+                Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
+                ...(primary.memos
+                    ? [
+                          Program.fromList(
+                              primary.memos.map((memo) =>
+                                  Program.fromText(memo)
+                              )
+                          ),
+                      ]
+                    : []),
             ])
         })
-        conditionList.push(
-            Program.fromList([
-                Program.fromHex(sanitizeHex(ConditionOpcode.RESERVE_FEE)),
-                Program.fromBigInt(BigInt(Number(fee) * Math.pow(10, 12))),
-            ])
-        )
-        // TODO:
-        const createCoinAnnouncement = Program.fromBytes(
-            hash256(
-                concatBytes(
-                    ...coinList.map((coin) => this.coinName(coin)),
-                    ...primaryList.map((primary) =>
-                        this.coinName({
-                            ...primary,
-                            amount: Number(primary.amount),
-                            parent_coin_info: Program.fromBytes(
-                                this.coinName(firstCoin)
-                            ).toString(),
-                        })
-                    )
+
+        if (fee > 0n) {
+            conditionList.push(
+                Program.fromList([
+                    Program.fromHex(sanitizeHex(ConditionOpcode.RESERVE_FEE)),
+                    Program.fromBigInt(fee),
+                ])
+            )
+        }
+
+        const origin_info = this.coinName(firstCoin)
+        const createCoinAnnouncement = hash256(
+            concatBytes(
+                ...coinList.map((coin) => this.coinName(coin)),
+                ...primaryList.map((primary) =>
+                    this.coinName({
+                        ...primary,
+                        puzzle_hash: primary.puzzlehash,
+                        amount: primary.amount,
+                        parent_coin_info:
+                            Program.fromBytes(origin_info).toString(),
+                    })
                 )
             )
-        ).toString()
+        )
+
         conditionList.push(
             Program.fromList([
                 Program.fromHex(
                     sanitizeHex(ConditionOpcode.CREATE_COIN_ANNOUNCEMENT)
                 ),
-                Program.fromHex(sanitizeHex(createCoinAnnouncement)),
+                Program.fromBytes(createCoinAnnouncement),
             ])
         )
         conditionList.push(...additionalConditions)
@@ -364,16 +354,30 @@ export class Wallet extends Program {
         const spendsList: CoinSpend[] = []
         const coinSpend = new CoinSpend(
             firstCoin,
-            puzzleReveal.serializeHex(),
+            puzzle.serializeHex(),
             solution.serializeHex()
         )
         spendsList.push(coinSpend)
-
+        const assertCoinAnnouncementMsg = hash256(
+            concatBytes(origin_info, createCoinAnnouncement)
+        )
+        const restCoinConditionList: Program[] = []
+        restCoinConditionList.push(
+            Program.fromList([
+                Program.fromHex(
+                    sanitizeHex(ConditionOpcode.ASSERT_COIN_ANNOUNCEMENT)
+                ),
+                Program.fromBytes(assertCoinAnnouncementMsg),
+            ])
+        )
+        const restSolution = Wallet.solutionForConditions(
+            restCoinConditionList
+        ).serializeHex()
         for (const restCoin of restCoinList) {
             const coinSpend = new CoinSpend(
                 restCoin,
-                puzzleReveal,
-                Wallet.solutionForConditions([]).serializeHex()
+                puzzle.serializeHex(),
+                restSolution
             )
             spendsList.push(coinSpend)
         }
