@@ -276,7 +276,7 @@ export class Wallet extends Program {
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
         const sumSpendingValue = coinList.reduce((acc, cur) => {
-            return BigInt(acc) + BigInt(cur.amount)
+            return acc + cur.amount
         }, 0n)
 
         const change = sumSpendingValue - spendAmount

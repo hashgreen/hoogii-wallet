@@ -21,7 +21,13 @@ class SpendBundle {
 
     getObj() {
         return {
-            coin_spends: this.coin_spends,
+            coin_spends: this.coin_spends.map((coinSpend) => ({
+                ...coinSpend,
+                coin: {
+                    ...coinSpend.coin,
+                    amount: Number(coinSpend.coin.amount.toString()),
+                },
+            })),
             aggregated_signature: this.aggregated_signature.toHex(),
         }
     }

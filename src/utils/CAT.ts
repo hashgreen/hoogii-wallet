@@ -85,7 +85,7 @@ export class CAT extends Program {
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
         const sumSpendingValue = coinList.reduce(
-            (acc, cur) => BigInt(acc) + BigInt(cur.amount),
+            (acc, cur) => acc + cur.amount,
             0n
         )
 
