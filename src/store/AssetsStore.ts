@@ -226,8 +226,8 @@ class AssetsStore {
     tailDateBaseImagePath = async () => {
         const patchTime = await getStorage('patchTime')
         if (!patchTime || patchTime < 1) {
-            setStorage({ patchTime: 1 })
-            this.addDefaultAsset()
+            await this.addDefaultAsset()
+            await setStorage({ patchTime: 1 })
         }
     }
 }
