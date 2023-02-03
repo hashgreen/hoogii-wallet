@@ -246,7 +246,10 @@ export class Wallet extends Program {
             return [matchCoin]
         }
         const { coins: usedCoinList } = CoinSelect(
-            spendableCoinList,
+            spendableCoinList.map((coin) => ({
+                ...coin,
+                amount: BigInt(coin.amount),
+            })),
             [
                 {
                     amount: spendAmount,
