@@ -19,6 +19,7 @@ import rootStore from '~/store'
 import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
 import { ChainEnum } from '~/types/chia'
 import { CAT } from '~/utils/CAT'
+import { getStorage, setStorage } from '~/utils/storage'
 import { Wallet } from '~/utils/Wallet/Wallet'
 import defaultCATs from '~config/defaultCATs.json'
 
@@ -82,15 +83,11 @@ class AssetsStore {
     addDefaultAsset = () => {
         // Show USDS by default on mainnet
         rootStore.walletStore.db.assets.clear()
-        defaultCATs[this.walletStore.chain.name].forEach(
-            ({ assetId, code, iconUrl }) => {
-                rootStore.walletStore.db.assets.add({
-                    assetId,
-                    code,
-                    iconUrl,
-                })
-            }
-        )
+        defaultCATs[this.walletStore.chain.name].forEach((assetInfo) => {
+            rootStore.walletStore.db.assets.add({
+                ...assetInfo,
+            })
+        })
     }
 
     retrieveExistedAssets = async () => {
@@ -224,6 +221,14 @@ class AssetsStore {
         const cat = new CAT(assetIdHex, wallet)
 
         return '0x' + Program.fromBytes(cat.hash()).toHex()
+    }
+
+    tailDateBaseImagePath = async () => {
+        const isPatched = await getStorage('patched')
+        if (!isPatched) {
+            setStorage({ patched: true })
+            this.addDefaultAsset()
+        }
     }
 }
 
