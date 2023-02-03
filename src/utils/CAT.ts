@@ -75,7 +75,7 @@ export class CAT extends Program {
         wallet,
         assetId,
         amount,
-        memo,
+        memo = '',
         targetAddress,
         spendableCoinList,
     }: CATPayload): Promise<CoinSpend[]> => {
@@ -98,14 +98,11 @@ export class CAT extends Program {
         ).toHex()
 
         const primaryList: Primary[] = []
-        const memos = [puzzlehash.toString()]
-        if (memo) {
-            memos.push(memo)
-        }
+
         primaryList.push({
             puzzlehash,
             amount: spendAmount,
-            memos,
+            memos: [puzzlehash, memo],
         })
         if (Number(change) > 0) {
             primaryList.push({
