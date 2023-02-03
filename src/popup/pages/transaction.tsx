@@ -35,7 +35,6 @@ const Transaction = ({
     } = rootStore
 
     const offerAssets = useMemo<IOfferAssets[]>(() => {
-        console.log('availableAssets', availableAssets)
         if (!request.data?.params) {
             return []
         }
@@ -136,6 +135,11 @@ const Transaction = ({
                         const amount = !asset.assetId
                             ? mojoToXch(asset.amount.toString()).toFixed(12)
                             : mojoToCat(asset.amount.toString()).toFixed(3)
+                        const finsAssetName = availableAssets?.data?.find(
+                            (availableAsset) =>
+                                availableAsset.asset_id === asset.assetId
+                        )?.name
+
                         return (
                             <div
                                 className="flex mb-1 flex-row justify-between"
@@ -143,7 +147,8 @@ const Transaction = ({
                             >
                                 <div>
                                     {asset.assetId
-                                        ? `CAT ${shortenHash(asset.assetId)}`
+                                        ? finsAssetName ||
+                                          `CAT ${shortenHash(asset.assetId)}`
                                         : XCH.code}
                                 </div>
                                 <div

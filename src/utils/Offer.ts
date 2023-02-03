@@ -141,9 +141,7 @@ export default class Offer {
                             Program.fromHex(
                                 sanitizeHex(puzzleReveal.hashHex())
                             ),
-                            Program.fromBigInt(
-                                BigInt(amount * Math.pow(10, 3))
-                            ),
+                            Program.fromBigInt(BigInt(amount)),
                             Program.fromList([Program.fromText(memo || '')]),
                         ]),
                     ]),
@@ -163,9 +161,7 @@ export default class Offer {
                             Program.fromHex(
                                 sanitizeHex(puzzleReveal.hashHex())
                             ),
-                            Program.fromBigInt(
-                                BigInt(amount * Math.pow(10, 12))
-                            ),
+                            Program.fromBigInt(BigInt(amount)),
                             Program.fromList([]),
                         ]),
                     ]),
