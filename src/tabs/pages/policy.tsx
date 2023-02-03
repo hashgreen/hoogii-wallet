@@ -30,7 +30,10 @@ const Policy = ({ routeFor }: { routeFor: 'create' | 'import' }) => {
                     a: (props) => (
                         <a className="text-active" {...props} target="_blank" />
                     ),
-                    ul: (props) => (
+                    // Fix console error
+                    // refer: https://github.com/remarkjs/remark/discussions/873
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    ul: ({ ordered, ...props }) => (
                         <ul className="list-disc pl-[1em]" {...props} />
                     ),
                 }}

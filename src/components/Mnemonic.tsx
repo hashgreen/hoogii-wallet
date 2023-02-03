@@ -20,17 +20,17 @@ interface IForm {
 }
 
 interface IProps {
-    defaultValues?: string[]
-    disabled?: boolean | boolean[]
-    readOnly?: boolean | boolean[]
+    defaultValues: string[]
+    disabled: boolean[]
+    readOnly: boolean[]
     schema?: Joi.ObjectSchema
     onChange?: (isValid: boolean, s: string[]) => void
 }
 
 function Mnemonic({
     defaultValues,
-    disabled = false,
-    readOnly = false,
+    disabled,
+    readOnly,
     schema = Joi.object({ phrases: Joi.array().required() }),
     onChange,
 }: IProps) {
@@ -39,7 +39,6 @@ function Mnemonic({
     const {
         control,
         register,
-        reset,
         trigger,
         setFocus,
         setValue,
@@ -50,11 +49,9 @@ function Mnemonic({
         reValidateMode: 'onChange',
         resolver: joiResolver(schema),
         shouldUnregister: true,
-        defaultValues: defaultValues
-            ? {
-                  phrases: defaultValues.map((value) => ({ value })),
-              }
-            : {},
+        defaultValues: {
+            phrases: defaultValues.map((value) => ({ value })),
+        },
     })
     const { fields } = useFieldArray<IForm>({
         control,
@@ -67,29 +64,21 @@ function Mnemonic({
         ? [{ value: errors.phrases.find((item) => item) }, 'value']
         : [errors, 'phrases']
 
-    const nextField = (currentIndex: number = -1) => {
+    const nextField = (currentIndex) => {
         const nextIndex = values.findIndex(
             (field, index) => !field.value && index > currentIndex
         )
-        if (nextIndex !== -1) {
-            setFocus(`phrases.${nextIndex}.value` as const, {
-                shouldSelect: true,
-            })
-        } else {
-            const emptyFieldsLength =
-                length -
-                (dirtyFields.phrases?.filter((item) => item).length ?? 0)
-            if (!isValid && emptyFieldsLength > 0) nextField()
-            else {
-                // go to first field with wrong value
-                if (Array.isArray(errors.phrases)) {
-                    const nextIndex = errors.phrases.findIndex((item) => item)
-                    if (nextIndex !== -1) {
-                        setFocus(`phrases.${nextIndex}.value` as const, {
-                            shouldSelect: true,
-                        })
-                    }
-                }
+        setFocus(`phrases.${nextIndex}.value` as const, {
+            shouldSelect: true,
+        })
+
+        if (isValid && dirtyFields?.phrases?.some((value) => !value)) {
+            // go to first field with wrong value
+            if (Array.isArray(errors.phrases)) {
+                const nextIndex = errors.phrases.findIndex((item) => item)
+                setFocus(`phrases.${nextIndex}.value` as const, {
+                    shouldSelect: true,
+                })
             }
         }
     }
@@ -98,6 +87,7 @@ function Mnemonic({
         e.preventDefault()
         let lastIndex = 0
         const phrases = e.clipboardData.getData('text').split(' ')
+
         if (phrases.length === length) {
             clearErrors()
             setValue(
@@ -124,27 +114,18 @@ function Mnemonic({
     }
 
     useEffect(() => {
-        if (!defaultValues?.every((value) => !value)) {
-            reset({ phrases: defaultValues?.map((value) => ({ value })) })
-            requestAnimationFrame(() => {
-                const _disabled = Array.isArray(disabled)
-                    ? disabled.every((item) => item)
-                    : disabled
-                const _readOnly = Array.isArray(readOnly)
-                    ? readOnly.every((item) => item)
-                    : readOnly
-                if (!_disabled && !_readOnly) nextField()
-            })
-        }
-    }, [defaultValues, disabled, readOnly])
-
-    useEffect(() => {
         onChange?.(
             isValid,
             values?.map((e) => e.value)
         )
     }, [isValid, JSON.stringify(values)])
-
+    useEffect(() => {
+        if (!defaultValues.some((value) => value)) {
+            setFocus(`phrases.${0}.value` as const, {
+                shouldSelect: true,
+            })
+        }
+    }, [])
     return (
         <>
             <form className="grid grid-cols-3 gap-3 [&>:not(div)]:absolute">
@@ -167,8 +148,8 @@ function Mnemonic({
                                                 word === values[index]?.value
                                         )),
                             })}`}
-                            disabled={disabled[index] ?? disabled}
-                            readOnly={readOnly[index] ?? readOnly}
+                            disabled={disabled[index]}
+                            readOnly={readOnly[index]}
                             placeholder={`Phrase ${index + 1}`}
                             onKeyDown={(e) => {
                                 // press enter to next field
@@ -177,7 +158,10 @@ function Mnemonic({
                                 }
                             }}
                             onPaste={(e) => {
-                                if (!disabled && !readOnly[index]) {
+                                if (
+                                    !disabled.some((item) => item) &&
+                                    !readOnly[index]
+                                ) {
                                     onPaste(index, e)
                                 }
                             }}

@@ -4,7 +4,7 @@ import {
     fromHex,
     hash256,
 } from '@rigidity/bls-signatures'
-import { addressInfo, Coin, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
 import {
@@ -13,6 +13,7 @@ import {
     getPuzzleAndSolution,
 } from '~/api/api'
 import { catToMojo } from '~/utils/CoinConverter'
+import { Coin } from '~/utils/Wallet/types'
 
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'

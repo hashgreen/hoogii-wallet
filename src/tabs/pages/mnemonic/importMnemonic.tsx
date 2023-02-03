@@ -20,7 +20,7 @@ function ImportMnemonic({
     const [open, setOpen] = useState(false)
     const { mnemonicLength, schema, setMnemonics } =
         rootStore.getMnemonicStore(routeFor) || {}
-    const { verifyMnemonic, mnemonics } = rootStore.resetMnemonicStore || {}
+    const { verifyMnemonic } = rootStore.resetMnemonicStore
     const defaultValues = useMemo(
         () => Array.from({ length: mnemonicLength ?? 0 }, () => ''),
         [mnemonicLength]
@@ -47,7 +47,7 @@ function ImportMnemonic({
                 onClick:
                     routeFor === 'reset' && isValid
                         ? async () => {
-                              const result = await verifyMnemonic?.(mnemonics)
+                              const result = await verifyMnemonic()
                               if (result) {
                                   navigate('/reset/password')
                               } else {
@@ -71,6 +71,12 @@ function ImportMnemonic({
                             'any.only': 'error-mnemonic-invalid',
                             'array.includes': 'error-mnemonic-invalid',
                         })}
+                        disabled={
+                            Array.from({ length: 24 }).fill(false) as boolean[]
+                        }
+                        readOnly={
+                            Array.from({ length: 24 }).fill(false) as boolean[]
+                        }
                         onChange={(isValid, mnemonics) => {
                             setIsValid(isValid)
                             setMnemonics?.(mnemonics)

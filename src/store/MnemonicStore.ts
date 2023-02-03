@@ -68,28 +68,15 @@ class MnemonicStore {
             })
     }
 
-    static toMnemonics = (mnemonicPhrase: string) => mnemonicPhrase.split(' ')
-
     static createMnemonics = async () =>
-        this.toMnemonics(await generateMnemonicAsync(256, undefined, words))
+        (await generateMnemonicAsync(256, undefined, words)).split(' ')
 
     validate(mnemonics: string[]): boolean {
         return mnemonics?.length === 24 && mnemonics.every((item) => item)
     }
 
-    createRandomInputs(randomCount: number = 6): [
-        {
-            [k: string]: string
-        },
-        (value: { [k: string]: string }) => boolean
-    ] {
-        const randomInputs = Object.fromEntries(
-            sampleSize(this.mnemonics, randomCount).map((word) => [word, ''])
-        )
-        const validate = (value: { [k: string]: string }) =>
-            Object.entries(value).every(([k, v]) => k === v)
-
-        return [randomInputs, validate]
+    createRandomInputs(randomCount: number = 6): string[] {
+        return sampleSize(this.mnemonics, randomCount)
     }
 
     setMnemonics = (mnemonics: string[]) => {
@@ -186,10 +173,10 @@ export class ResetMnemonicStore extends MnemonicStore {
             })
     }
 
-    async verifyMnemonic(mnemonics?: string[]): Promise<boolean> {
+    async verifyMnemonic(): Promise<boolean> {
         const seedHash = (await getStorage<string>('seedHash')) || ''
 
-        const seed = await mnemonicToSeedAsync(mnemonics?.join(' ') || '')
+        const seed = await mnemonicToSeedAsync(this.mnemonicPhrase)
         const comparedSeedHash = await bcryptVerify(
             bytesToString(seed),
             seedHash
@@ -204,7 +191,7 @@ export class ResetMnemonicStore extends MnemonicStore {
         if (password) {
             await savePassword(password)
 
-            this.walletStore.saveKeyring(this.mnemonics?.join(' '), password)
+            this.walletStore.saveKeyring(this.mnemonicPhrase, password)
         }
     }
 }

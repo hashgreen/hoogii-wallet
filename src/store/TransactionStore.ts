@@ -51,10 +51,10 @@ class TransactionStore {
         const { seed, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
-        const puzzleReveal = getProgramBySeed(seed)
+        const puzzle = getProgramBySeed(seed)
         const balance = await callGetBalance(
             {
-                puzzle_hash: puzzleReveal.hashHex(),
+                puzzle_hash: puzzle.hashHex(),
             },
             { isShowToast: false }
         )
@@ -62,11 +62,11 @@ class TransactionStore {
             throw new Error("You don't have enough balance to send")
         }
         const spendableCoinList = await TransactionStore.coinList(
-            puzzleReveal.hashHex()
+            puzzle.hashHex()
         )
         try {
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                puzzleReveal,
+                puzzle,
                 amount,
                 memo,
                 fee,
@@ -106,7 +106,7 @@ class TransactionStore {
         const { seed, address, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
-        const puzzleReveal = getProgramBySeed(seed).serializeHex()
+        const puzzle = getProgramBySeed(seed)
 
         const masterPrivateKey = PrivateKey.fromSeed(seed)
         const walletPrivateKey = Wallet.derivePrivateKey(masterPrivateKey)
@@ -143,14 +143,16 @@ class TransactionStore {
             )
         )
         const signatureList = [CATsignatures]
-
+        const spendableCoinList = await TransactionStore.coinList(
+            puzzle.hashHex()
+        )
         if (BigInt(xchToMojo(fee).toString()) > 0) {
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                puzzleReveal,
+                puzzle,
                 amount: '0',
                 memo: '', // memo is unnecessary for fee
                 fee,
-                address,
+                spendableCoinList,
                 targetAddress: address,
             })
             spendList.push(...XCHspendsList)
