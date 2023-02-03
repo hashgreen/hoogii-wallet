@@ -20,7 +20,9 @@ function ImportMnemonic({
     const [open, setOpen] = useState(false)
     const { mnemonicLength, schema, setMnemonics } =
         rootStore.getMnemonicStore(routeFor) || {}
-    const { verifyMnemonic } = rootStore.resetMnemonicStore
+    const {
+        resetMnemonicStore: { verifyMnemonic },
+    } = rootStore
     const defaultValues = useMemo(
         () => Array.from({ length: mnemonicLength ?? 0 }, () => ''),
         [mnemonicLength]

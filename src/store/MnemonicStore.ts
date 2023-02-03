@@ -148,6 +148,7 @@ export class ResetMnemonicStore extends MnemonicStore {
             schema: override,
             validate: override,
             create: override,
+            verifyMnemonic: action.bound,
         })
     }
 
@@ -175,7 +176,6 @@ export class ResetMnemonicStore extends MnemonicStore {
 
     async verifyMnemonic(): Promise<boolean> {
         const seedHash = (await getStorage<string>('seedHash')) || ''
-
         const seed = await mnemonicToSeedAsync(this.mnemonicPhrase)
         const comparedSeedHash = await bcryptVerify(
             bytesToString(seed),
