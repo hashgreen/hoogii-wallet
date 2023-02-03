@@ -72,7 +72,7 @@ class TransactionStore {
                 targetAddress,
                 spendableCoinList,
             })
-            console.log('XCHspendsList', XCHspendsList)
+
             const XCHsignatures = AugSchemeMPL.aggregate(
                 XCHspendsList.map((spend) =>
                     Wallet.signCoinSpend(
@@ -127,7 +127,7 @@ class TransactionStore {
         } = await callGetBalance({
             puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
         })
-        console.log('data', data, amount)
+
         if (BigInt(data) < BigInt(amount)) {
             throw new Error("You don't have enough coin to spend")
         }
