@@ -170,3 +170,8 @@ export interface OfferParams {
     requestAssets: OfferAsset[]
     offerAssets: OfferAsset[]
 }
+
+export enum OfferTypeEnum {
+    REQUEST = 'REQUEST',
+    OFFER = 'OFFER',
+}

@@ -1,15 +1,27 @@
 import classNames from 'classnames'
-import { useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useLayoutEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { ErrorPopup } from '~/components/Popup'
 import rootStore from '~/store'
-import { MethodEnum, OfferParams } from '~/types/extension'
+import {
+    MethodEnum,
+    OfferAsset,
+    OfferParams,
+    OfferTypeEnum,
+} from '~/types/extension'
+import { shortenHash } from '~/utils'
+import { mojoToCat, mojoToXch, xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
+
+interface IOfferAssets extends OfferAsset {
+    offerType: OfferTypeEnum
+}
 
 const Transaction = ({
     controller,
@@ -18,8 +30,31 @@ const Transaction = ({
     const { t } = useTranslation()
     const [submitError, setSubmitError] = useState<Error>()
     const {
-        assetsStore: { XCH },
+        assetsStore: { XCH, availableAssets },
+        walletStore: { address },
     } = rootStore
+
+    const offerAssets = useMemo<IOfferAssets[]>(() => {
+        console.log('availableAssets', availableAssets)
+        if (!request.data?.params) {
+            return []
+        }
+        const { requestAssets, offerAssets } = request.data
+            .params as OfferParams
+
+        return [
+            ...requestAssets.map((asset) => ({
+                ...asset,
+                offerType: OfferTypeEnum.REQUEST,
+            })),
+            ...offerAssets.map((asset) => ({
+                ...asset,
+                offerType: OfferTypeEnum.OFFER,
+            })),
+        ]
+    }, [request.data?.params])
+
+    const shortenAddress = shortenHash(address)
     const {
         register,
         handleSubmit,
@@ -46,12 +81,18 @@ const Transaction = ({
     }
 
     const onSubmit = async (data) => {
-        const offer = await createOffer(request.data?.params, data?.fee)
+        const offer = await createOffer(
+            request.data?.params,
+            xchToMojo(data?.fee).toString()
+        )
         controller.returnData({
             data: { id: offer.getId(), offer: offer.encode(5) },
         })
         window.close()
     }
+    useLayoutEffect(() => {
+        rootStore.walletStore.init()
+    }, [])
 
     return (
         <form
@@ -80,7 +121,7 @@ const Transaction = ({
                     Address
                 </div>
                 <div className="bg-box flex flex-col gap-1 px-2 py-2 shrink cursor-pointer rounded-sm ">
-                    xch17....c2qxc45
+                    {shortenAddress}
                 </div>
             </div>
             <div>
@@ -91,21 +132,43 @@ const Transaction = ({
                     <div className="text-left text-caption text-primary-100">
                         Offer
                     </div>
-                    <div className="flex mb-1 flex-row justify-between">
-                        <div>ABC</div>
-                        <div className="text-status-receive">+100</div>
-                    </div>
-                    <div className="flex mb-1 flex-row justify-between">
-                        <div>ABC</div>
-                        <div className="text-status-send">-100</div>
-                    </div>
+                    {offerAssets.map((asset) => {
+                        const amount = !asset.assetId
+                            ? mojoToXch(asset.amount.toString()).toFixed(12)
+                            : mojoToCat(asset.amount.toString()).toFixed(3)
+                        return (
+                            <div
+                                className="flex mb-1 flex-row justify-between"
+                                key={asset.assetId}
+                            >
+                                <div>
+                                    {asset.assetId
+                                        ? `CAT ${shortenHash(asset.assetId)}`
+                                        : XCH.code}
+                                </div>
+                                <div
+                                    className={`${
+                                        asset.offerType ===
+                                        OfferTypeEnum.REQUEST
+                                            ? 'text-status-receive'
+                                            : 'text-status-send'
+                                    }`}
+                                >
+                                    {asset.offerType === OfferTypeEnum.REQUEST
+                                        ? '+'
+                                        : '-'}
+                                    {amount}
+                                </div>
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
-            <div>
+            <div className="w-max">
                 <div className="mb-3 text-left text-caption text-primary-100">
                     {t('send-fee-description')}
                 </div>
-                <div className="flex-wrap gap-2 flex-row-center">
+                <div className="flex-wrap gap-2  flex-row-center ">
                     {[
                         {
                             fee: '0',
@@ -191,4 +254,4 @@ const Transaction = ({
     )
 }
 
-export default Transaction
+export default observer(Transaction)
