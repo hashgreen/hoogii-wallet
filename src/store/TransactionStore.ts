@@ -6,7 +6,6 @@ import { makeAutoObservable } from 'mobx'
 import { callGetBalance, getSpendableCoins, sendTx } from '~/api/api'
 import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
-import { catToMojo, xchToMojo } from '~/utils/CoinConverter'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
@@ -67,9 +66,9 @@ class TransactionStore {
         try {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle: puzzleReveal,
-                amount: BigInt(xchToMojo(amount).toString()),
+                amount: BigInt(amount),
                 memo,
-                fee: BigInt(xchToMojo(fee).toString()),
+                fee: BigInt(fee),
                 targetAddress,
                 spendableCoinList,
             })
@@ -88,6 +87,7 @@ class TransactionStore {
             )
 
             const spendBundle = new SpendBundle(XCHspendsList, XCHsignatures)
+
             await sendTx({
                 data: { spend_bundle: spendBundle.getObj() },
             })
@@ -128,14 +128,14 @@ class TransactionStore {
             puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
         })
 
-        if (BigInt(data) < BigInt(catToMojo(amount).toString())) {
+        if (BigInt(data) < BigInt(amount)) {
             throw new Error("You don't have enough coin to spend")
         }
 
         const CATspendsList = await CAT.generateCATSpendList({
             wallet,
             assetId,
-            amount: BigInt(catToMojo(amount).toString()),
+            amount: BigInt(amount),
             memo,
             targetAddress,
             spendableCoinList: spendableCATList,
@@ -153,7 +153,7 @@ class TransactionStore {
         )
         const signatureList = [CATsignatures]
 
-        if (BigInt(xchToMojo(fee).toString()) > 0) {
+        if (BigInt(fee) > 0n) {
             const spendableCoinList = await TransactionStore.coinList(
                 puzzleReveal.hashHex()
             )
@@ -161,7 +161,7 @@ class TransactionStore {
                 puzzle: puzzleReveal,
                 amount: 0n,
                 memo: '', // memo is unnecessary for fee
-                fee: BigInt(xchToMojo(fee).toString()),
+                fee: BigInt(fee),
                 spendableCoinList,
                 targetAddress: address,
             })

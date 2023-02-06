@@ -108,6 +108,7 @@ export const routes: RouteObject[] = [
                 return
             }
             if (!rootStore.walletStore.locked) {
+                await rootStore.assetsStore.tailDateBaseImagePath()
                 await rootStore.assetsStore.retrieveExistedAssets()
                 const balances = rootStore.assetsStore.getAllBalances()
                 return defer({ balances })
