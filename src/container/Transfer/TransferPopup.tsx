@@ -9,6 +9,7 @@ import AssetIcon from '~/components/AssetIcon'
 import Popup, { ErrorPopup } from '~/components/Popup'
 import rootStore from '~/store'
 import { shortenHash } from '~/utils'
+import { catToMojo, xchToMojo } from '~/utils/CoinConverter'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IForm as IBaseForm } from './Transfer'
@@ -55,9 +56,20 @@ const TransferPopup = ({
     const onSubmit = async (data: IForm) => {
         const { fee } = data
         if (asset?.assetId === 'XCH') {
-            await sendXCHTx?.(address.address, amount, memo, fee)
+            await sendXCHTx?.(
+                address.address,
+                xchToMojo(amount).toString(),
+                memo,
+                xchToMojo(fee).toString()
+            )
         } else {
-            await sendCATTx?.(address.address, asset, amount, memo, fee)
+            await sendCATTx?.(
+                address.address,
+                asset,
+                catToMojo(amount).toString(),
+                memo,
+                xchToMojo(fee).toString()
+            )
         }
         navigate(-1)
     }
