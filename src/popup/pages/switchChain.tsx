@@ -11,7 +11,7 @@ const SwitchChain = ({
         (chain) => chain.id === request?.data?.params?.chainId
     )
     return (
-        <div className="container flex flex-col justify-between h-full py-12 bg-main dark ">
+        <div className="container flex flex-col justify-between w-full h-full py-12">
             <div className="flex flex-col gap-2 items-center">
                 <div className="flex gap-2  text-center text-xl ">
                     Switch to Chia {ChainName?.name || 'NewWork'}?

@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactNode, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+
 import BackLink from './BackLink'
 
 interface INext {
@@ -34,7 +35,7 @@ const PublicRouteLayout = ({
     }, [next?.to])
 
     return (
-        <div className="relative flex flex-col items-center px-10 bg-contain full bg-landing">
+        <div className="relative flex flex-col items-center px-10 full bg-landing bg-cover">
             <img src="/images/logo.svg" className="absolute w-10 top-5" />
             {title && (
                 <>

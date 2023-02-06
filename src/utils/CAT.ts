@@ -76,8 +76,9 @@ export class CAT extends Program {
         assetId,
         amount,
         memo = '',
-        targetAddress,
+        targetPuzzleHash,
         spendableCoinList,
+        additionalConditions,
     }: CATPayload): Promise<CoinSpend[]> => {
         const cat = new CAT(assetId, wallet)
         const spendAmount = amount
@@ -92,17 +93,20 @@ export class CAT extends Program {
         const change = sumSpendingValue - spendAmount
 
         const [firstCoin, ...restCoinList] = coinList
-
-        const puzzlehash = Program.fromBytes(
-            addressInfo(targetAddress).hash
-        ).toHex()
+        console.log(
+            'txch1q69x8m8928ze00nusmgxrpkrls4gcknkp2y6ruqdp4ezdu2fpsasx3s44l',
+            Program.fromBytes(
+                addressInfo(
+                    'txch1q69x8m8928ze00nusmgxrpkrls4gcknkp2y6ruqdp4ezdu2fpsasx3s44l'
+                ).hash
+            ).toHex()
+        )
 
         const primaryList: Primary[] = []
-
         primaryList.push({
-            puzzlehash,
+            puzzlehash: targetPuzzleHash,
             amount: spendAmount,
-            memos: [puzzlehash, memo],
+            memos: [targetPuzzleHash, memo],
         })
         if (Number(change) > 0) {
             primaryList.push({
@@ -140,6 +144,11 @@ export class CAT extends Program {
                 Program.fromBytes(createCoinAnnouncementMsg),
             ])
         )
+
+        if (additionalConditions) {
+            conditionList.push(...additionalConditions)
+        }
+
         const solution = Wallet.solutionForConditions(conditionList)
         interface SpendableCAT {
             coin: Coin

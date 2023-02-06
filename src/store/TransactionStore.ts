@@ -1,4 +1,5 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
+import { addressInfo } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
@@ -69,7 +70,9 @@ class TransactionStore {
                 amount: BigInt(amount),
                 memo,
                 fee: BigInt(fee),
-                targetAddress,
+                targetPuzzleHash: Program.fromBytes(
+                    addressInfo(targetAddress).hash
+                ).toHex(),
                 spendableCoinList,
             })
 
@@ -137,7 +140,9 @@ class TransactionStore {
             assetId,
             amount: BigInt(amount),
             memo,
-            targetAddress,
+            targetPuzzleHash: Program.fromBytes(
+                addressInfo(targetAddress).hash
+            ).toHex(),
             spendableCoinList: spendableCATList,
         })
         const spendList = [...CATspendsList]
@@ -163,7 +168,9 @@ class TransactionStore {
                 memo: '', // memo is unnecessary for fee
                 fee: BigInt(fee),
                 spendableCoinList,
-                targetAddress: address,
+                targetPuzzleHash: Program.fromBytes(
+                    addressInfo(address).hash
+                ).toHex(),
             })
             spendList.push(...XCHspendsList)
             const XCHsignatures = AugSchemeMPL.aggregate(
