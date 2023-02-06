@@ -1,4 +1,10 @@
-import { event, eventOff, isConnected, request } from '~/api/extension/webpage'
+import {
+    event,
+    eventOff,
+    isConnected,
+    isUnlocked,
+    request,
+} from '~/api/extension/webpage'
 
 import pkg from '../../package.json'
 
@@ -15,6 +21,7 @@ Object.assign(hoogii, {
     isHoogii: true,
     request: async (arg) => (await request(arg))?.data,
     isConnected: async () => (await isConnected())?.data,
+    isUnlocked: async () => !(await isUnlocked())?.data,
 })
 if (window.chia) {
     window.chia.hoogii = hoogii

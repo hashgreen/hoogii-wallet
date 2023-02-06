@@ -14,8 +14,8 @@ interface IChia {
         version: string
         isHoogii: boolean
         request(RequestArguments): Promise<any>
-
-        isConnected?: () => IHoogiiApi
+        isConnected(): Promise<boolean>
+        isUnlocked(): Promise<boolean>
         lock?: () => IHoogiiApi
         unlock?: () => IHoogiiApi
         enable?: () => IHoogiiApi
