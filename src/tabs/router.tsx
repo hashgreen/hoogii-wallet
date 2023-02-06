@@ -62,7 +62,7 @@ const mnemonicRoutes = {
                 },
                 {
                     index: true,
-                    element: <ImportMnemonic />,
+                    element: <ImportMnemonic routeFor="import" />,
                 },
                 {
                     path: 'password',

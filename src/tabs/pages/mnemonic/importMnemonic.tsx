@@ -1,6 +1,6 @@
 import Joi from 'joi'
 import { observer } from 'mobx-react-lite'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -10,11 +10,7 @@ import InfoIcon from '~icons/hoogii/blue-info.jsx'
 import { SubLayout } from '~tabs/layout'
 import rootStore from '~tabs/store'
 
-function ImportMnemonic({
-    routeFor = 'import',
-}: {
-    routeFor?: 'reset' | 'import'
-}) {
+function ImportMnemonic({ routeFor }: { routeFor: 'reset' | 'import' }) {
     const [isValid, setIsValid] = useState(false)
     const { t } = useTranslation()
     const [open, setOpen] = useState(false)
@@ -23,16 +19,14 @@ function ImportMnemonic({
     const {
         resetMnemonicStore: { verifyMnemonic },
     } = rootStore
-    const defaultValues = useMemo(
-        () => Array.from({ length: mnemonicLength ?? 0 }, () => ''),
-        [mnemonicLength]
-    )
+    const defaultValues = Array.from({ length: mnemonicLength }, () => '')
     const navigate = useNavigate()
+    const isImportPage = routeFor === 'import'
 
     return (
         <SubLayout
             title={
-                routeFor === 'import'
+                isImportPage
                     ? t('mnemonic-import-title')
                     : t('mnemonic-reset_password-title')
             }
@@ -42,15 +36,14 @@ function ImportMnemonic({
             next={{
                 text: t('btn-next'),
                 to:
-                    (isValid &&
-                        routeFor === 'import' &&
-                        '/mnemonic/import/password') ||
-                    undefined,
+                    isValid && isImportPage
+                        ? '/mnemonic/import/password'
+                        : undefined,
                 onClick:
-                    routeFor === 'reset' && isValid
+                    isValid && !isImportPage
                         ? async () => {
-                              const result = await verifyMnemonic()
-                              if (result) {
+                              const isCorrectMnemonic = await verifyMnemonic()
+                              if (isCorrectMnemonic) {
                                   navigate('/reset/password')
                               } else {
                                   setOpen(true)
@@ -58,7 +51,7 @@ function ImportMnemonic({
                           }
                         : undefined,
             }}
-            back={routeFor === 'import'}
+            back={isImportPage}
         >
             <div className="bg-info-light text-black font-normal py-4 flex text-sm justify-center items-center rounded mt-5">
                 <InfoIcon color=" #1A9FEA" />
@@ -81,7 +74,7 @@ function ImportMnemonic({
                         }
                         onChange={(isValid, mnemonics) => {
                             setIsValid(isValid)
-                            setMnemonics?.(mnemonics)
+                            setMnemonics(mnemonics)
                         }}
                     />
                 )}

@@ -96,21 +96,21 @@ function Mnemonic({
                     value: phrase.trim(), // trim the string
                 }))
             )
-            return
-        }
-        range(from, Math.min(from + phrases.length, length)).forEach(
-            (fieldIndex, index) => {
-                if (phrases[index]) {
-                    setValue(
-                        `phrases.${fieldIndex}.value` as const,
-                        phrases[index].trim() // trim the string
-                    )
-                    lastIndex = fieldIndex
+        } else {
+            range(from, Math.min(from + phrases.length, length)).forEach(
+                (fieldIndex, index) => {
+                    if (phrases[index]) {
+                        setValue(
+                            `phrases.${fieldIndex}.value` as const,
+                            phrases[index].trim() // trim the string
+                        )
+                        lastIndex = fieldIndex
+                    }
                 }
-            }
-        )
-        setFocus(`phrases.${lastIndex}.value` as const)
-        trigger()
+            )
+            setFocus(`phrases.${lastIndex}.value` as const)
+            trigger()
+        }
     }
 
     useEffect(() => {
@@ -120,10 +120,8 @@ function Mnemonic({
         )
     }, [isValid, JSON.stringify(values)])
     useEffect(() => {
-        if (!defaultValues.some((value) => value)) {
-            setFocus(`phrases.${0}.value` as const, {
-                shouldSelect: true,
-            })
+        if (defaultValues.every((value) => value)) {
+            setFocus(`phrases.${0}.value` as const)
         }
     }, [])
     return (
