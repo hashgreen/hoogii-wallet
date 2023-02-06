@@ -15,6 +15,10 @@ const AssetIcon = ({
         src={assetId === 'XCH' ? '/chia.png' : src || '/images/token.svg'}
         {...rest}
         className={classNames('rounded-full', className)}
+        onError={({ currentTarget }) => {
+            currentTarget.onerror = null
+            currentTarget.src = '/images/token.svg'
+        }}
     />
 )
 
