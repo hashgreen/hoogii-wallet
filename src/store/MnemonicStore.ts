@@ -22,7 +22,7 @@ class MnemonicStore {
     walletStore: WalletStore
     mnemonicLength: number = 24
     mnemonics: string[] = ['']
-    password?: string
+    password: string = ''
 
     constructor(walletStore: WalletStore) {
         makeObservable(this, {
@@ -37,11 +37,7 @@ class MnemonicStore {
     }
 
     async create() {
-        const { mnemonicPhrase, password } = this
-
-        if (mnemonicPhrase && password) {
-            this.walletStore.saveKeyring(mnemonicPhrase, password)
-        }
+        this.walletStore.saveKeyring(this.mnemonicPhrase, this.password)
 
         RootStore.assetsStore.addDefaultAsset()
     }
@@ -56,7 +52,7 @@ class MnemonicStore {
             .items(
                 Joi.object({
                     value: Joi.string()
-                        .valid('', ...words)
+                        .valid(...words)
                         .required(),
                 })
             )
@@ -68,11 +64,10 @@ class MnemonicStore {
             })
     }
 
-    static createMnemonics = async () =>
-        (await generateMnemonicAsync(256, undefined, words)).split(' ')
-
     validate(mnemonics: string[]): boolean {
-        return mnemonics?.length === 24 && mnemonics.every((item) => item)
+        return (
+            mnemonics?.length === 24 && mnemonics.every((item) => item.trim())
+        )
     }
 
     createRandomInputs(randomCount: number = 6): string[] {
@@ -100,78 +95,28 @@ export class CreateMnemonicStore extends MnemonicStore {
             validate: override,
             create: override,
         })
-        MnemonicStore.createMnemonics().then((mnemonics) => {
+
+        generateMnemonicAsync(256, undefined, words).then((mnemonics) => {
             runInAction(() => {
-                this.mnemonics = mnemonics
+                this.mnemonics = mnemonics.split(' ')
             })
         })
     }
 
-    get schema() {
-        return Joi.array()
-            .length(this.mnemonicLength)
-            .items(
-                ...(this.mnemonics ?? []).map((phrase) =>
-                    Joi.object({
-                        value: Joi.string().valid(phrase).required(),
-                    })
-                )
-            )
-    }
-
-    validate(mnemonics: string[]) {
+    validate(mnemonics: string[]): boolean {
         return super.validate(mnemonics) && isEqual(this.mnemonics, mnemonics)
     }
-
-    async create() {
-        super.create()
-        RootStore.assetsStore.addDefaultAsset()
-    }
 }
 
-export class ImportMnemonicStore extends MnemonicStore {
-    constructor(walletStore: WalletStore) {
-        super(walletStore)
-        makeObservable(this, { create: override })
-    }
-
-    async create() {
-        super.create()
-        RootStore.assetsStore.addDefaultAsset()
-    }
-}
+export class ImportMnemonicStore extends MnemonicStore {}
 
 export class ResetMnemonicStore extends MnemonicStore {
     constructor(walletStore: WalletStore) {
         super(walletStore)
         makeObservable(this, {
-            schema: override,
-            validate: override,
             create: override,
             verifyMnemonic: action.bound,
         })
-    }
-
-    get schema() {
-        return Joi.array()
-            .length(this.mnemonicLength)
-            .items(
-                Joi.object({
-                    value: Joi.string()
-                        .valid(...words)
-                        .required(),
-                })
-            )
-            .custom(async (value, helpers) => {
-                const values = value.map((item) => item.value)
-                // display specific fields error
-                // instead of mnemonic mismatched error
-                // if (values.some((item) => !words.includes(item))) return value
-
-                return (await super.validate(values))
-                    ? value
-                    : helpers.error('any.invalid')
-            })
     }
 
     async verifyMnemonic(): Promise<boolean> {
@@ -186,13 +131,8 @@ export class ResetMnemonicStore extends MnemonicStore {
     }
 
     async create() {
-        const { password } = this ?? {}
-
-        if (password) {
-            await savePassword(password)
-
-            this.walletStore.saveKeyring(this.mnemonicPhrase, password)
-        }
+        super.create()
+        await savePassword(this.password)
     }
 }
 

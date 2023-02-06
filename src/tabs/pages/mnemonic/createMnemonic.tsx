@@ -32,7 +32,7 @@ const CreateMnemonic = () => {
     const availableInputList = mnemonics.map(
         (phrase) => !randomInputs.includes(phrase)
     )
-    console.log('mnemonics>', mnemonics)
+
     return (
         <SubLayout
             title={t('mnemonic-create-verify-title')}
