@@ -11,11 +11,7 @@ import {
 } from '@rigidity/bls-signatures'
 import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
-import Decimal from 'decimal.js-light'
 
-import { callGetBalance } from '~/api/api'
-
-import { xchToMojo } from '../CoinConverter'
 import CoinSelect from '../CoinSelect'
 import CoinSpend from '../CoinSpend'
 import { puzzles } from '../puzzles'
@@ -250,7 +246,10 @@ export class Wallet extends Program {
             return [matchCoin]
         }
         const { coins: usedCoinList } = CoinSelect(
-            spendableCoinList,
+            spendableCoinList.map((coin) => ({
+                ...coin,
+                amount: BigInt(coin.amount),
+            })),
             [
                 {
                     amount: spendAmount,
@@ -267,18 +266,17 @@ export class Wallet extends Program {
     static generateXCHSpendList = async ({
         puzzle,
         amount,
-        fee = '0',
+        fee = 0n,
         targetAddress,
         spendableCoinList,
         memo = '',
         additionalConditions = [],
     }: XCHPayload): Promise<CoinSpend[]> => {
-        const spendAmount = BigInt(
-            xchToMojo(amount).add(xchToMojo(fee)).toString()
-        )
+        const spendAmount = amount + fee
+
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
         const sumSpendingValue = coinList.reduce((acc, cur) => {
-            return BigInt(acc) + BigInt(cur.amount)
+            return acc + cur.amount
         }, 0n)
 
         const change = sumSpendingValue - spendAmount
@@ -286,12 +284,12 @@ export class Wallet extends Program {
         const [firstCoin, ...restCoinList] = coinList
         const primaryList: Primary[] = []
 
-        if (new Decimal(amount).comparedTo(0) === 1) {
+        if (amount > 0n) {
             primaryList.push({
                 puzzlehash: Program.fromBytes(
                     addressInfo(targetAddress).hash
                 ).toHex(),
-                amount: BigInt(xchToMojo(amount).toString()),
+                amount,
                 memos: [memo],
             })
         }
@@ -319,11 +317,11 @@ export class Wallet extends Program {
             ])
         })
 
-        if (new Decimal(fee).comparedTo(0) === 1) {
+        if (fee > 0n) {
             conditionList.push(
                 Program.fromList([
                     Program.fromHex(sanitizeHex(ConditionOpcode.RESERVE_FEE)),
-                    Program.fromBigInt(BigInt(Number(fee) * Math.pow(10, 12))),
+                    Program.fromBigInt(fee),
                 ])
             )
         }
