@@ -8,14 +8,14 @@ export default function accumulative<T extends Coin, O extends Coin>(
 ): CoinReturn<T, O> {
     if (utils.uintOrNaN(feeRate)) return {}
 
-    let bytesAccum = 0n // Calculate byte summary
+    let bytesAccum = 0n // Calculate summary of byte
     let inAccum = 0n
     const inputs: T[] = []
     const outAccum = utils.sumOrNaN(outputs)
     for (let i = 0; i < coins.length; ++i) {
         const coin = coins[i]
         const coinBytes = utils.inputBytes(coin) // input bytes
-        const coinFee = feeRate * coinBytes // fee of   input bytes
+        const coinFee = feeRate * coinBytes // fee of input bytes
         const coinValue = utils.uintOrNaN(coin.amount) // utxo amount
 
         // skip detrimental input
