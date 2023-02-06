@@ -124,7 +124,7 @@ export const AddressBookItem = ({
 )
 
 interface IConnectedSiteItemProps {
-    name: string
+    name?: string
     iconUrl?: string
     action?: () => void
 }
