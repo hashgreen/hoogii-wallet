@@ -8,8 +8,8 @@ export default function blackjack<T extends Coin, O extends Coin>(
 ): CoinReturn<T, O> {
     if (utils.uintOrNaN(feeRate)) return {}
 
-    let bytesAccum = 0n // Calculate byte summary
-    const outAccum = utils.sumOrNaN(outputs) // output summary
+    let bytesAccum = 0n // Calculate summary of byte
+    const outAccum = utils.sumOrNaN(outputs) // summary of output
     const threshold = 0n // utils.dustThreshold({}, feeRate)
     let inAccum = 0n // input summary
     const inputs: T[] = [] // input coin
@@ -29,7 +29,7 @@ export default function blackjack<T extends Coin, O extends Coin>(
         // When the sum is still less than the target, skip
         if (inAccum < outAccum + fee) continue
 
-        // When the summary is > target value than return finalize function
+        // When the summary is a greater target value than the return finalize function
         return utils.finalize<T, O>(inputs, outputs, feeRate)
     }
 
