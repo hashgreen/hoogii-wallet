@@ -213,10 +213,11 @@ export default class Offer {
                 if (BigInt(data) < BigInt(offerPayment.amount)) {
                     throw new Error("You don't have enough coin to spend")
                 }
+                console.log('settlement.hashHex()', settlement.hashHex())
                 const CATCoinSpendList = await CAT.generateCATSpendList({
                     wallet,
                     amount: BigInt(offerPayment.amount),
-                    targetAddress: settlement.hashHex(),
+                    targetPuzzleHash: settlement.hashHex(),
                     spendableCoinList: await this.getCoinList(cat.hashHex()),
                     assetId,
                     additionalConditions: announcementAssertions,
@@ -228,7 +229,7 @@ export default class Offer {
                 const XCHSpendList = await Wallet.generateXCHSpendList({
                     fee: 0n,
                     amount: BigInt(offerPayment.amount),
-                    targetAddress: settlement.hashHex(),
+                    targetPuzzleHash: settlement.hashHex(),
                     puzzle: puzzleReveal,
                     spendableCoinList: await this.getCoinList(
                         puzzleReveal.hashHex()
@@ -242,7 +243,7 @@ export default class Offer {
                 const feeSpendList = await Wallet.generateXCHSpendList({
                     fee: BigInt(fee),
                     amount: 0n,
-                    targetAddress: settlement.hashHex(),
+                    targetPuzzleHash: settlement.hashHex(),
                     puzzle: puzzleReveal,
                     spendableCoinList: await this.getCoinList(
                         puzzleReveal.hashHex()

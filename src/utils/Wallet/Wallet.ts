@@ -9,7 +9,7 @@ import {
     JacobianPoint,
     PrivateKey,
 } from '@rigidity/bls-signatures'
-import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
 import CoinSelect from '../CoinSelect'
@@ -267,7 +267,7 @@ export class Wallet extends Program {
         puzzle,
         amount,
         fee = 0n,
-        targetAddress,
+        targetPuzzleHash,
         spendableCoinList,
         memo = '',
         additionalConditions = [],
@@ -286,9 +286,7 @@ export class Wallet extends Program {
 
         if (amount > 0n) {
             primaryList.push({
-                puzzlehash: Program.fromBytes(
-                    addressInfo(targetAddress).hash
-                ).toHex(),
+                puzzlehash: targetPuzzleHash,
                 amount,
                 memos: [memo],
             })
