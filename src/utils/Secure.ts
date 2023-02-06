@@ -8,11 +8,11 @@ class Secure {
     static getSeed = async () => {
         const keyring = await getStorage('keyring')
         if (!keyring) {
-            return
+            throw new Error('keyring is not exist')
         }
         const password = await getDataFromMemory('password')
         if (!password) {
-            return
+            throw new Error('password is not exist')
         }
         const seed = await retrieveSeed(password, keyring)
 
