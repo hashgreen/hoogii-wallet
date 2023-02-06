@@ -69,6 +69,7 @@ export enum RequestMethodEnum {
     SIGN_COIN_SPENDS = 'signCoinSpends',
     SIGN_MESSAGE = 'signMessage',
     SEND_TRANSACTION = 'sendTransaction',
+    TRANSFER = 'transfer',
 }
 
 export enum EventEnum {
