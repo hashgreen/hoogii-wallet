@@ -1,5 +1,7 @@
 import * as joi from 'joi'
+
 import { IAddress } from '~/db'
+
 import { validateAddress } from './signature'
 
 class Validation {
