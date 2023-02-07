@@ -243,13 +243,15 @@ export class Wallet extends Program {
             (coin) => BigInt(coin.amount) === spendAmount
         )
         if (matchCoin) {
-            return [matchCoin]
+            return [{ ...matchCoin, amount: BigInt(matchCoin.amount) }]
         }
         const { coins: usedCoinList } = CoinSelect(
-            spendableCoinList.map((coin) => ({
-                ...coin,
-                amount: BigInt(coin.amount),
-            })),
+            spendableCoinList
+                .filter((coin) => coin.amount > 0)
+                .map((coin) => ({
+                    ...coin,
+                    amount: BigInt(coin.amount),
+                })),
             [
                 {
                     amount: spendAmount,
@@ -259,7 +261,7 @@ export class Wallet extends Program {
             ],
             0n // feerate
         )
-
+        console.log('usedCoinList', usedCoinList)
         return usedCoinList || []
     }
 
@@ -275,6 +277,7 @@ export class Wallet extends Program {
         const spendAmount = amount + fee
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
+
         const sumSpendingValue = coinList.reduce((acc, cur) => {
             return acc + cur.amount
         }, 0n)
