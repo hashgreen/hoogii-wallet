@@ -4,7 +4,7 @@ import {
     fromHex,
     hash256,
 } from '@rigidity/bls-signatures'
-import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
 import { getCoinRecordsByName, getPuzzleAndSolution } from '~/api/api'

@@ -13,14 +13,18 @@ import zlib from 'react-zlib-js'
 
 import { callGetBalance } from '~/api/api'
 import { OfferAsset } from '~/types/extension'
+import { StorageEnum } from '~/types/storage'
 import Announcement from '~/utils/Announcement'
 import { CAT } from '~/utils/CAT'
 import CoinSpend from '~/utils/CoinSpend'
+import { getStorage } from '~/utils/extension/storage'
 import { puzzles } from '~/utils/puzzles'
 import Secure from '~/utils/Secure'
 import SpendBundle from '~/utils/SpendBundle'
 import type { Coin } from '~/utils/Wallet/types'
 import { Wallet } from '~/utils/Wallet/Wallet'
+
+import { chains } from './constants'
 
 const initDict = [
     puzzles.wallet.serializeHex() + puzzles.catOld.serializeHex(),
@@ -217,16 +221,16 @@ export default class Offer {
             }
         }
 
+        const chainId = await getStorage<string>(StorageEnum.chainId)
+        const chain = chains.find((chain) => chain.id === chainId) || chains[0]
+
         const signatures = AugSchemeMPL.aggregate(
             spendList
                 .filter((spend) => spend.coin.amount)
                 .map((item) =>
                     Wallet.signCoinSpend(
                         item,
-                        Buffer.from(
-                            'ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2',
-                            'hex'
-                        ),
+                        Buffer.from(chain.agg_sig_me_additional_data, 'hex'),
                         Wallet.derivePrivateKey(PrivateKey.fromSeed(seed)),
                         Wallet.derivePrivateKey(
                             PrivateKey.fromSeed(seed)
