@@ -19,12 +19,14 @@ class Secure {
         return seed
     }
 
-    static getPuzzleReveal = async () => {
+    static getPuzzle = async () => {
         const seed = await this.getSeed()
-        if (seed) {
-            const puzzleReveal = getProgramBySeed(seed)
-            return puzzleReveal
+        if (!seed) {
+            throw new Error('Can not find public key')
         }
+
+        const puzzle = getProgramBySeed(seed)
+        return puzzle
     }
 }
 export default Secure

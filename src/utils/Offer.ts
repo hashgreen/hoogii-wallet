@@ -95,19 +95,13 @@ export default class Offer {
     ) {
         // verify is unlock
         const seed = await Secure.getSeed()
-        if (!seed) {
-            throw new Error('Can not find secret')
-        }
-        const puzzleReveal = await Secure.getPuzzleReveal()
-        if (!puzzleReveal) {
-            throw new Error('Can not find public key')
-        }
+        const puzzle = await Secure.getPuzzle()
 
         const requestPaymentAnnouncements: Announcement[] = requestAssets.map(
             (payment) => {
                 const message = Offer.toMsg({
                     payment,
-                    puzzle_hash: puzzleReveal.hashHex(),
+                    puzzle_hash: puzzle.hashHex(),
                 })
 
                 const settlement = Offer.generateSettlement(payment.assetId)
@@ -128,7 +122,7 @@ export default class Offer {
                 Program.fromList([
                     Program.fromBytes(nonce),
                     Program.fromList([
-                        Program.fromHex(sanitizeHex(puzzleReveal.hashHex())),
+                        Program.fromHex(sanitizeHex(puzzle.hashHex())),
                         Program.fromBigInt(BigInt(amount)),
                         Program.fromList(
                             assetId ? [Program.fromText(memo || '')] : []
@@ -161,7 +155,7 @@ export default class Offer {
             if (offerPayment.assetId) {
                 const assetId = fromHex(offerPayment.assetId)
 
-                const cat = new CAT(assetId, puzzleReveal)
+                const cat = new CAT(assetId, puzzle)
 
                 const masterPrivateKey = PrivateKey.fromSeed(seed)
                 const walletPrivateKey =
@@ -198,9 +192,9 @@ export default class Offer {
                         fee: BigInt(fee),
                         amount: 0n,
                         targetPuzzleHash: settlement.hashHex(),
-                        puzzle: puzzleReveal,
+                        puzzle,
                         spendableCoinList: await Wallet.getCoinList(
-                            puzzleReveal.hashHex()
+                            puzzle.hashHex()
                         ),
                         additionalConditions: announcementAssertions,
                     })
@@ -211,9 +205,9 @@ export default class Offer {
                     fee: BigInt(fee),
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
-                    puzzle: puzzleReveal,
+                    puzzle,
                     spendableCoinList: await Wallet.getCoinList(
-                        puzzleReveal.hashHex()
+                        puzzle.hashHex()
                     ),
                     additionalConditions: announcementAssertions,
                 })
