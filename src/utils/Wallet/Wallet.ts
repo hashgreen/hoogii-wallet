@@ -239,6 +239,24 @@ export class Wallet extends Program {
         return publicKey
     }
 
+    public static getCoinList = async (
+        puzzle_hash: string
+    ): Promise<Coin[]> => {
+        try {
+            const res = await getSpendableCoins({
+                puzzle_hash,
+            })
+            return (
+                res?.data?.data?.map((record) => ({
+                    ...record.coin,
+                    amount: BigInt(record.coin.amount || 0),
+                })) ?? []
+            )
+        } catch (error) {
+            throw new Error(getErrorMessage(error as AxiosError))
+        }
+    }
+
     public static selectCoins(
         spendableCoinList: Coin[],
         spendAmount: bigint

@@ -5,7 +5,6 @@ import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
 import { callGetBalance, sendTx } from '~/api/api'
-import getCoinList from '~/api/getCoinList'
 import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
 import { getErrorMessage } from '~/utils/errorMessage'
@@ -45,7 +44,9 @@ class TransactionStore {
         if (BigInt(balance.data.data) < BigInt(amount) + BigInt(fee)) {
             throw new Error("You don't have enough balance to send")
         }
-        const spendableCoinList = await getCoinList(puzzleReveal.hashHex())
+        const spendableCoinList = await Wallet.getCoinList(
+            puzzleReveal.hashHex()
+        )
         try {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle: puzzleReveal,
@@ -104,7 +105,7 @@ class TransactionStore {
 
         const assetId = fromHex(asset.assetId)
         const cat = new CAT(assetId, wallet)
-        const spendableCATList = await getCoinList(
+        const spendableCATList = await Wallet.getCoinList(
             Program.fromBytes(cat.hash()).toHex()
         )
         const {
@@ -141,7 +142,9 @@ class TransactionStore {
         const signatureList = [CATsignatures]
 
         if (BigInt(fee) > 0n) {
-            const spendableCoinList = await getCoinList(puzzleReveal.hashHex())
+            const spendableCoinList = await Wallet.getCoinList(
+                puzzleReveal.hashHex()
+            )
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle: puzzleReveal,
                 amount: 0n,

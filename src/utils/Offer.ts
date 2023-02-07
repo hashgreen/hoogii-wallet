@@ -12,7 +12,6 @@ import { bech32m } from 'bech32'
 import zlib from 'react-zlib-js'
 
 import { callGetBalance } from '~/api/api'
-import getCoinList from '~/api/getCoinList'
 import { OfferAsset } from '~/types/extension'
 import { StorageEnum } from '~/types/storage'
 import Announcement from '~/utils/Announcement'
@@ -180,7 +179,7 @@ export default class Offer {
                     wallet,
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
-                    spendableCoinList: await getCoinList(cat.hashHex()),
+                    spendableCoinList: await Wallet.getCoinList(cat.hashHex()),
                     assetId,
                     additionalConditions: announcementAssertions,
                     memo: offerPayment.memo,
@@ -194,7 +193,9 @@ export default class Offer {
                         amount: 0n,
                         targetPuzzleHash: settlement.hashHex(),
                         puzzle,
-                        spendableCoinList: await getCoinList(puzzle.hashHex()),
+                        spendableCoinList: await Wallet.getCoinList(
+                            puzzle.hashHex()
+                        ),
                         additionalConditions: announcementAssertions,
                     })
                     spendList.push(...feeSpendList)
@@ -205,7 +206,9 @@ export default class Offer {
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
                     puzzle,
-                    spendableCoinList: await getCoinList(puzzle.hashHex()),
+                    spendableCoinList: await Wallet.getCoinList(
+                        puzzle.hashHex()
+                    ),
                     additionalConditions: announcementAssertions,
                 })
                 spendList.push(...XCHSpendList)

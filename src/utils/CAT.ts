@@ -7,8 +7,6 @@ import {
 import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
-import { getCoinRecordsByName, getPuzzleAndSolution } from '~/api/api'
-
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
 import type { Coin, XCHPayload } from './Wallet/types'
@@ -37,39 +35,6 @@ export class CAT extends Program {
                 encodeInt(Number(coin.amount))
             )
         )
-
-    static getLineageProof = async (childCoin: Coin): Promise<Program> => {
-        const parentCoinRecord = await getCoinRecordsByName({
-            data: {
-                name: childCoin.parent_coin_info,
-            },
-        })
-
-        const {
-            coin_record: { coin, spent_block_index },
-        } = parentCoinRecord.data
-        const coinID = CAT.coinName(coin)
-        const puzzleAndSolutionRecord = await getPuzzleAndSolution({
-            data: {
-                coin_id: Program.fromBytes(coinID).toHex(),
-                height: Number(spent_block_index),
-            },
-        })
-        const {
-            data: {
-                coin_solution: { puzzle_reveal },
-            },
-        } = puzzleAndSolutionRecord
-        const unCurry = Program.deserializeHex(
-            sanitizeHex(puzzle_reveal)
-        ).uncurry()
-
-        return Program.fromList([
-            Program.fromHex(sanitizeHex(coin.parent_coin_info)),
-            Program.fromHex(unCurry?.[1][2].hashHex() ?? ''),
-            Program.fromBigInt(BigInt(coin.amount)),
-        ])
-    }
 
     static generateCATSpendList = async ({
         wallet,
