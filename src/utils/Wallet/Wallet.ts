@@ -268,7 +268,7 @@ export class Wallet extends Program {
             return [matchCoin]
         }
         const { coins: usedCoinList } = CoinSelect(
-            spendableCoinList.filter((coin) => coin.amount > 0n),
+            spendableCoinList,
             [
                 {
                     amount: spendAmount,
