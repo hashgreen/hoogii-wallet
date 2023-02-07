@@ -7,18 +7,17 @@ import {
 import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
-import {
-    callGetBalance,
-    getCoinRecordsByName,
-    getPuzzleAndSolution,
-} from '~/api/api'
-import { catToMojo } from '~/utils/CoinConverter'
-import { Coin } from '~/utils/Wallet/types'
+import { getCoinRecordsByName, getPuzzleAndSolution } from '~/api/api'
 
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
+import type { Coin, XCHPayload } from './Wallet/types'
 import { Primary, Wallet } from './Wallet/Wallet'
 
+interface CATPayload extends Omit<XCHPayload, 'puzzle'> {
+    wallet: Wallet
+    assetId: Uint8Array
+}
 export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
         super(
@@ -76,26 +75,17 @@ export class CAT extends Program {
         wallet,
         assetId,
         amount,
-        memo,
+        memo = '',
         targetAddress,
         spendableCoinList,
-    }): Promise<CoinSpend[]> => {
+    }: CATPayload): Promise<CoinSpend[]> => {
         const cat = new CAT(assetId, wallet)
-        const spendAmount = BigInt(catToMojo(amount).toString())
-        const {
-            data: { data },
-        } = await callGetBalance({
-            puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
-        })
-
-        if (BigInt(data) < spendAmount) {
-            throw new Error("You don't have enough coin to spend")
-        }
+        const spendAmount = amount
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
         const sumSpendingValue = coinList.reduce(
-            (acc, cur) => BigInt(acc) + BigInt(cur.amount),
+            (acc, cur) => acc + cur.amount,
             0n
         )
 
@@ -108,10 +98,11 @@ export class CAT extends Program {
         ).toHex()
 
         const primaryList: Primary[] = []
+
         primaryList.push({
             puzzlehash,
             amount: spendAmount,
-            memos: [puzzlehash.toString(), memo],
+            memos: [puzzlehash, memo],
         })
         if (Number(change) > 0) {
             primaryList.push({
