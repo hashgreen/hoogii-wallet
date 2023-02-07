@@ -261,7 +261,7 @@ export class Wallet extends Program {
             ],
             0n // feerate
         )
-        console.log('usedCoinList', usedCoinList)
+
         return usedCoinList || []
     }
 
