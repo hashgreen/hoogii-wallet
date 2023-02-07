@@ -25,11 +25,11 @@ const CreateMnemonic = () => {
             validate,
         },
     } = rootStore
-    const randomInputs = useMemo(() => createRandomInputs(isDev ? 6 : 6), [])
+    const randomInputs = useMemo(() => createRandomInputs(isDev ? 1 : 6), [])
     const defaultValues = mnemonics.map((phrase) =>
         randomInputs.includes(phrase) ? '' : phrase
     )
-    const availableInputList = mnemonics.map(
+    const notAvailableInputList = mnemonics.map(
         (phrase) => !randomInputs.includes(phrase)
     )
 
@@ -59,8 +59,8 @@ const CreateMnemonic = () => {
                         'any.only': 'error-mnemonic-invalid',
                         'array.includes': 'error-mnemonic-invalid',
                     })}
-                    disabled={availableInputList}
-                    readOnly={availableInputList}
+                    disabled={notAvailableInputList}
+                    readOnly={notAvailableInputList}
                     onChange={(isValid, mnemonics) => {
                         setIsValid(isValid)
                         setCurrentMnemonic(mnemonics)

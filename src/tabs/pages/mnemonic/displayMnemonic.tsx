@@ -21,17 +21,15 @@ const DisplayMnemonic = () => {
             }}
         >
             <div className="mt-7">
-                {mnemonics && (
-                    <Mnemonic
-                        defaultValues={mnemonics}
-                        disabled={
-                            Array.from({ length: 24 }).fill(false) as boolean[]
-                        }
-                        readOnly={
-                            Array.from({ length: 24 }).fill(true) as boolean[]
-                        }
-                    />
-                )}
+                <Mnemonic
+                    defaultValues={mnemonics}
+                    disabled={
+                        Array.from({ length: 24 }).fill(false) as boolean[]
+                    }
+                    readOnly={
+                        Array.from({ length: 24 }).fill(true) as boolean[]
+                    }
+                />
             </div>
         </SubLayout>
     )

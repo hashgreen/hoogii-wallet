@@ -15,7 +15,7 @@ function ImportMnemonic({ routeFor }: { routeFor: 'reset' | 'import' }) {
     const { t } = useTranslation()
     const [open, setOpen] = useState(false)
     const { mnemonicLength, schema, setMnemonics } =
-        rootStore.getMnemonicStore(routeFor) || {}
+        rootStore.getMnemonicStore(routeFor)
     const {
         resetMnemonicStore: { verifyMnemonic },
     } = rootStore
