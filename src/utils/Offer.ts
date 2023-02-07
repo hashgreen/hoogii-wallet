@@ -11,7 +11,7 @@ import { Program } from '@rigidity/clvm'
 import { bech32m } from 'bech32'
 import zlib from 'react-zlib-js'
 
-import { callGetBalance, getSpendableCoins } from '~/api/api'
+import { callGetBalance } from '~/api/api'
 import { OfferAsset } from '~/types/extension'
 import Announcement from '~/utils/Announcement'
 import { CAT } from '~/utils/CAT'
@@ -44,19 +44,6 @@ export default class Offer {
     getDictForVersion(ver: number) {
         return concatBytes(
             ...initDict.slice(0, ver).map((item) => fromHex(item))
-        )
-    }
-
-    static async getCoinList(puzzle_hash: string): Promise<Coin[]> {
-        const res = await getSpendableCoins({
-            puzzle_hash,
-        })
-
-        return (
-            res?.data?.data?.map((record) => ({
-                ...record.coin,
-                amount: record.coin.amount || 0,
-            })) ?? []
         )
     }
 
@@ -213,44 +200,44 @@ export default class Offer {
                 if (BigInt(data) < BigInt(offerPayment.amount)) {
                     throw new Error("You don't have enough coin to spend")
                 }
-                console.log('settlement.hashHex()', settlement.hashHex())
+
                 const CATCoinSpendList = await CAT.generateCATSpendList({
                     wallet,
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
-                    spendableCoinList: await this.getCoinList(cat.hashHex()),
+                    spendableCoinList: await Wallet.getCoinList(cat.hashHex()),
                     assetId,
                     additionalConditions: announcementAssertions,
                     memo: offerPayment.memo,
                 })
 
                 spendList.push(...CATCoinSpendList)
+
+                if (BigInt(fee) > 0n) {
+                    const feeSpendList = await Wallet.generateXCHSpendList({
+                        fee: BigInt(fee),
+                        amount: 0n,
+                        targetPuzzleHash: settlement.hashHex(),
+                        puzzle: puzzleReveal,
+                        spendableCoinList: await Wallet.getCoinList(
+                            puzzleReveal.hashHex()
+                        ),
+                        additionalConditions: announcementAssertions,
+                    })
+                    spendList.push(...feeSpendList)
+                }
             } else {
                 const XCHSpendList = await Wallet.generateXCHSpendList({
-                    fee: 0n,
+                    fee: BigInt(fee),
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
                     puzzle: puzzleReveal,
-                    spendableCoinList: await this.getCoinList(
+                    spendableCoinList: await Wallet.getCoinList(
                         puzzleReveal.hashHex()
                     ),
                     additionalConditions: announcementAssertions,
                 })
                 spendList.push(...XCHSpendList)
-            }
-
-            if (BigInt(fee) > 0n) {
-                const feeSpendList = await Wallet.generateXCHSpendList({
-                    fee: BigInt(fee),
-                    amount: 0n,
-                    targetPuzzleHash: settlement.hashHex(),
-                    puzzle: puzzleReveal,
-                    spendableCoinList: await this.getCoinList(
-                        puzzleReveal.hashHex()
-                    ),
-                    additionalConditions: announcementAssertions,
-                })
-                spendList.push(...feeSpendList)
             }
         }
 
