@@ -34,7 +34,7 @@ class TransactionStore {
             return (
                 res?.data?.data?.map((record) => ({
                     ...record.coin,
-                    amount: record.coin.amount || 0,
+                    amount: BigInt(record.coin.amount || 0),
                 })) ?? []
             )
         } catch (error) {
