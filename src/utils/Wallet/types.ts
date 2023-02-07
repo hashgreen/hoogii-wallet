@@ -9,7 +9,6 @@ export interface XCHPayload {
     amount: bigint
     memo?: string
     fee?: bigint
-    targetAddress?: string
     targetPuzzleHash: string
     spendableCoinList: Coin[]
     additionalConditions?: Program[]

@@ -132,9 +132,10 @@ const Transaction = ({
                         Offer
                     </div>
                     {offerAssets.map((asset) => {
-                        const amount = !asset.assetId
-                            ? mojoToXch(asset.amount.toString()).toFixed(12)
-                            : mojoToCat(asset.amount.toString()).toFixed(3)
+                        const amount = asset.assetId
+                            ? mojoToCat(asset.amount.toString()).toFixed(3)
+                            : mojoToXch(asset.amount.toString()).toFixed(12)
+
                         const finsAssetName = availableAssets?.data?.find(
                             (availableAsset) =>
                                 availableAsset.asset_id === asset.assetId

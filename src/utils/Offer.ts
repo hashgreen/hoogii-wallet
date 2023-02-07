@@ -11,16 +11,20 @@ import { Program } from '@rigidity/clvm'
 import { bech32m } from 'bech32'
 import zlib from 'react-zlib-js'
 
-import { callGetBalance, getSpendableCoins } from '~/api/api'
+import { callGetBalance } from '~/api/api'
 import { OfferAsset } from '~/types/extension'
+import { StorageEnum } from '~/types/storage'
 import Announcement from '~/utils/Announcement'
 import { CAT } from '~/utils/CAT'
 import CoinSpend from '~/utils/CoinSpend'
+import { getStorage } from '~/utils/extension/storage'
 import { puzzles } from '~/utils/puzzles'
 import Secure from '~/utils/Secure'
 import SpendBundle from '~/utils/SpendBundle'
 import type { Coin } from '~/utils/Wallet/types'
 import { Wallet } from '~/utils/Wallet/Wallet'
+
+import { chains } from './constants'
 
 const initDict = [
     puzzles.wallet.serializeHex() + puzzles.catOld.serializeHex(),
@@ -44,19 +48,6 @@ export default class Offer {
     getDictForVersion(ver: number) {
         return concatBytes(
             ...initDict.slice(0, ver).map((item) => fromHex(item))
-        )
-    }
-
-    static async getCoinList(puzzle_hash: string): Promise<Coin[]> {
-        const res = await getSpendableCoins({
-            puzzle_hash,
-        })
-
-        return (
-            res?.data?.data?.map((record) => ({
-                ...record.coin,
-                amount: record.coin.amount || 0,
-            })) ?? []
         )
     }
 
@@ -97,8 +88,6 @@ export default class Offer {
         }
     }
 
-    static async createCoinSpend() {}
-
     static async generateSecureBundle(
         requestAssets: OfferAsset[],
         offerPaymentList: OfferAsset[],
@@ -106,19 +95,13 @@ export default class Offer {
     ) {
         // verify is unlock
         const seed = await Secure.getSeed()
-        if (!seed) {
-            throw new Error('Can not find secret')
-        }
-        const puzzleReveal = await Secure.getPuzzleReveal()
-        if (!puzzleReveal) {
-            throw new Error('Can not find public key')
-        }
+        const puzzle = await Secure.getPuzzle()
 
         const requestPaymentAnnouncements: Announcement[] = requestAssets.map(
             (payment) => {
                 const message = Offer.toMsg({
                     payment,
-                    puzzle_hash: puzzleReveal.hashHex(),
+                    puzzle_hash: puzzle.hashHex(),
                 })
 
                 const settlement = Offer.generateSettlement(payment.assetId)
@@ -135,47 +118,25 @@ export default class Offer {
                 amount: 0n,
             }
             const nonce = this.getNonce()
-            if (assetId) {
-                const settlementSolution = Program.fromList([
+            const settlementSolution = Program.fromList([
+                Program.fromList([
+                    Program.fromBytes(nonce),
                     Program.fromList([
-                        Program.fromBytes(nonce),
-                        Program.fromList([
-                            Program.fromHex(
-                                sanitizeHex(puzzleReveal.hashHex())
-                            ),
-                            Program.fromBigInt(BigInt(amount)),
-                            Program.fromList([Program.fromText(memo || '')]),
-                        ]),
+                        Program.fromHex(sanitizeHex(puzzle.hashHex())),
+                        Program.fromBigInt(BigInt(amount)),
+                        Program.fromList(
+                            assetId ? [Program.fromText(memo || '')] : []
+                        ),
                     ]),
-                ])
+                ]),
+            ])
 
-                const coinSpend = new CoinSpend(
-                    coin,
-                    this.generateSettlement(assetId).serializeHex(),
-                    settlementSolution.serializeHex()
-                )
-                spendList.push(coinSpend)
-            } else {
-                const settlementSolution = Program.fromList([
-                    Program.fromList([
-                        Program.fromBytes(nonce),
-                        Program.fromList([
-                            Program.fromHex(
-                                sanitizeHex(puzzleReveal.hashHex())
-                            ),
-                            Program.fromBigInt(BigInt(amount)),
-                            Program.fromList([]),
-                        ]),
-                    ]),
-                ])
-
-                const coinSpend = new CoinSpend(
-                    coin,
-                    this.generateSettlement(undefined).serializeHex(),
-                    settlementSolution.serializeHex()
-                )
-                spendList.push(coinSpend)
-            }
+            const coinSpend = new CoinSpend(
+                coin,
+                this.generateSettlement(assetId).serializeHex(),
+                settlementSolution.serializeHex()
+            )
+            spendList.push(coinSpend)
         })
 
         const announcementAssertions = requestPaymentAnnouncements.map(
@@ -194,7 +155,7 @@ export default class Offer {
             if (offerPayment.assetId) {
                 const assetId = fromHex(offerPayment.assetId)
 
-                const cat = new CAT(assetId, puzzleReveal)
+                const cat = new CAT(assetId, puzzle)
 
                 const masterPrivateKey = PrivateKey.fromSeed(seed)
                 const walletPrivateKey =
@@ -213,46 +174,49 @@ export default class Offer {
                 if (BigInt(data) < BigInt(offerPayment.amount)) {
                     throw new Error("You don't have enough coin to spend")
                 }
-                console.log('settlement.hashHex()', settlement.hashHex())
+
                 const CATCoinSpendList = await CAT.generateCATSpendList({
                     wallet,
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
-                    spendableCoinList: await this.getCoinList(cat.hashHex()),
+                    spendableCoinList: await Wallet.getCoinList(cat.hashHex()),
                     assetId,
                     additionalConditions: announcementAssertions,
                     memo: offerPayment.memo,
                 })
 
                 spendList.push(...CATCoinSpendList)
+
+                if (BigInt(fee) > 0n) {
+                    const feeSpendList = await Wallet.generateXCHSpendList({
+                        fee: BigInt(fee),
+                        amount: 0n,
+                        targetPuzzleHash: settlement.hashHex(),
+                        puzzle,
+                        spendableCoinList: await Wallet.getCoinList(
+                            puzzle.hashHex()
+                        ),
+                        additionalConditions: announcementAssertions,
+                    })
+                    spendList.push(...feeSpendList)
+                }
             } else {
                 const XCHSpendList = await Wallet.generateXCHSpendList({
-                    fee: 0n,
+                    fee: BigInt(fee),
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
-                    puzzle: puzzleReveal,
-                    spendableCoinList: await this.getCoinList(
-                        puzzleReveal.hashHex()
+                    puzzle,
+                    spendableCoinList: await Wallet.getCoinList(
+                        puzzle.hashHex()
                     ),
                     additionalConditions: announcementAssertions,
                 })
                 spendList.push(...XCHSpendList)
             }
-
-            if (BigInt(fee) > 0n) {
-                const feeSpendList = await Wallet.generateXCHSpendList({
-                    fee: BigInt(fee),
-                    amount: 0n,
-                    targetPuzzleHash: settlement.hashHex(),
-                    puzzle: puzzleReveal,
-                    spendableCoinList: await this.getCoinList(
-                        puzzleReveal.hashHex()
-                    ),
-                    additionalConditions: announcementAssertions,
-                })
-                spendList.push(...feeSpendList)
-            }
         }
+
+        const chainId = await getStorage<string>(StorageEnum.chainId)
+        const chain = chains.find((chain) => chain.id === chainId) || chains[0]
 
         const signatures = AugSchemeMPL.aggregate(
             spendList
@@ -260,10 +224,7 @@ export default class Offer {
                 .map((item) =>
                     Wallet.signCoinSpend(
                         item,
-                        Buffer.from(
-                            'ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2',
-                            'hex'
-                        ),
+                        Buffer.from(chain.agg_sig_me_additional_data, 'hex'),
                         Wallet.derivePrivateKey(PrivateKey.fromSeed(seed)),
                         Wallet.derivePrivateKey(
                             PrivateKey.fromSeed(seed)

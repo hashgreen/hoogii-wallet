@@ -4,7 +4,7 @@ import {
     fromHex,
     hash256,
 } from '@rigidity/bls-signatures'
-import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
 import { getCoinRecordsByName, getPuzzleAndSolution } from '~/api/api'
@@ -93,14 +93,6 @@ export class CAT extends Program {
         const change = sumSpendingValue - spendAmount
 
         const [firstCoin, ...restCoinList] = coinList
-        console.log(
-            'txch1q69x8m8928ze00nusmgxrpkrls4gcknkp2y6ruqdp4ezdu2fpsasx3s44l',
-            Program.fromBytes(
-                addressInfo(
-                    'txch1q69x8m8928ze00nusmgxrpkrls4gcknkp2y6ruqdp4ezdu2fpsasx3s44l'
-                ).hash
-            ).toHex()
-        )
 
         const primaryList: Primary[] = []
         primaryList.push({
@@ -108,7 +100,7 @@ export class CAT extends Program {
             amount: spendAmount,
             memos: [targetPuzzleHash, memo],
         })
-        if (Number(change) > 0) {
+        if (change > 0n) {
             primaryList.push({
                 puzzlehash: sanitizeHex(wallet.hashHex()),
                 amount: change,

@@ -2,7 +2,7 @@ import {
     event,
     eventOff,
     isConnected,
-    isUnlocked,
+    isLocked,
     request,
 } from '~/api/extension/webpage'
 
@@ -21,7 +21,7 @@ Object.assign(hoogii, {
     isHoogii: true,
     request: async (arg) => (await request(arg))?.data,
     isConnected: async () => (await isConnected())?.data,
-    isUnlocked: async () => !(await isUnlocked())?.data,
+    isUnlocked: async () => !(await isLocked())?.data,
 })
 if (window.chia) {
     window.chia.hoogii = hoogii
