@@ -84,8 +84,6 @@ export default class Offer {
         }
     }
 
-    static async createCoinSpend() {}
-
     static async generateSecureBundle(
         requestAssets: OfferAsset[],
         offerPaymentList: OfferAsset[],
