@@ -42,7 +42,7 @@ function Mnemonic({
         trigger,
         setFocus,
         setValue,
-        formState: { errors, dirtyFields, isValid },
+        formState: { errors, isValid },
         clearErrors,
     } = useForm<IForm>({
         mode: 'onChange',
@@ -68,19 +68,7 @@ function Mnemonic({
         const nextIndex = values.findIndex(
             (field, index) => !field.value && index > currentIndex
         )
-        setFocus(`phrases.${nextIndex}.value` as const, {
-            shouldSelect: true,
-        })
-
-        if (isValid && dirtyFields?.phrases?.some((value) => !value)) {
-            // go to first field with wrong value
-            if (Array.isArray(errors.phrases)) {
-                const nextIndex = errors.phrases.findIndex((item) => item)
-                setFocus(`phrases.${nextIndex}.value` as const, {
-                    shouldSelect: true,
-                })
-            }
-        }
+        setFocus(`phrases.${nextIndex}.value` as const)
     }
 
     const onPaste = (from: number, e: ClipboardEvent<HTMLInputElement>) => {
@@ -120,7 +108,7 @@ function Mnemonic({
         )
     }, [isValid, JSON.stringify(values)])
     useEffect(() => {
-        if (defaultValues.every((value) => value)) {
+        if (defaultValues.every((value) => !value.trim())) {
             setFocus(`phrases.${0}.value` as const)
         }
     }, [])
