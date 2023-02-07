@@ -113,9 +113,9 @@ class AssetsStore {
         this.unsubscribeExistedAssets = () => subscription.unsubscribe()
     }
 
-    getBalance = async (puzzleHashes: string[]) => {
+    getBalance = async (puzzleHashes: string[]): Promise<void> => {
         if (!puzzleHashes.length) {
-            return []
+            return
         }
         try {
             this.balancesData.isFetching = true
@@ -145,19 +145,6 @@ class AssetsStore {
         return (this.balancesData.data?.[puzzleHash] ?? 0)?.toString() ?? '0'
     }
 
-    getXCHBalance = async () => {
-        const balances = await this.getBalance([this.walletStore.puzzleHash])
-        return balances
-    }
-
-    getCATBalances = async () => {
-        const puzzleHashes: string[] = this.existedAssets.map((asset) =>
-            this.assetIdToPuzzleHash(asset.assetId)
-        )
-        const balances = await this.getBalance(puzzleHashes)
-        return balances
-    }
-
     getAllBalances = async () => {
         const puzzleHashes: string[] = [
             this.walletStore.puzzleHash,
@@ -166,8 +153,7 @@ class AssetsStore {
             ),
         ]
 
-        const balances = await this.getBalance(puzzleHashes)
-        return balances
+        await this.getBalance(puzzleHashes)
     }
 
     getExchangeRate = async () => {
@@ -220,14 +206,14 @@ class AssetsStore {
         })
         const cat = new CAT(assetIdHex, wallet)
 
-        return '0x' + Program.fromBytes(cat.hash()).toHex()
+        return '0x' + cat.hashHex()
     }
 
-    tailDateBaseImagePath = async () => {
-        const patchTime = await getStorage('patchTime')
-        if (!patchTime || patchTime < 1) {
+    tailDatabaseImagePatch = async () => {
+        const patched = await getStorage('patchTime')
+        if (!patched) {
             await this.addDefaultAsset()
-            await setStorage({ patchTime: 1 })
+            await setStorage({ patched: true })
         }
     }
 }

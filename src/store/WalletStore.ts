@@ -87,6 +87,7 @@ class WalletStore {
         )
 
         autorun(() => {
+            console.log('autorun>')
             if (this.seed?.length > 0 && !this.locked) {
                 this.generateAddress(this.seed)
             }
@@ -109,8 +110,7 @@ class WalletStore {
     }
 
     async isWalletExisted(): Promise<boolean> {
-        const keyring = await getStorage<string>('keyring')
-        return !!keyring
+        return !!(await getStorage<string>('keyring'))
     }
 
     init = async () => {
@@ -148,8 +148,6 @@ class WalletStore {
     }
 
     generateAddress = async (seed: Uint8Array): Promise<void> => {
-        if (!this.chain) return
-
         const puzzleHash = seedToPuzzle(seed).hashHex()
 
         if (!(await getStorage<string>(StorageEnum.puzzleHash))) {

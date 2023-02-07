@@ -1,5 +1,4 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
-import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
@@ -119,13 +118,11 @@ class TransactionStore {
 
         const assetId = fromHex(asset.assetId)
         const cat = new CAT(assetId, wallet)
-        const spendableCATList = await TransactionStore.coinList(
-            Program.fromBytes(cat.hash()).toHex()
-        )
+        const spendableCATList = await TransactionStore.coinList(cat.hashHex())
         const {
             data: { data },
         } = await callGetBalance({
-            puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
+            puzzle_hash: cat.hashHex(),
         })
 
         if (BigInt(data) < BigInt(amount)) {

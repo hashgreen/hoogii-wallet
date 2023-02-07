@@ -108,20 +108,15 @@ export const routes: RouteObject[] = [
                 return
             }
             if (!rootStore.walletStore.locked) {
-                await rootStore.assetsStore.tailDateBaseImagePath()
-                await rootStore.assetsStore.retrieveExistedAssets()
-                const balances = rootStore.assetsStore.getAllBalances()
-                return defer({ balances })
+                rootStore.assetsStore.tailDatabaseImagePatch()
+                rootStore.assetsStore.retrieveExistedAssets()
+                rootStore.assetsStore.getAllBalances()
             }
         },
         element: <Home />,
     },
     {
         path: 'activity',
-        loader: async () => {
-            const xchBalance = rootStore.assetsStore.getXCHBalance()
-            return defer({ xchBalance })
-        },
         element: <Home initialTab={1} />,
     },
     {
