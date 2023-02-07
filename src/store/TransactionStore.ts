@@ -3,13 +3,12 @@ import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
-import { callGetBalance, getSpendableCoins, sendTx } from '~/api/api'
+import { callGetBalance, sendTx } from '~/api/api'
 import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
-import { Coin } from '~/utils/Wallet/types'
 import { Wallet } from '~/utils/Wallet/Wallet'
 
 import WalletStore from './WalletStore'
@@ -23,22 +22,6 @@ class TransactionStore {
 
     get isTradable() {
         return !!this.walletStore.seed
-    }
-
-    static coinList = async (puzzle_hash: string): Promise<Coin[]> => {
-        try {
-            const res = await getSpendableCoins({
-                puzzle_hash,
-            })
-            return (
-                res?.data?.data?.map((record) => ({
-                    ...record.coin,
-                    amount: record.coin.amount || 0,
-                })) ?? []
-            )
-        } catch (error) {
-            throw new Error(getErrorMessage(error as AxiosError))
-        }
     }
 
     sendXCHTx = async (
@@ -60,7 +43,7 @@ class TransactionStore {
         if (BigInt(balance.data.data) < BigInt(amount) + BigInt(fee)) {
             throw new Error("You don't have enough balance to send")
         }
-        const spendableCoinList = await TransactionStore.coinList(
+        const spendableCoinList = await Wallet.getCoinList(
             puzzleReveal.hashHex()
         )
         try {
@@ -119,7 +102,7 @@ class TransactionStore {
 
         const assetId = fromHex(asset.assetId)
         const cat = new CAT(assetId, wallet)
-        const spendableCATList = await TransactionStore.coinList(
+        const spendableCATList = await Wallet.getCoinList(
             Program.fromBytes(cat.hash()).toHex()
         )
         const {
@@ -154,7 +137,7 @@ class TransactionStore {
         const signatureList = [CATsignatures]
 
         if (BigInt(fee) > 0n) {
-            const spendableCoinList = await TransactionStore.coinList(
+            const spendableCoinList = await Wallet.getCoinList(
                 puzzleReveal.hashHex()
             )
             const XCHspendsList = await Wallet.generateXCHSpendList({
