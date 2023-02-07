@@ -37,7 +37,7 @@ class WalletStore {
     locked: boolean = false
     db: WalletDexie = new WalletDexie(ChainEnum.Mainnet)
     name?: string
-    chain: IChain = chains[0]
+    chain: IChain = chains[ChainEnum.Mainnet]
     address: string = ''
     puzzleHash: string = ''
     addresses: IAddress[] = []
@@ -87,7 +87,6 @@ class WalletStore {
         )
 
         autorun(() => {
-            console.log('autorun>')
             if (this.seed?.length > 0 && !this.locked) {
                 this.generateAddress(this.seed)
             }

@@ -9,6 +9,10 @@ export interface IChain {
     prefix: string
     agg_sig_me_additional_data: string
 }
+export interface IChainSet {
+    [key: string]: IChain
+}
+
 export interface IApiEndpointSet {
     jarvan: string
     zed: string

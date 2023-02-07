@@ -1,5 +1,4 @@
 import { fromHex } from '@rigidity/bls-signatures'
-import { Program } from '@rigidity/clvm'
 import { liveQuery } from 'dexie'
 import {
     makeAutoObservable,
@@ -17,8 +16,8 @@ import {
 import { IAsset } from '~/db'
 import rootStore from '~/store'
 import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
-import { ChainEnum } from '~/types/chia'
 import { CAT } from '~/utils/CAT'
+import { chains } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/storage'
 import { Wallet } from '~/utils/Wallet/Wallet'
 import defaultCATs from '~config/defaultCATs.json'
@@ -68,10 +67,7 @@ class AssetsStore {
     get XCH() {
         return {
             assetId: 'XCH',
-            code:
-                this.walletStore.chain?.id === ChainEnum.Mainnet
-                    ? 'XCH'
-                    : 'TXCH',
+            code: chains[this.walletStore.chain.id].prefix,
             iconUrl: '/chia.png',
         }
     }

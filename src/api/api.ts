@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { toast } from 'react-toastify'
 
 import { IMarket, RequestConfig } from '~/types/api'
+import { ChainEnum } from '~/types/chia'
 import { apiEndpointSets } from '~/utils/constants'
 import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
 import { getStorage } from '~/utils/extension/storage'
@@ -15,7 +16,7 @@ export async function apiHandler<T = any>(
     try {
         const chainId: string = await getStorage<string>('chainId')
 
-        const apiEndpoint = apiEndpointSets[chainId || '0x01'].jarvan // default mainnet
+        const apiEndpoint = apiEndpointSets[chainId || ChainEnum.Mainnet].jarvan // default mainnet
         const request = axios.create({
             baseURL: apiEndpoint,
             timeout: 60 * 1000,

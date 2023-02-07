@@ -57,7 +57,7 @@ export const clearStorage = async (): Promise<void> => {
     }
 }
 export const retrieveChain = async () => {
-    const chainId = await getStorage<string>('chainId')
-    const chain = chains.find((item) => item.id === chainId) ?? chains[1]
+    const chainId = (await getStorage<string>('chainId')) as string
+    const chain = chains[chainId] || chains[1]
     return chain
 }
