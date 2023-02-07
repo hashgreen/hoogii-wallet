@@ -33,7 +33,7 @@ class TransactionStore {
             return (
                 res?.data?.data?.map((record) => ({
                     ...record.coin,
-                    amount: BigInt(record.coin.amount) || 0n,
+                    amount: BigInt(record.coin.amount || 0),
                 })) ?? []
             )
         } catch (error) {
