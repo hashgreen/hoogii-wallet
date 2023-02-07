@@ -120,47 +120,25 @@ export default class Offer {
                 amount: 0n,
             }
             const nonce = this.getNonce()
-            if (assetId) {
-                const settlementSolution = Program.fromList([
+            const settlementSolution = Program.fromList([
+                Program.fromList([
+                    Program.fromBytes(nonce),
                     Program.fromList([
-                        Program.fromBytes(nonce),
-                        Program.fromList([
-                            Program.fromHex(
-                                sanitizeHex(puzzleReveal.hashHex())
-                            ),
-                            Program.fromBigInt(BigInt(amount)),
-                            Program.fromList([Program.fromText(memo || '')]),
-                        ]),
+                        Program.fromHex(sanitizeHex(puzzleReveal.hashHex())),
+                        Program.fromBigInt(BigInt(amount)),
+                        Program.fromList(
+                            assetId ? [Program.fromText(memo || '')] : []
+                        ),
                     ]),
-                ])
+                ]),
+            ])
 
-                const coinSpend = new CoinSpend(
-                    coin,
-                    this.generateSettlement(assetId).serializeHex(),
-                    settlementSolution.serializeHex()
-                )
-                spendList.push(coinSpend)
-            } else {
-                const settlementSolution = Program.fromList([
-                    Program.fromList([
-                        Program.fromBytes(nonce),
-                        Program.fromList([
-                            Program.fromHex(
-                                sanitizeHex(puzzleReveal.hashHex())
-                            ),
-                            Program.fromBigInt(BigInt(amount)),
-                            Program.fromList([]),
-                        ]),
-                    ]),
-                ])
-
-                const coinSpend = new CoinSpend(
-                    coin,
-                    this.generateSettlement(undefined).serializeHex(),
-                    settlementSolution.serializeHex()
-                )
-                spendList.push(coinSpend)
-            }
+            const coinSpend = new CoinSpend(
+                coin,
+                this.generateSettlement(assetId).serializeHex(),
+                settlementSolution.serializeHex()
+            )
+            spendList.push(coinSpend)
         })
 
         const announcementAssertions = requestPaymentAnnouncements.map(
