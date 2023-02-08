@@ -148,6 +148,7 @@ export default class Offer {
                     Program.fromHex(announcement.name().toHex()),
                 ])
         )
+
         for (let i = 0; i < offerPaymentList.length; i++) {
             const offerPayment = offerPaymentList[i]
             const settlement = this.generateSettlement(undefined)
@@ -186,8 +187,8 @@ export default class Offer {
                 })
 
                 spendList.push(...CATCoinSpendList)
-
-                if (BigInt(fee) > 0n) {
+                // if offer cat and add fee in first coin
+                if (BigInt(fee) > 0n && i === 0) {
                     const feeSpendList = await Wallet.generateXCHSpendList({
                         fee: BigInt(fee),
                         amount: 0n,
@@ -202,7 +203,7 @@ export default class Offer {
                 }
             } else {
                 const XCHSpendList = await Wallet.generateXCHSpendList({
-                    fee: BigInt(fee),
+                    fee: i === 0 ? BigInt(fee) : 0n, // add fee in first coin
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
                     puzzle,
