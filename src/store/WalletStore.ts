@@ -104,6 +104,10 @@ class WalletStore {
         )
     }
 
+    get shortName() {
+        return this.name ? this.name.substring(0, 19) : undefined
+    }
+
     get isMainnet(): boolean {
         return this.chain?.id === ChainEnum.Mainnet
     }
