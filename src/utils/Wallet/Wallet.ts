@@ -11,9 +11,13 @@ import {
 } from '@rigidity/bls-signatures'
 import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
+import { AxiosError } from 'axios'
+
+import { getSpendableCoins } from '~/api/api'
 
 import CoinSelect from '../CoinSelect'
 import CoinSpend from '../CoinSpend'
+import { getErrorMessage } from '../errorMessage'
 import { puzzles } from '../puzzles'
 import { Coin, XCHPayload } from './types'
 
@@ -235,6 +239,24 @@ export class Wallet extends Program {
         return publicKey
     }
 
+    public static getCoinList = async (
+        puzzle_hash: string
+    ): Promise<Coin[]> => {
+        try {
+            const res = await getSpendableCoins({
+                puzzle_hash,
+            })
+            return (
+                res?.data?.data?.map((record) => ({
+                    ...record.coin,
+                    amount: BigInt(record.coin.amount || 0),
+                })) ?? []
+            )
+        } catch (error) {
+            throw new Error(getErrorMessage(error as AxiosError))
+        }
+    }
+
     public static selectCoins(
         spendableCoinList: Coin[],
         spendAmount: bigint
@@ -246,10 +268,7 @@ export class Wallet extends Program {
             return [matchCoin]
         }
         const { coins: usedCoinList } = CoinSelect(
-            spendableCoinList.map((coin) => ({
-                ...coin,
-                amount: BigInt(coin.amount),
-            })),
+            spendableCoinList,
             [
                 {
                     amount: spendAmount,
@@ -275,6 +294,7 @@ export class Wallet extends Program {
         const spendAmount = amount + fee
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
+
         const sumSpendingValue = coinList.reduce((acc, cur) => {
             return acc + cur.amount
         }, 0n)
