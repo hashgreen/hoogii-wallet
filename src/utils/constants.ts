@@ -1,5 +1,5 @@
 import { ChainEnum, IApiEndpointSet, IChainSet } from '~/types/chia'
-
+export const standardMnemonicLength = 24
 export const chains: IChainSet = {
     [ChainEnum.Mainnet]: {
         name: 'Mainnet',

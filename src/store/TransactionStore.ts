@@ -135,7 +135,7 @@ class TransactionStore {
         if (BigInt(fee) > 0n) {
             const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                puzzle: puzzleReveal,
+                puzzle,
                 amount: 0n,
                 memo: '', // memo is unnecessary for fee
                 fee: BigInt(fee),
