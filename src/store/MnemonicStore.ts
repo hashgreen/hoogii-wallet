@@ -13,6 +13,7 @@ import {
 import { savePassword } from '~/api/extension'
 import RootStore from '~/store'
 import { bcryptVerify } from '~/utils'
+import { standardMnemonicLength } from '~/utils/constants'
 import { bytesToString } from '~/utils/encryption'
 import { getStorage } from '~/utils/extension/storage'
 import words from '~config/wordlist_en.json'
@@ -20,7 +21,6 @@ import words from '~config/wordlist_en.json'
 import WalletStore from './WalletStore'
 class MnemonicStore {
     walletStore: WalletStore
-    mnemonicLength: number = 24
     mnemonics: string[] = ['']
     password: string = ''
 
@@ -48,7 +48,7 @@ class MnemonicStore {
 
     get schema() {
         return Joi.array()
-            .length(this.mnemonicLength)
+            .length(standardMnemonicLength)
             .items(
                 Joi.object({
                     value: Joi.string()
@@ -66,7 +66,8 @@ class MnemonicStore {
 
     validate(mnemonics: string[]): boolean {
         return (
-            mnemonics?.length === 24 && mnemonics.every((item) => item.trim())
+            mnemonics?.length === standardMnemonicLength &&
+            mnemonics.every((item) => item.trim())
         )
     }
 

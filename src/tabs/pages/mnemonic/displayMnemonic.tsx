@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite'
 import { useTranslation } from 'react-i18next'
 
 import Mnemonic from '~/components/Mnemonic'
+import { standardMnemonicLength } from '~/utils/constants'
 import { SubLayout } from '~tabs/layout'
 import rootStore from '~tabs/store'
 
@@ -24,10 +25,14 @@ const DisplayMnemonic = () => {
                 <Mnemonic
                     defaultValues={mnemonics}
                     disabled={
-                        Array.from({ length: 24 }).fill(false) as boolean[]
+                        Array.from({ length: standardMnemonicLength }).fill(
+                            false
+                        ) as boolean[]
                     }
                     readOnly={
-                        Array.from({ length: 24 }).fill(true) as boolean[]
+                        Array.from({ length: standardMnemonicLength }).fill(
+                            true
+                        ) as boolean[]
                     }
                 />
             </div>

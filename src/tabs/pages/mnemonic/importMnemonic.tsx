@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 import Mnemonic from '~/components/Mnemonic'
 import { ErrorPopup } from '~/components/Popup'
+import { standardMnemonicLength } from '~/utils/constants'
 import InfoIcon from '~icons/hoogii/blue-info.jsx'
 import { SubLayout } from '~tabs/layout'
 import rootStore from '~tabs/store'
@@ -14,12 +15,14 @@ function ImportMnemonic({ routeFor }: { routeFor: 'reset' | 'import' }) {
     const [isValid, setIsValid] = useState(false)
     const { t } = useTranslation()
     const [open, setOpen] = useState(false)
-    const { mnemonicLength, schema, setMnemonics } =
-        rootStore.getMnemonicStore(routeFor)
+    const { schema, setMnemonics } = rootStore.getMnemonicStore(routeFor)
     const {
         resetMnemonicStore: { verifyMnemonic },
     } = rootStore
-    const defaultValues = Array.from({ length: mnemonicLength }, () => '')
+    const defaultValues = Array.from(
+        { length: standardMnemonicLength },
+        () => ''
+    )
     const navigate = useNavigate()
     const isImportPage = routeFor === 'import'
 
@@ -67,10 +70,14 @@ function ImportMnemonic({ routeFor }: { routeFor: 'reset' | 'import' }) {
                             'array.includes': 'error-mnemonic-invalid',
                         })}
                         disabled={
-                            Array.from({ length: 24 }).fill(false) as boolean[]
+                            Array.from({ length: standardMnemonicLength }).fill(
+                                false
+                            ) as boolean[]
                         }
                         readOnly={
-                            Array.from({ length: 24 }).fill(false) as boolean[]
+                            Array.from({ length: standardMnemonicLength }).fill(
+                                false
+                            ) as boolean[]
                         }
                         onChange={(isValid, mnemonics) => {
                             setIsValid(isValid)

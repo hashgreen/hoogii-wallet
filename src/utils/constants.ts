@@ -1,5 +1,5 @@
 import { ChainEnum, IApiEndpointSet, IChain } from '~/types/chia'
-
+export const standardMnemonicLength = 24
 export const chains: readonly IChain[] = [
     {
         name: 'Mainnet',
