@@ -29,7 +29,7 @@ const CreateMnemonic = () => {
     const defaultValues = mnemonics.map((phrase) =>
         randomInputs.includes(phrase) ? '' : phrase
     )
-    const notAvailableInputList = mnemonics.map(
+    const isEditableInputList = mnemonics.map(
         (phrase) => !randomInputs.includes(phrase)
     )
 
@@ -59,7 +59,7 @@ const CreateMnemonic = () => {
                         'any.only': 'error-mnemonic-invalid',
                         'array.includes': 'error-mnemonic-invalid',
                     })}
-                    readOnly={notAvailableInputList}
+                    readOnly={isEditableInputList}
                     onChange={(isValid, mnemonics) => {
                         setIsValid(isValid)
                         setCurrentMnemonic(mnemonics)
