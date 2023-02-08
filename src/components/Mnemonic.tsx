@@ -21,7 +21,6 @@ interface IForm {
 
 interface IProps {
     defaultValues: string[]
-    disabled: boolean[]
     readOnly: boolean[]
     schema?: Joi.ObjectSchema
     onChange?: (isValid: boolean, s: string[]) => void
@@ -29,7 +28,6 @@ interface IProps {
 
 function Mnemonic({
     defaultValues,
-    disabled,
     readOnly,
     schema = Joi.object({ phrases: Joi.array().required() }),
     onChange,
@@ -134,7 +132,6 @@ function Mnemonic({
                                                 word === values[index]?.value
                                         )),
                             })}`}
-                            disabled={disabled[index]}
                             readOnly={readOnly[index]}
                             placeholder={`Phrase ${index + 1}`}
                             onKeyDown={(e) => {
@@ -144,10 +141,7 @@ function Mnemonic({
                                 }
                             }}
                             onPaste={(e) => {
-                                if (
-                                    !disabled.some((item) => item) &&
-                                    !readOnly[index]
-                                ) {
+                                if (!readOnly[index]) {
                                     onPaste(index, e)
                                 }
                             }}

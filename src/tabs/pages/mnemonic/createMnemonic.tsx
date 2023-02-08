@@ -59,7 +59,6 @@ const CreateMnemonic = () => {
                         'any.only': 'error-mnemonic-invalid',
                         'array.includes': 'error-mnemonic-invalid',
                     })}
-                    disabled={notAvailableInputList}
                     readOnly={notAvailableInputList}
                     onChange={(isValid, mnemonics) => {
                         setIsValid(isValid)

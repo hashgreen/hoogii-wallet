@@ -24,11 +24,6 @@ const DisplayMnemonic = () => {
             <div className="mt-7">
                 <Mnemonic
                     defaultValues={mnemonics}
-                    disabled={
-                        Array.from({ length: standardMnemonicLength }).fill(
-                            false
-                        ) as boolean[]
-                    }
                     readOnly={
                         Array.from({ length: standardMnemonicLength }).fill(
                             true

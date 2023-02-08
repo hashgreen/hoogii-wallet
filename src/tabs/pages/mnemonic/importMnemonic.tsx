@@ -69,11 +69,6 @@ function ImportMnemonic({ routeFor }: { routeFor: 'reset' | 'import' }) {
                             'any.only': 'error-mnemonic-invalid',
                             'array.includes': 'error-mnemonic-invalid',
                         })}
-                        disabled={
-                            Array.from({ length: standardMnemonicLength }).fill(
-                                false
-                            ) as boolean[]
-                        }
                         readOnly={
                             Array.from({ length: standardMnemonicLength }).fill(
                                 false
