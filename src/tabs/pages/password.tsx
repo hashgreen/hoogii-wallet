@@ -35,6 +35,7 @@ const Password = ({
         mode: 'onChange',
         resolver: joiResolver(schema),
     })
+    const isResetPassword = routeFor === 'reset'
     useEffect(() => {
         setFocus('password')
     }, [])
@@ -42,12 +43,12 @@ const Password = ({
     return (
         <SubLayout
             title={
-                routeFor === 'reset'
+                isResetPassword
                     ? t('password-reset_password-title')
                     : t('password-title')
             }
             description={
-                routeFor === 'reset'
+                isResetPassword
                     ? t('password-reset_password-description')
                     : t('password-description')
             }

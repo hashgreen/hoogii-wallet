@@ -3,7 +3,7 @@ import { Program } from '@rigidity/clvm'
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 
 import { xchToMojo } from '~/utils/CoinConverter'
-import { chains } from '~/utils/constants'
+import { chains, standardMnemonicLength } from '~/utils/constants'
 import SpendBundle from '~/utils/SpendBundle'
 
 import words from '../../../config/wordlist_en.json'
@@ -19,7 +19,7 @@ test('Should generate puzzle by Mnemonic', async () => {
     const testMnemonicList: string[] = (
         await generateMnemonicAsync(256, undefined, words)
     ).split(' ')
-    expect(testMnemonicList.length).toEqual(24)
+    expect(testMnemonicList.length).toEqual(standardMnemonicLength)
     ownerSeed = await mnemonicToSeedAsync(testMnemonicList?.join(' '))
     const puzzle = seedToPuzzle(ownerSeed)
     expect(puzzle.hashHex().length).toEqual(64)
