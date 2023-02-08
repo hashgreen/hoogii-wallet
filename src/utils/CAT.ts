@@ -176,6 +176,7 @@ export class CAT extends Program {
                 innerSolution,
             })
         }
+        // spend accounting
 
         const N = spendableCATList.length
         const spendsList: CoinSpend[] = []

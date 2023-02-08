@@ -178,7 +178,9 @@ class WalletStore {
 
     checkPassword = async (password: string) => {
         try {
-            const passwordHash = (await getStorage<string>('password')) || ''
+            const passwordHash = (await getStorage<string>(
+                'password'
+            )) as string
             const result = await bcryptVerify(password, passwordHash)
 
             if (result) {

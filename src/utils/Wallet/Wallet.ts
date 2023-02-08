@@ -321,6 +321,7 @@ export class Wallet extends Program {
         })
 
         const conditionList: Program[] = primaryList.map((primary) => {
+            // create coin condition
             return Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
@@ -338,6 +339,7 @@ export class Wallet extends Program {
         })
 
         if (fee > 0n) {
+            // add fee condition
             conditionList.push(
                 Program.fromList([
                     Program.fromHex(sanitizeHex(ConditionOpcode.RESERVE_FEE)),
@@ -385,6 +387,7 @@ export class Wallet extends Program {
             concatBytes(origin_info, createCoinAnnouncement)
         )
         const restCoinConditionList: Program[] = []
+        // Add coinAnnouncement for rest of coins
         restCoinConditionList.push(
             Program.fromList([
                 Program.fromHex(

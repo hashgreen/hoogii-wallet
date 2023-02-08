@@ -1,5 +1,4 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
-import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
@@ -33,29 +32,28 @@ class TransactionStore {
         const { seed, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
-        const puzzleReveal = getProgramBySeed(seed)
+        const puzzle = getProgramBySeed(seed)
         const balance = await callGetBalance(
             {
-                puzzle_hash: puzzleReveal.hashHex(),
+                puzzle_hash: puzzle.hashHex(),
             },
             { isShowToast: false }
         )
         if (BigInt(balance.data.data) < BigInt(amount) + BigInt(fee)) {
             throw new Error("You don't have enough balance to send")
         }
-        const spendableCoinList = await Wallet.getCoinList(
-            puzzleReveal.hashHex()
-        )
+        const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())
         try {
+            // generate coinSpend[]
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                puzzle: puzzleReveal,
+                puzzle,
                 amount: BigInt(amount),
                 memo,
                 fee: BigInt(fee),
                 targetAddress,
                 spendableCoinList,
             })
-
+            // sign coin spend
             const XCHsignatures = AugSchemeMPL.aggregate(
                 XCHspendsList.map((spend) =>
                     Wallet.signCoinSpend(
@@ -89,12 +87,12 @@ class TransactionStore {
         const { seed, address, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
-        const puzzleReveal = getProgramBySeed(seed)
+        const puzzle = getProgramBySeed(seed)
 
         const masterPrivateKey = PrivateKey.fromSeed(seed)
         const walletPrivateKey = Wallet.derivePrivateKey(masterPrivateKey)
         const walletPublicKey = walletPrivateKey.getG1()
-
+        // standard transaction program
         const wallet = new Wallet(walletPublicKey, {
             hardened: true,
             index: 0,
@@ -102,9 +100,7 @@ class TransactionStore {
 
         const assetId = fromHex(asset.assetId)
         const cat = new CAT(assetId, wallet)
-        const spendableCATList = await Wallet.getCoinList(
-            Program.fromBytes(cat.hash()).toHex()
-        )
+        const spendableCATList = await Wallet.getCoinList(cat.hashHex())
         const {
             data: { data },
         } = await callGetBalance({
@@ -135,11 +131,9 @@ class TransactionStore {
             )
         )
         const signatureList = [CATsignatures]
-
+        // Add fee by standardTx coinSpend
         if (BigInt(fee) > 0n) {
-            const spendableCoinList = await Wallet.getCoinList(
-                puzzleReveal.hashHex()
-            )
+            const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle: puzzleReveal,
                 amount: 0n,
