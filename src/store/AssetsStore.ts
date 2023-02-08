@@ -19,7 +19,7 @@ import rootStore from '~/store'
 import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
 import { ChainEnum } from '~/types/chia'
 import { CAT } from '~/utils/CAT'
-import { getStorage, setStorage } from '~/utils/storage'
+import { getStorage, setStorage } from '~/utils/extension/storage'
 import { Wallet } from '~/utils/Wallet/Wallet'
 import defaultCATs from '~config/defaultCATs.json'
 
