@@ -400,6 +400,7 @@ export class Wallet extends Program {
             restCoinConditionList
         ).serializeHex()
         for (const restCoin of restCoinList) {
+            // rest coin spend except first coin
             const coinSpend = new CoinSpend(
                 restCoin,
                 puzzle.serializeHex(),
