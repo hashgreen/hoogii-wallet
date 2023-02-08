@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react-lite'
-import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ConnectedSiteItem } from '~/components/Item'
@@ -7,7 +6,7 @@ import { IConnectedSite } from '~/db'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 // import connectableSites from '~config/connectableSites.json' this for white list
-import InfoIcon from '~icons/hoogii/info.jsx'
+// import InfoIcon from '~icons/hoogii/info.jsx'
 
 const ConnectedSites = () => {
     const { t } = useTranslation()
