@@ -3,8 +3,9 @@ import { addressInfo } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 
+import { ChainEnum } from '~/types/chia'
 import { xchToMojo } from '~/utils/CoinConverter'
-import { chains } from '~/utils/constants'
+import { chains, standardMnemonicLength } from '~/utils/constants'
 import SpendBundle from '~/utils/SpendBundle'
 
 import words from '../../../config/wordlist_en.json'
@@ -20,7 +21,7 @@ test('Should generate puzzle by Mnemonic', async () => {
     const testMnemonicList: string[] = (
         await generateMnemonicAsync(256, undefined, words)
     ).split(' ')
-    expect(testMnemonicList.length).toEqual(24)
+    expect(testMnemonicList.length).toEqual(standardMnemonicLength)
     ownerSeed = await mnemonicToSeedAsync(testMnemonicList?.join(' '))
     const puzzle = seedToPuzzle(ownerSeed)
     expect(puzzle.hashHex().length).toEqual(64)
@@ -51,7 +52,10 @@ test('Should create StandardTx SpendBundle without fee and check spendBundle is 
         XCHspendsList.map((spend) =>
             Wallet.signCoinSpend(
                 spend,
-                Buffer.from(chains[1].agg_sig_me_additional_data, 'hex'),
+                Buffer.from(
+                    chains[ChainEnum.Testnet].agg_sig_me_additional_data,
+                    'hex'
+                ),
                 Wallet.derivePrivateKey(PrivateKey.fromSeed(ownerSeed)),
                 Wallet.derivePrivateKey(PrivateKey.fromSeed(ownerSeed)).getG1()
             )

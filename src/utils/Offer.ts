@@ -12,6 +12,7 @@ import { bech32m } from 'bech32'
 import zlib from 'react-zlib-js'
 
 import { callGetBalance } from '~/api/api'
+import { ChainEnum } from '~/types/chia'
 import { OfferAsset } from '~/types/extension'
 import { StorageEnum } from '~/types/storage'
 import Announcement from '~/utils/Announcement'
@@ -215,9 +216,11 @@ export default class Offer {
                 spendList.push(...XCHSpendList)
             }
         }
-
-        const chainId = await getStorage<string>(StorageEnum.chainId)
-        const chain = chains.find((chain) => chain.id === chainId) || chains[0]
+        const chain =
+            chains[
+                (await getStorage<ChainEnum>(StorageEnum.chainId)) ||
+                    ChainEnum.Mainnet
+            ]
 
         const signatures = AugSchemeMPL.aggregate(
             spendList

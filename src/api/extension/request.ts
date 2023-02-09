@@ -44,7 +44,7 @@ const walletSwitchChain = async (params: {
 const accounts = async (): Promise<string[] | Errors.Error> => {
     const chainId = await getStorage<string>(StorageEnum.chainId)
     const puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
-    const chain = chains.find((chain) => chain.id === chainId)
+    const chain = chains[chainId]
     if (!puzzleHash || !chain) {
         throw Errors.NoSecretKeyError
     }
@@ -52,10 +52,6 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     const account = puzzleHashToAddress(puzzleHash, chain.prefix)
 
     return [account]
-}
-
-const createOffer = async (res: { offer: string }) => {
-    return { ...res }
 }
 
 const authHandler = async (request: IMessage<RequestArguments>) => {
@@ -109,7 +105,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.SEND_TRANSACTION:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.CREATE_OFFER:
-            return createOffer(response)
+            return response
         case RequestMethodEnum.TAKE_OFFER:
             throw Errors.UnderDevelopment
 

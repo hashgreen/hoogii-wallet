@@ -2,7 +2,11 @@ import { createMemoryRouter, redirect, RouteObject } from 'react-router-dom'
 
 import { MethodEnum } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
-import { CreateMnemonic, ImportMnemonic } from '~tabs/pages/mnemonic'
+import {
+    CreateMnemonic,
+    DisplayMnemonic,
+    ImportMnemonic,
+} from '~tabs/pages/mnemonic'
 import Password from '~tabs/pages/password'
 import Policy from '~tabs/pages/policy'
 import Error from '~tabs/pages/status/error'
@@ -25,11 +29,11 @@ const mnemonicRoutes = {
                 },
                 {
                     index: true,
-                    element: <CreateMnemonic />,
+                    element: <DisplayMnemonic />,
                 },
                 {
                     path: 'verify',
-                    element: <CreateMnemonic verifying />,
+                    element: <CreateMnemonic />,
                 },
                 {
                     path: 'password',
@@ -58,7 +62,7 @@ const mnemonicRoutes = {
                 },
                 {
                     index: true,
-                    element: <ImportMnemonic />,
+                    element: <ImportMnemonic routeFor="import" />,
                 },
                 {
                     path: 'password',
