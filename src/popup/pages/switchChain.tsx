@@ -7,9 +7,7 @@ const SwitchChain = ({
     controller,
     request,
 }: IPopupPageProps<MethodEnum.REQUEST>) => {
-    const ChainName = chains.find(
-        (chain) => chain.id === request?.data?.params?.chainId
-    )
+    const ChainName = chains[request?.data?.params?.chainId]
     return (
         <div className="container flex flex-col justify-between w-full h-full py-12">
             <div className="flex flex-col gap-2 items-center">

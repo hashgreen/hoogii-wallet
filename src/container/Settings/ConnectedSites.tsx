@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react-lite'
-import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ConnectedSiteItem } from '~/components/Item'
@@ -7,7 +6,7 @@ import { IConnectedSite } from '~/db'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 // import connectableSites from '~config/connectableSites.json' this for white list
-import InfoIcon from '~icons/hoogii/info.jsx'
+// import InfoIcon from '~icons/hoogii/info.jsx'
 
 const ConnectedSites = () => {
     const { t } = useTranslation()
@@ -15,9 +14,8 @@ const ConnectedSites = () => {
     const {
         walletStore: { connectedSites },
     } = rootStore
-    {
-        /* This part for white list */
-    }
+
+    /* This part for white list */
 
     // const availableSites = useMemo(
     //     () =>
@@ -56,12 +54,12 @@ const ConnectedSites = () => {
             </div>
             <div className="gap-2 text-body1 text-primary-100 flex-col-center">
                 {t('setting-connected_sites-description')}
-                <div
+                {/* <div
                     className="tooltip after:w-[260px] cursor-pointer"
                     data-tip={t('tooltip-connected_sites')}
                 >
                     <InfoIcon className="w-3 h-3 text-active" />
-                </div>
+                </div> */}
             </div>
             {/* This part for white list */}
             {/* <div className="flex flex-col gap-2">

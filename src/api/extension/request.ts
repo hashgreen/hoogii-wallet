@@ -44,7 +44,7 @@ const walletSwitchChain = async (params: {
 const accounts = async (): Promise<string[] | Errors.Error> => {
     const chainId = await getStorage<string>(StorageEnum.chainId)
     const puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
-    const chain = chains.find((chain) => chain.id === chainId)
+    const chain = chains[chainId]
     if (!puzzleHash || !chain) {
         throw Errors.NoSecretKeyError
     }

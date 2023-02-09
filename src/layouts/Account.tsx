@@ -68,6 +68,7 @@ const Account = ({ open, setOpen }: IProps) => {
                             setIsEdit(true)
                         }}
                         className="input"
+                        maxLength={20}
                     />
                     <div className="mt-1 text-left text-caption text-primary-100">
                         {t('account-address-description')}

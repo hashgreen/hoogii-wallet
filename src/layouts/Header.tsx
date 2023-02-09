@@ -8,9 +8,9 @@ import { Link } from 'react-router-dom'
 import CopyTooltip from '~/components/CopyTooltip'
 import Account from '~/layouts/Account'
 import rootStore from '~/store'
+import { ChainEnum } from '~/types/chia'
 import { shortenHash } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
-import { chains } from '~/utils/constants'
 import { isDev } from '~/utils/env'
 import CopyIcon from '~icons/hoogii/copy.jsx'
 import EditIcon from '~icons/hoogii/edit.jsx'
@@ -41,7 +41,7 @@ const Header = ({ className }: IProps) => {
         >
             <div className="flex-row-center">
                 <img src="/images/logo.svg" alt="logo" className="w-10" />
-                {chain?.id !== chains[0].id && (
+                {chain?.id !== ChainEnum.Mainnet && (
                     <div className="gap-1 px-2 py-1 flex-row-center text-active text-body3">
                         <InfoIcon className="w-3 h-3" />
                         {chain?.name}
