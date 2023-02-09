@@ -17,6 +17,7 @@ import { Primary, Wallet } from './Wallet/Wallet'
 interface CATPayload extends Omit<XCHPayload, 'puzzle'> {
     wallet: Wallet
     assetId: Uint8Array
+    lineageProof?: (childCoin: Coin) => Promise<Program>
 }
 export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
@@ -37,34 +38,6 @@ export class CAT extends Program {
                 encodeInt(Number(coin.amount))
             )
         )
-
-    static getParentCoinPuzzleReveal = async (
-        childCoin: Coin
-    ): Promise<string> => {
-        const parentCoinRecord = await getCoinRecordsByName({
-            data: {
-                name: childCoin.parent_coin_info,
-            },
-        })
-
-        const {
-            coin_record: { coin, spent_block_index },
-        } = parentCoinRecord.data
-        const coinID = CAT.coinName(coin)
-        const puzzleAndSolutionRecord = await getPuzzleAndSolution({
-            data: {
-                coin_id: Program.fromBytes(coinID).toHex(),
-                height: Number(spent_block_index),
-            },
-        })
-        const {
-            data: {
-                coin_solution: { puzzle_reveal },
-            },
-        } = puzzleAndSolutionRecord
-
-        return puzzle_reveal
-    }
 
     static getLineageProof = async (childCoin: Coin): Promise<Program> => {
         const parentCoinRecord = await getCoinRecordsByName({
@@ -88,6 +61,7 @@ export class CAT extends Program {
                 coin_solution: { puzzle_reveal },
             },
         } = puzzleAndSolutionRecord
+
         const unCurry = Program.deserializeHex(
             sanitizeHex(puzzle_reveal)
         ).uncurry()
@@ -107,6 +81,7 @@ export class CAT extends Program {
         targetPuzzleHash,
         spendableCoinList,
         additionalConditions,
+        lineageProof = CAT.getLineageProof,
     }: CATPayload): Promise<CoinSpend[]> => {
         const cat = new CAT(assetId, wallet)
         const spendAmount = amount
@@ -177,6 +152,7 @@ export class CAT extends Program {
             innerSolution: Program
         }
         const spendableCATList: SpendableCAT[] = []
+
         spendableCATList.push({
             coin: firstCoin,
             innerPuzzle: wallet,
@@ -248,7 +224,7 @@ export class CAT extends Program {
             const myInfo = generateInfo(spendInfo.coin)
             const solution: Program[] = [
                 spendInfo.innerSolution,
-                await CAT.getLineageProof(spendInfo.coin),
+                await lineageProof(spendInfo.coin),
                 Program.fromHex(
                     sanitizeHex(Program.fromBytes(prevId).toString())
                 ),
