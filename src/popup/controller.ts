@@ -106,6 +106,7 @@ export class InternalControllerStore {
             await db.connectedSites.add({
                 name: this.request?.origin,
                 url: this.request?.origin,
+                iconUrl: this.request?.iconUrl,
             })
 
             connectedSites = await db.connectedSites.toArray()
