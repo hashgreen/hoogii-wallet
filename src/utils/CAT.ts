@@ -38,6 +38,34 @@ export class CAT extends Program {
             )
         )
 
+    static getParentCoinPuzzleReveal = async (
+        childCoin: Coin
+    ): Promise<string> => {
+        const parentCoinRecord = await getCoinRecordsByName({
+            data: {
+                name: childCoin.parent_coin_info,
+            },
+        })
+
+        const {
+            coin_record: { coin, spent_block_index },
+        } = parentCoinRecord.data
+        const coinID = CAT.coinName(coin)
+        const puzzleAndSolutionRecord = await getPuzzleAndSolution({
+            data: {
+                coin_id: Program.fromBytes(coinID).toHex(),
+                height: Number(spent_block_index),
+            },
+        })
+        const {
+            data: {
+                coin_solution: { puzzle_reveal },
+            },
+        } = puzzleAndSolutionRecord
+
+        return puzzle_reveal
+    }
+
     static getLineageProof = async (childCoin: Coin): Promise<Program> => {
         const parentCoinRecord = await getCoinRecordsByName({
             data: {
@@ -83,6 +111,7 @@ export class CAT extends Program {
         const cat = new CAT(assetId, wallet)
         const spendAmount = amount
 
+        // move to out
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
         const sumSpendingValue = coinList.reduce(

@@ -13,6 +13,7 @@ import { Coin } from '../../utils/Wallet/types'
 import { Wallet } from '../../utils/Wallet/Wallet'
 
 let ownerSeed: Uint8Array
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let coinOwnerPuzzleHash: string = ''
 let wallet
 const testTargetAddress =
@@ -44,11 +45,18 @@ test('Should generate puzzle by Mnemonic', async () => {
 })
 test('Should create CAT TX SpendBundle without fee and check spendBundle is valid', async () => {
     const mockCoinList: Coin[] = [
+        // {
+        //     amount: BigInt(100000000000),
+        //     parent_coin_info:
+        //         '0x000000000000000000000000000000000000000000000000000000000000001',
+        //     puzzle_hash: coinOwnerPuzzleHash,
+        // },
         {
-            amount: BigInt(100000000000),
+            amount: BigInt(987450),
             parent_coin_info:
-                '0x000000000000000000000000000000000000000000000000000000000000001',
-            puzzle_hash: coinOwnerPuzzleHash,
+                '0xc44d200a198ffd063c030402614ea9834b086e08099f8d5c0fe1f5c21941e7d8',
+            puzzle_hash:
+                '0x86e7191c39281c9bbea9ff647c74ddd6a5396a9cf105691868311c9ffc000e18',
         },
     ]
 
