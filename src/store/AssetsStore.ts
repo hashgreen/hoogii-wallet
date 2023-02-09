@@ -88,10 +88,10 @@ class AssetsStore {
 
     retrieveExistedAssets = async () => {
         const assets = await rootStore.walletStore.db.assets.toArray()
+
         runInAction(() => {
             this.existedAssets = assets
         })
-        return assets
     }
 
     unsubscribeExistedAssets = () => {}
