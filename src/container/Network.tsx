@@ -13,7 +13,7 @@ const Network = () => {
     } = rootStore
     return (
         <div className="flex flex-col">
-            {chains.map((item) => (
+            {Object.values(chains).map((item) => (
                 <label
                     key={item.id}
                     htmlFor={item.id}

@@ -22,7 +22,7 @@ export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
         super(
             puzzles.cat.curry([
-                Program.fromBytes(puzzles.cat.hash()),
+                puzzles.cat,
                 Program.fromBytes(tailPuzzleHash),
                 innerPuzzle,
             ]).value
@@ -104,7 +104,7 @@ export class CAT extends Program {
             amount: spendAmount,
             memos: [puzzlehash, memo],
         })
-        if (Number(change) > 0) {
+        if (change > 0n) {
             primaryList.push({
                 puzzlehash: sanitizeHex(wallet.hashHex()),
                 amount: change,
@@ -176,7 +176,7 @@ export class CAT extends Program {
                 innerSolution,
             })
         }
-
+        // spend accounting logic below
         const N = spendableCATList.length
         const spendsList: CoinSpend[] = []
         const deltaList: bigint[] = [

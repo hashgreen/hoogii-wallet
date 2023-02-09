@@ -1,5 +1,6 @@
 import { makeObservable, observable, runInAction } from 'mobx'
 
+import { ChainEnum } from '~/types/chia'
 import {
     IMessage,
     InternalRequestType,
@@ -14,9 +15,9 @@ import { getStorage, setStorage } from '~/utils/extension/storage'
 export const retrieveChain = async () => {
     const chainId = await getStorage<string>('chainId')
     if (!chainId) {
-        setStorage({ chainId: chains[0].id })
+        setStorage({ chainId: chains[ChainEnum.Mainnet].id })
     }
-    const chain = chains.find((item) => item.id === chainId) ?? chains[0]
+    const chain = chains[chainId] || chains[ChainEnum.Mainnet]
     return chain
 }
 export const retrieveSeed = async (password, keyring): Promise<Uint8Array> => {

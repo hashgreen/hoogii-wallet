@@ -1,5 +1,4 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
-import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
@@ -45,6 +44,7 @@ class TransactionStore {
         }
         const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())
         try {
+            // generate coinSpend[]
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle,
                 amount: BigInt(amount),
@@ -53,7 +53,7 @@ class TransactionStore {
                 targetAddress,
                 spendableCoinList,
             })
-
+            // sign coin spend
             const XCHsignatures = AugSchemeMPL.aggregate(
                 XCHspendsList.map((spend) =>
                     Wallet.signCoinSpend(
@@ -92,7 +92,7 @@ class TransactionStore {
         const masterPrivateKey = PrivateKey.fromSeed(seed)
         const walletPrivateKey = Wallet.derivePrivateKey(masterPrivateKey)
         const walletPublicKey = walletPrivateKey.getG1()
-
+        // standard transaction program
         const wallet = new Wallet(walletPublicKey, {
             hardened: true,
             index: 0,
@@ -100,13 +100,11 @@ class TransactionStore {
 
         const assetId = fromHex(asset.assetId)
         const cat = new CAT(assetId, wallet)
-        const spendableCATList = await Wallet.getCoinList(
-            Program.fromBytes(cat.hash()).toHex()
-        )
+        const spendableCATList = await Wallet.getCoinList(cat.hashHex())
         const {
             data: { data },
         } = await callGetBalance({
-            puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
+            puzzle_hash: cat.hashHex(),
         })
 
         if (BigInt(data) < BigInt(amount)) {
@@ -133,7 +131,7 @@ class TransactionStore {
             )
         )
         const signatureList = [CATsignatures]
-
+        // Add fee by standardTx coinSpend
         if (BigInt(fee) > 0n) {
             const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())
             const XCHspendsList = await Wallet.generateXCHSpendList({
