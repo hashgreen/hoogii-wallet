@@ -111,7 +111,7 @@ class AssetsStore {
 
     getBalance = async (puzzleHashes: string[]): Promise<void> => {
         if (!puzzleHashes.length) {
-            return
+            throw new Error('invalid empty puzzlehash list')
         }
         try {
             this.balancesData.isFetching = true
