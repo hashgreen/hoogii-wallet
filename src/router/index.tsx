@@ -2,7 +2,6 @@ import { lazy } from 'react'
 import {
     createBrowserRouter,
     createMemoryRouter,
-    defer,
     RouteObject,
 } from 'react-router-dom'
 
