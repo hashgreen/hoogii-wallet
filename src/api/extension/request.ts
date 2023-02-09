@@ -54,10 +54,6 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     return [account]
 }
 
-const createOffer = async (res: { offer: string }) => {
-    return { ...res }
-}
-
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
         !request?.isConnected ||
@@ -109,7 +105,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.SEND_TRANSACTION:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.CREATE_OFFER:
-            return createOffer(response)
+            return response
         case RequestMethodEnum.TAKE_OFFER:
             throw Errors.UnderDevelopment
 
