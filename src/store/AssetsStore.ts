@@ -1,5 +1,4 @@
 import { fromHex } from '@rigidity/bls-signatures'
-import { Program } from '@rigidity/clvm'
 import { liveQuery } from 'dexie'
 import {
     makeAutoObservable,
@@ -17,8 +16,8 @@ import {
 import { IAsset } from '~/db'
 import rootStore from '~/store'
 import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
-import { ChainEnum } from '~/types/chia'
 import { CAT } from '~/utils/CAT'
+import { chains } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/storage'
 import { Wallet } from '~/utils/Wallet/Wallet'
 import defaultCATs from '~config/defaultCATs.json'
@@ -68,10 +67,7 @@ class AssetsStore {
     get XCH() {
         return {
             assetId: 'XCH',
-            code:
-                this.walletStore.chain?.id === ChainEnum.Mainnet
-                    ? 'XCH'
-                    : 'TXCH',
+            code: chains[this.walletStore.chain.id].prefix,
             iconUrl: '/chia.png',
         }
     }
@@ -113,9 +109,9 @@ class AssetsStore {
         this.unsubscribeExistedAssets = () => subscription.unsubscribe()
     }
 
-    getBalance = async (puzzleHashes: string[]) => {
+    getBalance = async (puzzleHashes: string[]): Promise<void> => {
         if (!puzzleHashes.length) {
-            return []
+            throw new Error('invalid empty puzzlehash list')
         }
         try {
             this.balancesData.isFetching = true
@@ -145,19 +141,6 @@ class AssetsStore {
         return (this.balancesData.data?.[puzzleHash] ?? 0)?.toString() ?? '0'
     }
 
-    getXCHBalance = async () => {
-        const balances = await this.getBalance([this.walletStore.puzzleHash])
-        return balances
-    }
-
-    getCATBalances = async () => {
-        const puzzleHashes: string[] = this.existedAssets.map((asset) =>
-            this.assetIdToPuzzleHash(asset.assetId)
-        )
-        const balances = await this.getBalance(puzzleHashes)
-        return balances
-    }
-
     getAllBalances = async () => {
         const puzzleHashes: string[] = [
             this.walletStore.puzzleHash,
@@ -166,8 +149,7 @@ class AssetsStore {
             ),
         ]
 
-        const balances = await this.getBalance(puzzleHashes)
-        return balances
+        await this.getBalance(puzzleHashes)
     }
 
     getExchangeRate = async () => {
@@ -220,14 +202,14 @@ class AssetsStore {
         })
         const cat = new CAT(assetIdHex, wallet)
 
-        return '0x' + Program.fromBytes(cat.hash()).toHex()
+        return '0x' + cat.hashHex()
     }
 
-    tailDateBaseImagePath = async () => {
-        const patchTime = await getStorage('patchTime')
-        if (!patchTime || patchTime < 1) {
+    tailDatabaseImagePatch = async () => {
+        const patched = await getStorage('patchTime')
+        if (!patched) {
             await this.addDefaultAsset()
-            await setStorage({ patchTime: 1 })
+            await setStorage({ patched: true })
         }
     }
 }

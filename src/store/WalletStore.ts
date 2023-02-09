@@ -37,7 +37,7 @@ class WalletStore {
     locked: boolean = false
     db: WalletDexie = new WalletDexie(ChainEnum.Mainnet)
     name?: string
-    chain: IChain = chains[0]
+    chain: IChain = chains[ChainEnum.Mainnet]
     address: string = ''
     puzzleHash: string = ''
     addresses: IAddress[] = []
@@ -109,8 +109,7 @@ class WalletStore {
     }
 
     async isWalletExisted(): Promise<boolean> {
-        const keyring = await getStorage<string>('keyring')
-        return !!keyring
+        return !!(await getStorage<string>('keyring'))
     }
 
     init = async () => {
@@ -148,8 +147,6 @@ class WalletStore {
     }
 
     generateAddress = async (seed: Uint8Array): Promise<void> => {
-        if (!this.chain) return
-
         const puzzleHash = seedToPuzzle(seed).hashHex()
 
         if (!(await getStorage<string>(StorageEnum.puzzleHash))) {
@@ -181,7 +178,9 @@ class WalletStore {
 
     checkPassword = async (password: string) => {
         try {
-            const passwordHash = (await getStorage<string>('password')) || ''
+            const passwordHash = (await getStorage<string>(
+                'password'
+            )) as string
             const result = await bcryptVerify(password, passwordHash)
 
             if (result) {

@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactNode, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+
 import BackLink from './BackLink'
 
 interface INext {
