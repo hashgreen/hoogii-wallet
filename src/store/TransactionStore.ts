@@ -33,22 +33,20 @@ class TransactionStore {
         const { seed, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
-        const puzzleReveal = getProgramBySeed(seed)
+        const puzzle = getProgramBySeed(seed)
         const balance = await callGetBalance(
             {
-                puzzle_hash: puzzleReveal.hashHex(),
+                puzzle_hash: puzzle.hashHex(),
             },
             { isShowToast: false }
         )
         if (BigInt(balance.data.data) < BigInt(amount) + BigInt(fee)) {
             throw new Error("You don't have enough balance to send")
         }
-        const spendableCoinList = await Wallet.getCoinList(
-            puzzleReveal.hashHex()
-        )
+        const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())
         try {
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                puzzle: puzzleReveal,
+                puzzle,
                 amount: BigInt(amount),
                 memo,
                 fee: BigInt(fee),
@@ -89,7 +87,7 @@ class TransactionStore {
         const { seed, address, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
-        const puzzleReveal = getProgramBySeed(seed)
+        const puzzle = getProgramBySeed(seed)
 
         const masterPrivateKey = PrivateKey.fromSeed(seed)
         const walletPrivateKey = Wallet.derivePrivateKey(masterPrivateKey)
@@ -137,11 +135,9 @@ class TransactionStore {
         const signatureList = [CATsignatures]
 
         if (BigInt(fee) > 0n) {
-            const spendableCoinList = await Wallet.getCoinList(
-                puzzleReveal.hashHex()
-            )
+            const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())
             const XCHspendsList = await Wallet.generateXCHSpendList({
-                puzzle: puzzleReveal,
+                puzzle,
                 amount: 0n,
                 memo: '', // memo is unnecessary for fee
                 fee: BigInt(fee),
