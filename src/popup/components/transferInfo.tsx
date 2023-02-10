@@ -21,9 +21,9 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     const mojoToBalance = useCallback(
         (amount) => {
             if (request?.data?.params.assetId) {
-                return mojoToCat(amount)
+                return mojoToCat(amount).toString()
             } else {
-                return mojoToXch(amount)
+                return mojoToXch(amount).toString()
             }
         },
         [request?.data?.params.assetId]
@@ -50,7 +50,7 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                     <div className="flex mb-1 flex-row justify-between">
                         <div>{finsAssetName || XCH.code}</div>
                         <div className={'text-status-send'}>
-                            -{request?.data?.params.amount}
+                            -{mojoToBalance(request?.data?.params.amount)}
                         </div>
                     </div>
                 </div>
