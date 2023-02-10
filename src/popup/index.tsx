@@ -42,6 +42,9 @@ const App = observer(() => {
                     case RequestMethodEnum.CREATE_OFFER:
                         navigate('/transaction')
                         break
+                    case RequestMethodEnum.TRANSFER:
+                        navigate('/transaction')
+                        break
 
                     default:
                         returnData({

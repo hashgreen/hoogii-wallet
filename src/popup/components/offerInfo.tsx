@@ -20,7 +20,10 @@ interface IOfferAssets extends OfferAsset {
 function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     const {
         assetsStore: { XCH, availableAssets },
+        walletStore: { address },
     } = rootStore
+
+    const shortenAddress = shortenHash(address)
 
     const offerAssets = useMemo<IOfferAssets[]>(() => {
         if (!request.data?.params) {
@@ -42,43 +45,61 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     }, [request.data?.params])
     return (
         <>
-            <div className="text-left text-caption text-primary-100">Offer</div>
-            {offerAssets.map((asset) => {
-                const amount = asset.assetId
-                    ? mojoToCat(asset.amount.toString()).toFixed(3)
-                    : mojoToXch(asset.amount.toString()).toFixed(12)
-
-                const finsAssetName = availableAssets?.data?.find(
-                    (availableAsset) =>
-                        availableAsset.asset_id === asset.assetId
-                )?.name
-
-                return (
-                    <div
-                        className="flex mb-1 flex-row justify-between"
-                        key={asset.assetId}
-                    >
-                        <div>
-                            {asset.assetId
-                                ? finsAssetName ||
-                                  `CAT ${shortenHash(asset.assetId)}`
-                                : XCH.code}
-                        </div>
-                        <div
-                            className={`${
-                                asset.offerType === OfferTypeEnum.REQUEST
-                                    ? 'text-status-receive'
-                                    : 'text-status-send'
-                            }`}
-                        >
-                            {asset.offerType === OfferTypeEnum.REQUEST
-                                ? '+'
-                                : '-'}
-                            {amount}
-                        </div>
+            <div>
+                <div className="mb-3 text-left text-caption text-primary-100">
+                    Address
+                </div>
+                <div className="bg-box flex flex-col gap-1 px-2 py-2 shrink cursor-pointer rounded-sm ">
+                    {shortenAddress}
+                </div>
+            </div>
+            <div>
+                <div className="mb-3 text-left text-caption text-primary-100">
+                    Transaction
+                </div>
+                <div className="bg-box flex flex-col gap-1 px-2 py-3 shrink cursor-pointer rounded-sm ">
+                    <div className="text-left text-caption text-primary-100">
+                        Offer
                     </div>
-                )
-            })}
+                    {offerAssets.map((asset) => {
+                        const amount = asset.assetId
+                            ? mojoToCat(asset.amount.toString()).toFixed(3)
+                            : mojoToXch(asset.amount.toString()).toFixed(12)
+
+                        const finsAssetName = availableAssets?.data?.find(
+                            (availableAsset) =>
+                                availableAsset.asset_id === asset.assetId
+                        )?.name
+
+                        return (
+                            <div
+                                className="flex mb-1 flex-row justify-between"
+                                key={asset.assetId}
+                            >
+                                <div>
+                                    {asset.assetId
+                                        ? finsAssetName ||
+                                          `CAT ${shortenHash(asset.assetId)}`
+                                        : XCH.code}
+                                </div>
+                                <div
+                                    className={`${
+                                        asset.offerType ===
+                                        OfferTypeEnum.REQUEST
+                                            ? 'text-status-receive'
+                                            : 'text-status-send'
+                                    }`}
+                                >
+                                    {asset.offerType === OfferTypeEnum.REQUEST
+                                        ? '+'
+                                        : '-'}
+                                    {amount}
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
         </>
     )
 }

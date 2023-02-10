@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next'
 
 import { ErrorPopup } from '~/components/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
+import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
 import { MethodEnum, OfferParams, RequestMethodEnum } from '~/types/extension'
-import { shortenHash } from '~/utils'
 import { xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
@@ -22,10 +22,8 @@ const Transaction = ({
     const [submitError, setSubmitError] = useState<Error>()
     const {
         assetsStore: { XCH },
-        walletStore: { address },
     } = rootStore
 
-    const shortenAddress = shortenHash(address)
     const {
         register,
         handleSubmit,
@@ -89,25 +87,14 @@ const Transaction = ({
                     Requests a signature for:
                 </div>
             </div>
-            <div>
-                <div className="mb-3 text-left text-caption text-primary-100">
-                    Address
-                </div>
-                <div className="bg-box flex flex-col gap-1 px-2 py-2 shrink cursor-pointer rounded-sm ">
-                    {shortenAddress}
-                </div>
-            </div>
-            <div>
-                <div className="mb-3 text-left text-caption text-primary-100">
-                    Transaction
-                </div>
-                <div className="bg-box flex flex-col gap-1 px-2 py-3 shrink cursor-pointer rounded-sm ">
-                    {request.data?.method ===
-                        RequestMethodEnum.CREATE_OFFER && (
-                        <OfferInfo request={request} controller={controller} />
-                    )}
-                </div>
-            </div>
+            {request.data?.method === RequestMethodEnum.CREATE_OFFER && (
+                <OfferInfo request={request} controller={controller} />
+            )}
+
+            {request.data?.method === RequestMethodEnum.TRANSFER && (
+                <TransferInfo request={request} controller={controller} />
+            )}
+
             <div className="w-max">
                 <div className="mb-3 text-left text-caption text-primary-100">
                     {t('send-fee-description')}
