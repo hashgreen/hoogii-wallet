@@ -1,28 +1,19 @@
 import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
-import { useLayoutEffect, useMemo, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { ErrorPopup } from '~/components/Popup'
+import OfferInfo from '~/popup/components/offerInfo'
 import rootStore from '~/store'
-import {
-    MethodEnum,
-    OfferAsset,
-    OfferParams,
-    OfferTypeEnum,
-} from '~/types/extension'
+import { MethodEnum, OfferParams, RequestMethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
-import { mojoToCat, mojoToXch, xchToMojo } from '~/utils/CoinConverter'
+import { xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
-
-interface IOfferAssets extends OfferAsset {
-    offerType: OfferTypeEnum
-}
-
 const Transaction = ({
     controller,
     request,
@@ -30,28 +21,9 @@ const Transaction = ({
     const { t } = useTranslation()
     const [submitError, setSubmitError] = useState<Error>()
     const {
-        assetsStore: { XCH, availableAssets },
+        assetsStore: { XCH },
         walletStore: { address },
     } = rootStore
-
-    const offerAssets = useMemo<IOfferAssets[]>(() => {
-        if (!request.data?.params) {
-            return []
-        }
-        const { requestAssets, offerAssets } = request.data
-            .params as OfferParams
-
-        return [
-            ...requestAssets.map((asset) => ({
-                ...asset,
-                offerType: OfferTypeEnum.REQUEST,
-            })),
-            ...offerAssets.map((asset) => ({
-                ...asset,
-                offerType: OfferTypeEnum.OFFER,
-            })),
-        ]
-    }, [request.data?.params])
 
     const shortenAddress = shortenHash(address)
     const {
@@ -80,13 +52,15 @@ const Transaction = ({
     }
 
     const onSubmit = async (data) => {
-        const offer = await createOffer(
-            request.data?.params,
-            xchToMojo(data?.fee).toString()
-        )
-        controller.returnData({
-            data: { id: offer.getId(), offer: offer.encode(5) },
-        })
+        if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
+            const offer = await createOffer(
+                request.data?.params,
+                xchToMojo(data?.fee).toString()
+            )
+            controller.returnData({
+                data: { id: offer.getId(), offer: offer.encode(5) },
+            })
+        }
         window.close()
     }
     useLayoutEffect(() => {
@@ -128,46 +102,10 @@ const Transaction = ({
                     Transaction
                 </div>
                 <div className="bg-box flex flex-col gap-1 px-2 py-3 shrink cursor-pointer rounded-sm ">
-                    <div className="text-left text-caption text-primary-100">
-                        Offer
-                    </div>
-                    {offerAssets.map((asset) => {
-                        const amount = asset.assetId
-                            ? mojoToCat(asset.amount.toString()).toFixed(3)
-                            : mojoToXch(asset.amount.toString()).toFixed(12)
-
-                        const finsAssetName = availableAssets?.data?.find(
-                            (availableAsset) =>
-                                availableAsset.asset_id === asset.assetId
-                        )?.name
-
-                        return (
-                            <div
-                                className="flex mb-1 flex-row justify-between"
-                                key={asset.assetId}
-                            >
-                                <div>
-                                    {asset.assetId
-                                        ? finsAssetName ||
-                                          `CAT ${shortenHash(asset.assetId)}`
-                                        : XCH.code}
-                                </div>
-                                <div
-                                    className={`${
-                                        asset.offerType ===
-                                        OfferTypeEnum.REQUEST
-                                            ? 'text-status-receive'
-                                            : 'text-status-send'
-                                    }`}
-                                >
-                                    {asset.offerType === OfferTypeEnum.REQUEST
-                                        ? '+'
-                                        : '-'}
-                                    {amount}
-                                </div>
-                            </div>
-                        )
-                    })}
+                    {request.data?.method ===
+                        RequestMethodEnum.CREATE_OFFER && (
+                        <OfferInfo request={request} controller={controller} />
+                    )}
                 </div>
             </div>
             <div className="w-max">
