@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import { useCallback } from 'react'
 
+import AssetIcon from '~/components/AssetIcon'
 import rootStore from '~/store'
 import { MethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
@@ -13,10 +14,10 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
         assetsStore: { XCH, availableAssets },
     } = rootStore
 
-    const finsAssetName = availableAssets?.data?.find(
+    const finsAsset = availableAssets?.data?.find(
         (availableAsset) =>
             request?.data?.params.assetId === availableAsset.asset_id
-    )?.name
+    )
 
     const mojoToBalance = useCallback(
         (amount) => {
@@ -48,7 +49,14 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                         Send
                     </div>
                     <div className="flex mb-1 flex-row justify-between">
-                        <div>{finsAssetName || XCH.code}</div>
+                        <div className="flex">
+                            <AssetIcon
+                                src={finsAsset?.icon_url}
+                                assetId={finsAsset?.asset_id || 'XCH'}
+                                className="mr-1"
+                            />
+                            {finsAsset?.name || XCH.code}
+                        </div>
                         <div className={'text-status-send'}>
                             -{mojoToBalance(request?.data?.params.amount)}
                         </div>

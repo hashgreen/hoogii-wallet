@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import React, { useMemo } from 'react'
 
+import AssetIcon from '~/components/AssetIcon'
 import rootStore from '~/store'
 import {
     MethodEnum,
@@ -66,19 +67,24 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                             ? mojoToCat(asset.amount.toString()).toFixed(3)
                             : mojoToXch(asset.amount.toString()).toFixed(12)
 
-                        const finsAssetName = availableAssets?.data?.find(
+                        const finsAsset = availableAssets?.data?.find(
                             (availableAsset) =>
                                 availableAsset.asset_id === asset.assetId
-                        )?.name
+                        )
 
                         return (
                             <div
                                 className="flex mb-1 flex-row justify-between"
                                 key={asset.assetId}
                             >
-                                <div>
+                                <div className="flex">
+                                    <AssetIcon
+                                        src={finsAsset?.icon_url}
+                                        assetId={asset.assetId || 'XCH'}
+                                        className="mr-1"
+                                    />
                                     {asset.assetId
-                                        ? finsAssetName ||
+                                        ? finsAsset?.name ||
                                           `CAT ${shortenHash(asset.assetId)}`
                                         : XCH.code}
                                 </div>
