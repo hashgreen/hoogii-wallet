@@ -52,10 +52,16 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                         <div className="flex">
                             <AssetIcon
                                 src={finsAsset?.icon_url}
-                                assetId={finsAsset?.asset_id || 'XCH'}
+                                assetId={request?.data?.params.assetId || 'XCH'}
                                 className="mr-1"
                             />
-                            {finsAsset?.name || XCH.code}
+
+                            {request?.data?.params.assetId
+                                ? finsAsset?.name ||
+                                  `CAT ${shortenHash(
+                                      request?.data?.params.assetId
+                                  )}`
+                                : XCH.code}
                         </div>
                         <div className={'text-status-send'}>
                             -{mojoToBalance(request?.data?.params.amount)}

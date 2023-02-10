@@ -3,6 +3,7 @@ import { addressInfo } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 
+import { ChainEnum } from '~/types/chia'
 import { CAT } from '~/utils/CAT'
 import { chains } from '~/utils/constants'
 import SpendBundle from '~/utils/SpendBundle'
@@ -45,20 +46,26 @@ test('Should generate puzzle by Mnemonic', async () => {
 })
 test('Should create CAT TX SpendBundle without fee and check spendBundle is valid', async () => {
     const mockCoinList: Coin[] = [
-        // {
-        //     amount: BigInt(100000000000),
-        //     parent_coin_info:
-        //         '0x000000000000000000000000000000000000000000000000000000000000001',
-        //     puzzle_hash: coinOwnerPuzzleHash,
-        // },
         {
-            amount: BigInt(987450),
+            amount: 1000000n,
             parent_coin_info:
-                '0xc44d200a198ffd063c030402614ea9834b086e08099f8d5c0fe1f5c21941e7d8',
-            puzzle_hash:
-                '0x86e7191c39281c9bbea9ff647c74ddd6a5396a9cf105691868311c9ffc000e18',
+                '0x50cb079754673b70da42f22045cb59695b87fff36c9e7c0deec703955db58282',
+            puzzle_hash: coinOwnerPuzzleHash,
         },
     ]
+    const getLineageProof = async (childCoin: Coin) => {
+        await setTimeout(() => {}, 1000)
+        console.log('BigInt(childCoin.amount)', BigInt(childCoin.amount))
+        return Program.fromList([
+            Program.fromHex(
+                '7a4608c5ad31740b5e1f1b7e4c847717f91fa6c9e281e538540f01e246c5bfce'
+            ),
+            Program.fromHex(
+                '068a63ece551c597be7c86d06186c3fc2a8c5a760a89a1f00d0d7226f1490c3b'
+            ),
+            Program.fromBigInt(BigInt(childCoin.amount)),
+        ])
+    }
 
     const spendAmount: string = '90000'
 
@@ -71,12 +78,16 @@ test('Should create CAT TX SpendBundle without fee and check spendBundle is vali
             addressInfo(testTargetAddress).hash
         ).toHex(),
         spendableCoinList: mockCoinList,
+        lineageProof: getLineageProof,
     })
     const CATsignatures = AugSchemeMPL.aggregate(
         CATspendsList.map((spend) =>
             Wallet.signCoinSpend(
                 spend,
-                Buffer.from(chains[1].agg_sig_me_additional_data, 'hex'),
+                Buffer.from(
+                    chains[ChainEnum.Testnet].agg_sig_me_additional_data,
+                    'hex'
+                ),
                 Wallet.derivePrivateKey(PrivateKey.fromSeed(ownerSeed)),
                 Wallet.derivePrivateKey(PrivateKey.fromSeed(ownerSeed)).getG1()
             )
@@ -84,7 +95,7 @@ test('Should create CAT TX SpendBundle without fee and check spendBundle is vali
     )
 
     const spendBundle = new SpendBundle(CATspendsList, CATsignatures)
-    console.log('spendBundle', spendBundle)
+
     expect(spendBundle.aggregated_signature.isValid()).toBe(true)
     expect(spendBundle.destruct()).toBeArray()
 })
