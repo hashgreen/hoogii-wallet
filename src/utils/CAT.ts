@@ -22,7 +22,7 @@ export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
         super(
             puzzles.cat.curry([
-                puzzles.cat,
+                Program.fromBytes(puzzles.cat.hash()),
                 Program.fromBytes(tailPuzzleHash),
                 innerPuzzle,
             ]).value
