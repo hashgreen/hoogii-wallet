@@ -14,7 +14,7 @@ import {
     RequestMethodEnum,
     TransferParams,
 } from '~/types/extension'
-import { catToMojo, xchToMojo } from '~/utils/CoinConverter'
+import { xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
