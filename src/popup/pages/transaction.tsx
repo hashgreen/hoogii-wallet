@@ -8,8 +8,13 @@ import { ErrorPopup } from '~/components/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
 import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
-import { MethodEnum, OfferParams, RequestMethodEnum } from '~/types/extension'
-import { xchToMojo } from '~/utils/CoinConverter'
+import {
+    MethodEnum,
+    OfferParams,
+    RequestMethodEnum,
+    TransferParams,
+} from '~/types/extension'
+import { catToMojo, xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
@@ -22,6 +27,7 @@ const Transaction = ({
     const [submitError, setSubmitError] = useState<Error>()
     const {
         assetsStore: { XCH },
+        transactionStore: { sendXCHTx, sendCATTx },
     } = rootStore
 
     const {
@@ -49,6 +55,20 @@ const Transaction = ({
         return new Offer(secureBundle)
     }
 
+    const transfer = async (params: TransferParams, fee: string) => {
+        if (params.to) {
+            await sendCATTx?.(
+                params.to,
+                params.assetId,
+                params.amount,
+                params.memos?.[0],
+                fee
+            )
+        } else {
+            await sendXCHTx?.(params.to, params.amount, params.memos?.[0], fee)
+        }
+    }
+
     const onSubmit = async (data) => {
         if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
             const offer = await createOffer(
@@ -58,6 +78,13 @@ const Transaction = ({
             controller.returnData({
                 data: { id: offer.getId(), offer: offer.encode(5) },
             })
+        }
+
+        if (request.data?.method === RequestMethodEnum.TRANSFER) {
+            await transfer(
+                request.data?.params,
+                xchToMojo(data?.fee).toString()
+            )
         }
         window.close()
     }

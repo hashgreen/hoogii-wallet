@@ -5,7 +5,6 @@ import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
 import { callGetBalance, sendTx } from '~/api/api'
-import { IAsset } from '~/db'
 import { CAT } from '~/utils/CAT'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { getProgramBySeed } from '~/utils/signature'
@@ -83,7 +82,7 @@ class TransactionStore {
 
     sendCATTx = async (
         targetAddress: string,
-        asset: IAsset,
+        asset: string,
         amount: string,
         memo: string,
         fee: string
@@ -102,7 +101,7 @@ class TransactionStore {
             index: 0,
         })
 
-        const assetId = fromHex(asset.assetId)
+        const assetId = fromHex(asset)
         const cat = new CAT(assetId, wallet)
         const spendableCATList = await Wallet.getCoinList(cat.hashHex())
         const {

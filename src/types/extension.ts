@@ -171,6 +171,12 @@ export interface OfferParams {
     requestAssets: OfferAsset[]
     offerAssets: OfferAsset[]
 }
+export interface TransferParams {
+    to: string
+    amount: string
+    memos: string[]
+    assetId: string
+}
 
 export enum OfferTypeEnum {
     REQUEST = 'REQUEST',
