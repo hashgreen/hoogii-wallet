@@ -90,6 +90,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
             return walletSwitchChain(request.data.params)
         case RequestMethodEnum.ACCOUNTS:
             return accounts()
+        case RequestMethodEnum.TRANSFER:
         case RequestMethodEnum.GET_PUBLIC_KEYS:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.FILTER_UNLOCK_COINS:
