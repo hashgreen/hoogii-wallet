@@ -2,7 +2,6 @@ import { lazy } from 'react'
 import {
     createBrowserRouter,
     createMemoryRouter,
-    defer,
     RouteObject,
 } from 'react-router-dom'
 
@@ -109,7 +108,7 @@ export const routes: RouteObject[] = [
             }
             if (!rootStore.walletStore.locked) {
                 rootStore.assetsStore.tailDatabaseImagePatch()
-                rootStore.assetsStore.retrieveExistedAssets()
+                await rootStore.assetsStore.retrieveExistedAssets()
                 rootStore.assetsStore.getAllBalances()
             }
         },

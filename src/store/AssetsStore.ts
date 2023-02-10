@@ -88,10 +88,10 @@ class AssetsStore {
 
     retrieveExistedAssets = async () => {
         const assets = await rootStore.walletStore.db.assets.toArray()
+
         runInAction(() => {
             this.existedAssets = assets
         })
-        return assets
     }
 
     unsubscribeExistedAssets = () => {}
@@ -113,6 +113,7 @@ class AssetsStore {
         if (!puzzleHashes.length) {
             throw new Error('invalid empty puzzlehash list')
         }
+
         try {
             this.balancesData.isFetching = true
 
@@ -201,7 +202,6 @@ class AssetsStore {
             index: 0,
         })
         const cat = new CAT(assetIdHex, wallet)
-
         return '0x' + cat.hashHex()
     }
 
