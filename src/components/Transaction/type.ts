@@ -11,6 +11,7 @@ export interface ITransaction {
     fee: number
     onClick?: () => void
     createdAt: Date
+    updatedAt: Date
     cname: string
     assetId: string
     receiver: string
