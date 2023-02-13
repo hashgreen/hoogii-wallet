@@ -72,12 +72,13 @@ class MnemonicStore {
         )
     }
 
-    createRandomInputs(quantity: number = 6): number[] {
+    createRandomIndex(quantity: number = 6): number[] {
+        // generate index number array in standardMnemonicLength range
         const indices = Array.from(
             { length: standardMnemonicLength },
             (_, i) => i
         )
-
+        // shuffle array and pick by quantity value
         return shuffle(indices).slice(0, quantity)
     }
 
