@@ -134,6 +134,7 @@ class HistoryStore {
                     from_puzzle_hash,
                     memos,
                 },
+                updated_at,
             }): ITransaction => ({
                 assetId: asset_id,
                 status,
@@ -143,6 +144,7 @@ class HistoryStore {
                 receiver: to_puzzle_hashes?.[0] ?? '',
                 sender: from_puzzle_hash,
                 createdAt: new Date(created_at),
+                updatedAt: new Date(updated_at),
                 txId: name,
                 amount,
                 memos,
