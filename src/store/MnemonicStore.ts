@@ -1,5 +1,6 @@
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 import Joi from 'joi'
+import { shuffle } from 'lodash'
 import { isEqual, sampleSize } from 'lodash-es'
 import {
     action,
@@ -71,8 +72,13 @@ class MnemonicStore {
         )
     }
 
-    createRandomInputs(randomCount: number = 6): string[] {
-        return sampleSize(this.mnemonics, randomCount)
+    createRandomInputs(quantity: number = 6): number[] {
+        const indices = Array.from(
+            { length: standardMnemonicLength },
+            (_, i) => i
+        )
+
+        return shuffle(indices).slice(0, quantity)
     }
 
     setMnemonics = (mnemonics: string[]) => {

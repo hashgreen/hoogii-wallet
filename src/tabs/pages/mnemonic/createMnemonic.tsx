@@ -25,12 +25,13 @@ const CreateMnemonic = () => {
             validate,
         },
     } = rootStore
-    const randomInputs = useMemo(() => createRandomInputs(isDev ? 1 : 6), [])
-    const defaultValues = mnemonics.map((phrase) =>
-        randomInputs.includes(phrase) ? '' : phrase
+    const randomIndexes = useMemo(() => createRandomInputs(6), [])
+    const defaultValues = mnemonics.map((phrase, index) =>
+        randomIndexes.some((randomIndex) => randomIndex === index) ? '' : phrase
     )
     const isEditableInputList = mnemonics.map(
-        (phrase) => !randomInputs.includes(phrase)
+        (phrase, index) =>
+            !randomIndexes.some((randomIndex) => randomIndex === index)
     )
 
     return (
