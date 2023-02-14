@@ -53,7 +53,7 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                             <AssetIcon
                                 src={finsAsset?.icon_url}
                                 assetId={request?.data?.params.assetId || 'XCH'}
-                                className="mr-1"
+                                className="mr-1 w-6 h-6"
                             />
 
                             {request?.data?.params.assetId

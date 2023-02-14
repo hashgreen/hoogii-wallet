@@ -8,13 +8,13 @@ interface IProps {
 const AssetIcon = ({
     assetId,
     src,
-    className = '',
+    className = 'w-6 h-6',
     ...rest
 }: IProps & Omit<HTMLProps<HTMLImageElement>, 'crossOrigin'>) => (
     <img
         src={assetId === 'XCH' ? '/chia.png' : src || '/images/token.svg'}
         {...rest}
-        className={classNames('rounded-full w-6 h-6', className)}
+        className={classNames('rounded-full', className)}
         onError={({ currentTarget }) => {
             currentTarget.onerror = null
             currentTarget.src = '/images/token.svg'

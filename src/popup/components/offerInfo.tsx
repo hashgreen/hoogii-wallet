@@ -81,7 +81,7 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                                     <AssetIcon
                                         src={finsAsset?.icon_url}
                                         assetId={asset.assetId || 'XCH'}
-                                        className="mr-1"
+                                        className="mr-1 w-6 h-6"
                                     />
                                     {asset.assetId
                                         ? finsAsset?.name ||
