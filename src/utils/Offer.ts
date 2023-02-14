@@ -152,7 +152,7 @@ export default class Offer {
 
         for (let i = 0; i < offerPaymentList.length; i++) {
             const offerPayment = offerPaymentList[i]
-            const settlement = this.generateSettlement(undefined)
+            const settlement = this.generateSettlement(offerPayment.assetId)
 
             if (offerPayment.assetId) {
                 const assetId = fromHex(offerPayment.assetId)
