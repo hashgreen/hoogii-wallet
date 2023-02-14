@@ -27,12 +27,10 @@ const History = () => {
 
     const groupedHistory = useMemo(
         () =>
-            groupBy(
-                orderBy(history, (item) => item.createdAt, 'desc'),
-                (item) =>
-                    formatDistanceToNowStrict(item.createdAt, {
-                        addSuffix: true,
-                    })
+            groupBy(history, (item) =>
+                formatDistanceToNowStrict(item.updatedAt, {
+                    addSuffix: true,
+                })
             ),
         [history]
     )

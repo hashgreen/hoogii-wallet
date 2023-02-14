@@ -18,19 +18,15 @@ const CreateMnemonic = () => {
 
     const { t } = useTranslation()
     const {
-        createMnemonicStore: {
-            mnemonics,
-            schema,
-            createRandomInputs,
-            validate,
-        },
+        createMnemonicStore: { mnemonics, schema, createRandomIndex, validate },
     } = rootStore
-    const randomInputs = useMemo(() => createRandomInputs(isDev ? 1 : 6), [])
-    const defaultValues = mnemonics.map((phrase) =>
-        randomInputs.includes(phrase) ? '' : phrase
+    const randomIndexes = useMemo(() => createRandomIndex(isDev ? 1 : 6), [])
+    const defaultValues = mnemonics.map((phrase, index) =>
+        randomIndexes.some((randomIndex) => randomIndex === index) ? '' : phrase
     )
     const isEditableInputList = mnemonics.map(
-        (phrase) => !randomInputs.includes(phrase)
+        (phrase, index) =>
+            !randomIndexes.some((randomIndex) => randomIndex === index)
     )
 
     return (
