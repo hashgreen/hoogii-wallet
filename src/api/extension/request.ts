@@ -13,10 +13,10 @@ import { StorageEnum } from '~/types/storage'
 import { apiEndpointSets, chains } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/extension/storage'
 import { puzzleHashToAddress } from '~/utils/signature'
+import { Wallet } from '~/utils/Wallet/Wallet'
 
 import * as Errors from './errors'
 import { permission } from './permission'
-
 const connect = async (origin: string): Promise<boolean> => {
     return connectedSitesStore.isConnectedSite(origin)
 }
@@ -54,6 +54,16 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     return [account]
 }
 
+const getAssetCoins = async () => {
+    const puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
+    if (!puzzleHash) {
+        throw Errors.NoSecretKeyError
+    }
+    // console.log('puzzleHash', puzzleHash)
+    const spendableCoin = await Wallet.getCoinList(puzzleHash)
+
+    return spendableCoin
+}
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
         !request?.isConnected ||
@@ -96,7 +106,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.FILTER_UNLOCK_COINS:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.GET_ASSET_COINS:
-            throw Errors.UnderDevelopment
+            return getAssetCoins()
         case RequestMethodEnum.GET_ASSET_BALANCE:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.SIGN_COIN_SPENDS:
