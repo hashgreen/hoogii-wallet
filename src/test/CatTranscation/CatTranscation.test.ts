@@ -3,15 +3,13 @@ import { addressInfo } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 
-import { ChainEnum } from '~/types/chia'
 import { CAT } from '~/utils/CAT'
-import { chains } from '~/utils/constants'
+import { seedToPuzzle } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
+import { Coin } from '~/utils/Wallet/types'
+import { Wallet } from '~/utils/Wallet/Wallet'
 
 import words from '../../../config/wordlist_en.json'
-import { seedToPuzzle } from '../../utils/signature'
-import { Coin } from '../../utils/Wallet/types'
-import { Wallet } from '../../utils/Wallet/Wallet'
 
 let ownerSeed: Uint8Array
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,16 +20,26 @@ const testTargetAddress =
 const assetId = fromHex(
     '73dd418ff67e6079f06c7cc8cee637c7adc314210dca26997d634692f6c16087'
 )
+const mockCoin = {
+    amount: 100000n,
+    parent_coin_info:
+        '0x1291c994f85f3aa91e04de633c6e783a23b2dec940fb8d78981cfdeed9326b82',
+    puzzle_hash:
+        '0xd85ac735b59ff2cb3b9f6eef8643f881cc986fbb02ecb9d00c9d9fe2583d2272',
+}
 
 test('Should generate puzzle by Mnemonic', async () => {
     const testMnemonicList: string[] = (
         await generateMnemonicAsync(256, undefined, words)
     ).split(' ')
+
     expect(testMnemonicList.length).toEqual(24)
-    ownerSeed = await mnemonicToSeedAsync(testMnemonicList?.join(' '))
+    ownerSeed = await mnemonicToSeedAsync(
+        'reform unaware fold autumn zoo napkin frame vital funny filter purse mammal license thumb coyote lizard merit crazy van brown worth eager barrel front'
+    )
+
     const puzzle = seedToPuzzle(ownerSeed)
     expect(puzzle.hashHex().length).toEqual(64)
-
     const masterPrivateKey = PrivateKey.fromSeed(ownerSeed)
     const walletPrivateKey = Wallet.derivePrivateKey(masterPrivateKey)
     const walletPublicKey = walletPrivateKey.getG1()
@@ -44,35 +52,27 @@ test('Should generate puzzle by Mnemonic', async () => {
 
     coinOwnerPuzzleHash = Program.fromBytes(cat.hash()).toHex()
 })
+
 test('Should create CAT TX SpendBundle without fee and check spendBundle is valid', async () => {
-    const mockCoinList: Coin[] = [
-        {
-            amount: 1000000n,
-            parent_coin_info:
-                '0x50cb079754673b70da42f22045cb59695b87fff36c9e7c0deec703955db58282',
-            puzzle_hash: coinOwnerPuzzleHash,
-        },
-    ]
+    const mockCoinList: Coin[] = [mockCoin]
     const getLineageProof = async (childCoin: Coin) => {
-        await setTimeout(() => {}, 1000)
-        console.log('BigInt(childCoin.amount)', BigInt(childCoin.amount))
         return Program.fromList([
             Program.fromHex(
-                '7a4608c5ad31740b5e1f1b7e4c847717f91fa6c9e281e538540f01e246c5bfce'
+                '279bf853b68dd3ef4bf7a4a609e7f81e51a2350db463319f6825b235e8960626'
             ),
             Program.fromHex(
-                '068a63ece551c597be7c86d06186c3fc2a8c5a760a89a1f00d0d7226f1490c3b'
+                'cf3f7a8850dc7c27990b3e9e77c436f53a787dfb54683f8cb9e23ee6b26618ef'
             ),
-            Program.fromBigInt(BigInt(childCoin.amount)),
+            Program.fromBigInt(childCoin.amount),
         ])
     }
 
-    const spendAmount: string = '90000'
+    const spendAmount: bigint = 100000n
 
     const CATspendsList = await CAT.generateCATSpendList({
         wallet,
         assetId,
-        amount: BigInt(spendAmount),
+        amount: spendAmount,
         memo: 'test',
         targetPuzzleHash: Program.fromBytes(
             addressInfo(testTargetAddress).hash
@@ -80,21 +80,25 @@ test('Should create CAT TX SpendBundle without fee and check spendBundle is vali
         spendableCoinList: mockCoinList,
         lineageProof: getLineageProof,
     })
+
     const CATsignatures = AugSchemeMPL.aggregate(
-        CATspendsList.map((spend) =>
-            Wallet.signCoinSpend(
+        CATspendsList.map((spend) => {
+            return Wallet.signCoinSpend(
                 spend,
                 Buffer.from(
-                    chains[ChainEnum.Testnet].agg_sig_me_additional_data,
+                    'ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2',
                     'hex'
                 ),
                 Wallet.derivePrivateKey(PrivateKey.fromSeed(ownerSeed)),
                 Wallet.derivePrivateKey(PrivateKey.fromSeed(ownerSeed)).getG1()
             )
-        )
+        })
     )
-
-    const spendBundle = new SpendBundle(CATspendsList, CATsignatures)
+    const signatureList = [CATsignatures]
+    const spendBundle = new SpendBundle(
+        CATspendsList,
+        AugSchemeMPL.aggregate(signatureList)
+    )
 
     expect(spendBundle.aggregated_signature.isValid()).toBe(true)
     expect(spendBundle.destruct()).toBeArray()
