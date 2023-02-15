@@ -1,5 +1,5 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
-import { addressInfo } from '@rigidity/chia'
+import { addressInfo, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 
@@ -26,6 +26,14 @@ const mockCoin = {
         '0x1291c994f85f3aa91e04de633c6e783a23b2dec940fb8d78981cfdeed9326b82',
     puzzle_hash:
         '0xd85ac735b59ff2cb3b9f6eef8643f881cc986fbb02ecb9d00c9d9fe2583d2272',
+}
+
+const mockParentCoin = {
+    amount: 100000n,
+    parent_coin_info:
+        '0x279bf853b68dd3ef4bf7a4a609e7f81e51a2350db463319f6825b235e8960626',
+    puzzle_hash:
+        '0xcf3f7a8850dc7c27990b3e9e77c436f53a787dfb54683f8cb9e23ee6b26618ef',
 }
 
 test('Should generate puzzle by Mnemonic', async () => {
@@ -55,15 +63,11 @@ test('Should generate puzzle by Mnemonic', async () => {
 
 test('Should create CAT TX SpendBundle without fee and check spendBundle is valid', async () => {
     const mockCoinList: Coin[] = [mockCoin]
-    const getLineageProof = async (childCoin: Coin) => {
+    const getLineageProof = async () => {
         return Program.fromList([
-            Program.fromHex(
-                '279bf853b68dd3ef4bf7a4a609e7f81e51a2350db463319f6825b235e8960626'
-            ),
-            Program.fromHex(
-                'cf3f7a8850dc7c27990b3e9e77c436f53a787dfb54683f8cb9e23ee6b26618ef'
-            ),
-            Program.fromBigInt(childCoin.amount),
+            Program.fromHex(sanitizeHex(mockParentCoin.parent_coin_info)),
+            Program.fromHex(sanitizeHex(mockParentCoin.puzzle_hash)),
+            Program.fromBigInt(mockParentCoin.amount),
         ])
     }
 
