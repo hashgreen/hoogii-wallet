@@ -13,8 +13,8 @@ import { StorageEnum } from '~/types/storage'
 import { apiEndpointSets, chains } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/extension/storage'
 import { puzzleHashToAddress } from '~/utils/signature'
-import { Wallet } from '~/utils/Wallet/Wallet'
 
+import { getSpendableCoins } from '../api'
 import * as Errors from './errors'
 import { permission } from './permission'
 const connect = async (origin: string): Promise<boolean> => {
@@ -59,10 +59,12 @@ const getAssetCoins = async () => {
     if (!puzzleHash) {
         throw Errors.NoSecretKeyError
     }
-    // console.log('puzzleHash', puzzleHash)
-    const spendableCoin = await Wallet.getCoinList(puzzleHash)
 
-    return spendableCoin
+    const res = await getSpendableCoins({
+        puzzle_hash: puzzleHash,
+    })
+
+    return res.data?.data
 }
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
