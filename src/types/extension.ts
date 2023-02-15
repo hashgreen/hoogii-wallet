@@ -182,3 +182,16 @@ export enum OfferTypeEnum {
     REQUEST = 'REQUEST',
     OFFER = 'OFFER',
 }
+
+export enum AssetCoinsTypeEnum {
+    CAT = 'cat',
+    DID = 'did',
+    NFT = 'nft',
+}
+export interface AssetCoinsParams {
+    type: AssetCoinsTypeEnum | null
+    assetId: string | null
+    includedLocked?: boolean
+    offset?: number
+    limit?: number
+}

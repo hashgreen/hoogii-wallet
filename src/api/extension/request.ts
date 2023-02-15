@@ -1,8 +1,13 @@
+import { fromHex } from '@rigidity/bls-signatures'
+import { Program } from '@rigidity/clvm'
+
 import { createPopup } from '~/api/extension/extension'
 import Messaging from '~/api/extension/messaging'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { ChainEnum } from '~/types/chia'
 import {
+    AssetCoinsParams,
+    AssetCoinsTypeEnum,
     IMessage,
     MethodEnum,
     PopupEnum,
@@ -10,9 +15,12 @@ import {
     RequestMethodEnum,
 } from '~/types/extension'
 import { StorageEnum } from '~/types/storage'
+import { CAT } from '~/utils/CAT'
 import { apiEndpointSets, chains } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/extension/storage'
+import Secure from '~/utils/Secure'
 import { puzzleHashToAddress } from '~/utils/signature'
+import { Wallet } from '~/utils/Wallet/Wallet'
 
 import { getSpendableCoins } from '../api'
 import * as Errors from './errors'
@@ -54,17 +62,66 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
     return [account]
 }
 
-const getAssetCoins = async () => {
-    const puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
-    if (!puzzleHash) {
-        throw Errors.NoSecretKeyError
+const getAssetCoins = async (params: AssetCoinsParams) => {
+    const puzzle = await Secure.getPuzzle()
+
+    let puzzleHash = puzzle.hashHex()
+    if (params.assetId) {
+        if (params.type === AssetCoinsTypeEnum.CAT) {
+            const walletPublicKey = await Secure.getWalletPublicKey()
+            const wallet = new Wallet(walletPublicKey, {
+                hardened: true,
+                index: 0,
+            })
+            const assetId = fromHex(params?.assetId)
+            const cat = new CAT(assetId, wallet)
+            puzzleHash = cat.hashHex()
+        }
+
+        if (params.type === AssetCoinsTypeEnum.NFT) {
+            // TODO: develop when NFT implement
+        }
+
+        if (params.type === AssetCoinsTypeEnum.DID) {
+            // TODO:develop when DID implement
+        }
     }
 
-    const res = await getSpendableCoins({
-        puzzle_hash: puzzleHash,
-    })
+    const spendableCoins = (
+        await getSpendableCoins({
+            puzzle_hash: puzzleHash,
+        })
+    ).data?.data
 
-    return res.data?.data
+    const offset = params?.offset ?? 0
+
+    const spendableCoinsWithLineageProof: any[] = []
+    for (let i = offset; i < spendableCoins.length; i++) {
+        const coinInfo = spendableCoins[i]
+
+        let lineageProof
+        if (params.assetId) {
+            lineageProof = await CAT.getLineageProof(coinInfo.coin)
+        }
+        spendableCoinsWithLineageProof.push({
+            coin: { ...coinInfo?.coin, amount: coinInfo?.coin?.amount || 0 },
+            locked: false,
+            coinName: `0x${Program.fromBytes(
+                Wallet.coinName(coinInfo.coin)
+            ).toHex()}`,
+            puzzle: `0x${puzzle.hashHex()}`,
+            confirmedBlockIndex: coinInfo.confirmed_block_index,
+            lineageProof,
+        })
+        if (
+            params?.limit &&
+            spendableCoinsWithLineageProof.length >= params.limit
+        ) {
+            break
+        }
+    }
+
+    return spendableCoinsWithLineageProof
 }
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
@@ -108,7 +165,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.FILTER_UNLOCK_COINS:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.GET_ASSET_COINS:
-            return getAssetCoins()
+            return getAssetCoins(request.data.params)
         case RequestMethodEnum.GET_ASSET_BALANCE:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.SIGN_COIN_SPENDS:
