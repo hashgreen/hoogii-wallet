@@ -113,10 +113,14 @@ export class CAT extends Program {
                 Program.fromBigInt(primary.amount),
                 Program.fromList([
                     ...(primary.puzzlehash === targetPuzzleHash
-                        ? [Program.fromHex(primary.puzzlehash)]
-                        : []),
-                    ...(primary.memos?.length
-                        ? primary.memos.map((memo) => Program.fromSource(memo))
+                        ? [
+                              Program.fromHex(primary.puzzlehash),
+                              ...(primary.memos?.length
+                                  ? primary.memos.map((memo) =>
+                                        Program.fromSource(memo)
+                                    )
+                                  : []),
+                          ]
                         : []),
                 ]),
             ])
