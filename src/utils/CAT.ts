@@ -106,14 +106,13 @@ export class CAT extends Program {
                 amount: change,
             })
         }
-
         const conditionList: Program[] = primaryList.map((primary) =>
             Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
                 Program.fromList([
-                    Program.fromHex(targetPuzzleHash),
+                    Program.fromHex(primary.puzzlehash),
                     ...(primary.memos?.length
                         ? primary.memos.map((memo) => Program.fromSource(memo))
                         : []),

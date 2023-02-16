@@ -203,7 +203,7 @@ export default class Offer {
                 }
             } else {
                 const XCHSpendList = await Wallet.generateXCHSpendList({
-                    fee: i === 0 ? BigInt(fee) : 0n, // add fee in first coin
+                    fee: BigInt(fee), // add fee in first coin
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
                     puzzle,
