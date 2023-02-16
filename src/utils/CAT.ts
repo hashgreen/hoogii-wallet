@@ -75,7 +75,7 @@ export class CAT extends Program {
         wallet,
         assetId,
         amount,
-        memo = '',
+        memo,
         targetPuzzleHash,
         spendableCoinList,
         additionalConditions,
@@ -98,7 +98,7 @@ export class CAT extends Program {
         primaryList.push({
             puzzlehash: targetPuzzleHash,
             amount: spendAmount,
-            memos: [targetPuzzleHash, memo],
+            memos: memo,
         })
         if (change > 0n) {
             primaryList.push({
@@ -112,15 +112,12 @@ export class CAT extends Program {
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
-                ...(primary.memos
-                    ? [
-                          Program.fromList(
-                              primary.memos.map((memo) =>
-                                  Program.fromText(memo)
-                              )
-                          ),
-                      ]
-                    : []),
+                Program.fromList([
+                    Program.fromHex(targetPuzzleHash),
+                    ...(primary.memos?.length
+                        ? primary.memos.map((memo) => Program.fromSource(memo))
+                        : []),
+                ]),
             ])
         )
 
