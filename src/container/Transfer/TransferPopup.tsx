@@ -55,20 +55,24 @@ const TransferPopup = ({
 
     const onSubmit = async (data: IForm) => {
         const { fee } = data
+        const memos: string[] = []
+        if (memo) {
+            memos.push(memo)
+        }
         if (asset?.assetId === 'XCH') {
             await sendXCHTx?.(
                 address.address,
                 xchToMojo(amount).toString(),
-                memo,
-                xchToMojo(fee).toString()
+                xchToMojo(fee).toString(),
+                memos
             )
         } else {
             await sendCATTx?.(
                 address.address,
                 asset,
                 catToMojo(amount).toString(),
-                memo,
-                xchToMojo(fee).toString()
+                xchToMojo(fee).toString(),
+                memos
             )
         }
         navigate(-1)

@@ -3,8 +3,7 @@
     "version": "1.0.4-dev.4",
     "private": true,
     "scripts": {
-        "dev": "vite --port 3000",
-        "dev:extension": "vite --mode extension --port 3000",
+        "dev": "vite --mode extension --port 3000",
         "build": "tsc && vite build",
         "prerelease": "npm version prerelease --preid=dev",
         "preview": "vite preview",
@@ -60,6 +59,7 @@
         "react-markdown": "^8.0.3",
         "react-router-dom": "^6.2.2",
         "react-toastify": "^9.1.1",
+        "react-zlib-js": "^1.0.5",
         "remark-gfm": "^3.0.1",
         "remark-rehype": "^10.1.0"
     },

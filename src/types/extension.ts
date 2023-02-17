@@ -69,6 +69,8 @@ export enum RequestMethodEnum {
     SIGN_COIN_SPENDS = 'signCoinSpends',
     SIGN_MESSAGE = 'signMessage',
     SEND_TRANSACTION = 'sendTransaction',
+    CREATE_OFFER = 'createOffer',
+    TAKE_OFFER = 'takeOffer',
 }
 
 export enum EventEnum {
@@ -159,3 +161,17 @@ export const APIError = {
             'The request was refused due to lack of access - e.g. wallet disconnects.',
     },
 } as const
+export interface OfferAsset {
+    amount: number
+    assetId?: string
+    memo?: string
+}
+export interface OfferParams {
+    requestAssets: OfferAsset[]
+    offerAssets: OfferAsset[]
+}
+
+export enum OfferTypeEnum {
+    REQUEST = 'REQUEST',
+    OFFER = 'OFFER',
+}

@@ -4,7 +4,7 @@ import {
     fromHex,
     hash256,
 } from '@rigidity/bls-signatures'
-import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
 import { getCoinRecordsByName, getPuzzleAndSolution } from '~/api/api'
@@ -75,9 +75,10 @@ export class CAT extends Program {
         wallet,
         assetId,
         amount,
-        memo = '',
-        targetAddress,
+        memos,
+        targetPuzzleHash,
         spendableCoinList,
+        additionalConditions,
     }: CATPayload): Promise<CoinSpend[]> => {
         const cat = new CAT(assetId, wallet)
         const spendAmount = amount
@@ -93,16 +94,11 @@ export class CAT extends Program {
 
         const [firstCoin, ...restCoinList] = coinList
 
-        const puzzlehash = Program.fromBytes(
-            addressInfo(targetAddress).hash
-        ).toHex()
-
         const primaryList: Primary[] = []
-
         primaryList.push({
-            puzzlehash,
+            puzzlehash: targetPuzzleHash,
             amount: spendAmount,
-            memos: [puzzlehash, memo],
+            memos,
         })
         if (change > 0n) {
             primaryList.push({
@@ -111,22 +107,21 @@ export class CAT extends Program {
             })
         }
 
-        const conditionList: Program[] = primaryList.map((primary) =>
-            Program.fromList([
+        const conditionList: Program[] = primaryList.map((primary) => {
+            const additionalMemoList: Program[] = []
+            if (primary.puzzlehash === targetPuzzleHash) {
+                additionalMemoList.push(Program.fromHex(primary.puzzlehash))
+                if (primary.memos?.length) {
+                    additionalMemoList.push(Program.fromHex(primary.puzzlehash))
+                }
+            }
+            return Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
-                ...(primary.memos
-                    ? [
-                          Program.fromList(
-                              primary.memos.map((memo) =>
-                                  Program.fromText(memo)
-                              )
-                          ),
-                      ]
-                    : []),
+                Program.fromList(additionalMemoList),
             ])
-        )
+        })
 
         const createCoinAnnouncementMsg = hash256(
             concatBytes(...coinList.map((coin) => CAT.coinName(coin)))
@@ -140,6 +135,11 @@ export class CAT extends Program {
                 Program.fromBytes(createCoinAnnouncementMsg),
             ])
         )
+
+        if (additionalConditions) {
+            conditionList.push(...additionalConditions)
+        }
+
         const solution = Wallet.solutionForConditions(conditionList)
         interface SpendableCAT {
             coin: Coin

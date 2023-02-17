@@ -9,7 +9,7 @@ import {
     JacobianPoint,
     PrivateKey,
 } from '@rigidity/bls-signatures'
-import { addressInfo, ConditionOpcode, sanitizeHex } from '@rigidity/chia'
+import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 
@@ -286,9 +286,9 @@ export class Wallet extends Program {
         puzzle,
         amount,
         fee = 0n,
-        targetAddress,
+        targetPuzzleHash,
         spendableCoinList,
-        memo = '',
+        memos,
         additionalConditions = [],
     }: XCHPayload): Promise<CoinSpend[]> => {
         const spendAmount = amount + fee
@@ -306,11 +306,9 @@ export class Wallet extends Program {
 
         if (amount > 0n) {
             primaryList.push({
-                puzzlehash: Program.fromBytes(
-                    addressInfo(targetAddress).hash
-                ).toHex(),
+                puzzlehash: targetPuzzleHash,
                 amount,
-                memos: [memo],
+                memos,
             })
         }
 
@@ -326,11 +324,11 @@ export class Wallet extends Program {
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
-                ...(primary.memos
+                ...(primary.memos?.length
                     ? [
                           Program.fromList(
                               primary.memos.map((memo) =>
-                                  Program.fromText(memo)
+                                  Program.fromSource(memo)
                               )
                           ),
                       ]

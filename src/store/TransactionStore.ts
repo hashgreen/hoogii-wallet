@@ -1,4 +1,6 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
+import { addressInfo } from '@rigidity/chia'
+import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
@@ -26,8 +28,8 @@ class TransactionStore {
     sendXCHTx = async (
         targetAddress: string,
         amount: string,
-        memo: string,
-        fee: string
+        fee: string,
+        memos?: string[]
     ): Promise<void> => {
         const { seed, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
@@ -48,9 +50,11 @@ class TransactionStore {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle,
                 amount: BigInt(amount),
-                memo,
+                memos,
                 fee: BigInt(fee),
-                targetAddress,
+                targetPuzzleHash: Program.fromBytes(
+                    addressInfo(targetAddress).hash
+                ).toHex(),
                 spendableCoinList,
             })
             // sign coin spend
@@ -81,8 +85,8 @@ class TransactionStore {
         targetAddress: string,
         asset: IAsset,
         amount: string,
-        memo: string,
-        fee: string
+        fee: string,
+        memos?: string[]
     ): Promise<void> => {
         const { seed, address, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
@@ -115,8 +119,10 @@ class TransactionStore {
             wallet,
             assetId,
             amount: BigInt(amount),
-            memo,
-            targetAddress,
+            memos,
+            targetPuzzleHash: Program.fromBytes(
+                addressInfo(targetAddress).hash
+            ).toHex(),
             spendableCoinList: spendableCATList,
         })
         const spendList = [...CATspendsList]
@@ -137,10 +143,11 @@ class TransactionStore {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle,
                 amount: 0n,
-                memo: '', // memo is unnecessary for fee
                 fee: BigInt(fee),
                 spendableCoinList,
-                targetAddress: address,
+                targetPuzzleHash: Program.fromBytes(
+                    addressInfo(address).hash
+                ).toHex(),
             })
             spendList.push(...XCHspendsList)
             const XCHsignatures = AugSchemeMPL.aggregate(

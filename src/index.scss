@@ -42,7 +42,11 @@
     #popup {
         --tooltip-offset: 11px;
         --tooltip-bg: #ced6ff;
-        @apply border-none w-[400px] h-[600px] overflow-hidden text-dark-scale-100 text-body1;
+        @apply border-none overflow-hidden text-dark-scale-100 text-body1;
+        min-height: 600px;
+        min-width:400px;
+        width: 100vw;
+        height: 100vh;
     }
     #tabs {
         @apply w-screen min-h-screen text-dark-scale-100 text-body1 bg-main bg-cover;
