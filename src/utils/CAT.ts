@@ -75,7 +75,7 @@ export class CAT extends Program {
         wallet,
         assetId,
         amount,
-        memo,
+        memos,
         targetPuzzleHash,
         spendableCoinList,
         additionalConditions,
@@ -98,7 +98,7 @@ export class CAT extends Program {
         primaryList.push({
             puzzlehash: targetPuzzleHash,
             amount: spendAmount,
-            memos: memo,
+            memos,
         })
         if (change > 0n) {
             primaryList.push({

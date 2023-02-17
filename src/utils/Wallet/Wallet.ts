@@ -288,7 +288,7 @@ export class Wallet extends Program {
         fee = 0n,
         targetPuzzleHash,
         spendableCoinList,
-        memo,
+        memos,
         additionalConditions = [],
     }: XCHPayload): Promise<CoinSpend[]> => {
         const spendAmount = amount + fee
@@ -308,7 +308,7 @@ export class Wallet extends Program {
             primaryList.push({
                 puzzlehash: targetPuzzleHash,
                 amount,
-                memos: memo,
+                memos,
             })
         }
 
