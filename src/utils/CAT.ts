@@ -75,7 +75,7 @@ export class CAT extends Program {
         wallet,
         assetId,
         amount,
-        memo,
+        memos,
         targetPuzzleHash,
         spendableCoinList,
         additionalConditions,
@@ -98,7 +98,7 @@ export class CAT extends Program {
         primaryList.push({
             puzzlehash: targetPuzzleHash,
             amount: spendAmount,
-            memos: memo,
+            memos,
         })
         if (change > 0n) {
             primaryList.push({
@@ -106,25 +106,22 @@ export class CAT extends Program {
                 amount: change,
             })
         }
-        const conditionList: Program[] = primaryList.map((primary) =>
-            Program.fromList([
+
+        const conditionList: Program[] = primaryList.map((primary) => {
+            const additionalMemoList: Program[] = []
+            if (primary.puzzlehash === targetPuzzleHash) {
+                additionalMemoList.push(Program.fromHex(primary.puzzlehash))
+                if (primary.memos?.length) {
+                    additionalMemoList.push(Program.fromHex(primary.puzzlehash))
+                }
+            }
+            return Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),
                 Program.fromBigInt(primary.amount),
-                Program.fromList([
-                    ...(primary.puzzlehash === targetPuzzleHash
-                        ? [
-                              Program.fromHex(primary.puzzlehash),
-                              ...(primary.memos?.length
-                                  ? primary.memos.map((memo) =>
-                                        Program.fromSource(memo)
-                                    )
-                                  : []),
-                          ]
-                        : []),
-                ]),
+                Program.fromList(additionalMemoList),
             ])
-        )
+        })
 
         const createCoinAnnouncementMsg = hash256(
             concatBytes(...coinList.map((coin) => CAT.coinName(coin)))

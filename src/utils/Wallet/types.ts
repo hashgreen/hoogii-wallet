@@ -7,7 +7,7 @@ export interface Coin {
 export interface XCHPayload {
     puzzle: Program
     amount: bigint
-    memo?: string[]
+    memos?: string[]
     fee?: bigint
     targetPuzzleHash: string
     spendableCoinList: Coin[]
