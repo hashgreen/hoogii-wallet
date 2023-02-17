@@ -157,6 +157,11 @@ export default class Offer {
         for (let i = 0; i < offerPaymentList.length; i++) {
             const offerPayment = offerPaymentList[i]
 
+            const memos: string[] = []
+            if (offerPayment.memo) {
+                memos.push(offerPayment.memo)
+            }
+
             if (offerPayment.assetId) {
                 const assetId = fromHex(offerPayment.assetId)
                 const cat = new CAT(assetId, puzzle)
@@ -168,7 +173,6 @@ export default class Offer {
                     hardened: true,
                     index: 0,
                 })
-
                 const {
                     data: { data },
                 } = await callGetBalance({
@@ -185,7 +189,7 @@ export default class Offer {
                     spendableCoinList: await Wallet.getCoinList(cat.hashHex()),
                     assetId,
                     additionalConditions: announcementAssertions,
-                    memo: offerPayment.memo ? [offerPayment.memo] : undefined,
+                    memos,
                 })
 
                 spendList.push(...CATCoinSpendList)
@@ -209,6 +213,7 @@ export default class Offer {
                     puzzle,
                     spendableCoinList: await Wallet.getCoinList(puzzleHash),
                     additionalConditions: announcementAssertions,
+                    memos,
                 })
                 spendList.push(...XCHSpendList)
             }
