@@ -209,7 +209,7 @@ class AssetsStore {
         const patched = await getStorage('patchTime')
         if (!patched) {
             await this.addDefaultAsset()
-            await setStorage({ patched: true })
+            await setStorage({ patchTime: true })
         }
     }
 }
