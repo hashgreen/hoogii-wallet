@@ -112,7 +112,9 @@ export class CAT extends Program {
             if (primary.puzzlehash === targetPuzzleHash) {
                 additionalMemoList.push(Program.fromHex(primary.puzzlehash))
                 if (primary.memos?.length) {
-                    additionalMemoList.push(Program.fromHex(primary.puzzlehash))
+                    primary.memos.forEach((memo) => {
+                        additionalMemoList.push(Program.fromSource(memo))
+                    })
                 }
             }
             return Program.fromList([
