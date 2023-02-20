@@ -1,4 +1,4 @@
-import { fromHex } from '@rigidity/bls-signatures'
+import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Program } from '@rigidity/clvm'
 
 import { createPopup } from '~/api/extension/extension'
@@ -13,9 +13,11 @@ import {
     PopupEnum,
     RequestArguments,
     RequestMethodEnum,
+    SignCoinSpendsParams,
 } from '~/types/extension'
 import { StorageEnum } from '~/types/storage'
 import { CAT } from '~/utils/CAT'
+import CoinSpend from '~/utils/CoinSpend'
 import { apiEndpointSets, chains } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/extension/storage'
 import Secure from '~/utils/Secure'
@@ -124,8 +126,33 @@ const getAssetCoins = async (params: AssetCoinsParams) => {
     return spendableCoinsWithLineageProof
 }
 
-const signCoinSpend = async (params: AssetCoinsParams) => {
-    return params
+const signCoinSpend = async ({ coinSpends }: SignCoinSpendsParams) => {
+    const seed = await Secure.getSeed()
+    const chainId =
+        (await getStorage<string>(StorageEnum.chainId)) || ChainEnum.Mainnet
+    const chain = chains[chainId]
+
+    const spendList = coinSpends.map(
+        (coinSpend) =>
+            new CoinSpend(
+                { ...coinSpend.coin, amount: BigInt(coinSpend.coin.amount) },
+                coinSpend.puzzle_reveal,
+                coinSpend.solution
+            )
+    )
+    const signatures = AugSchemeMPL.aggregate(
+        spendList
+            .filter((spend) => spend.coin.amount)
+            .map((item) =>
+                Wallet.signCoinSpend(
+                    item,
+                    Buffer.from(chain.agg_sig_me_additional_data, 'hex'),
+                    Wallet.derivePrivateKey(PrivateKey.fromSeed(seed)),
+                    Wallet.derivePrivateKey(PrivateKey.fromSeed(seed)).getG1()
+                )
+            )
+    )
+    return signatures.toHex()
 }
 
 const authHandler = async (request: IMessage<RequestArguments>) => {

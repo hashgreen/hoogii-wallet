@@ -1,3 +1,5 @@
+import { CoinSpend } from '@rigidity/chia'
+
 export interface IMessage<T = any> {
     id: string
     sender: SenderEnum
@@ -194,4 +196,8 @@ export interface AssetCoinsParams {
     includedLocked?: boolean
     offset?: number
     limit?: number
+}
+export interface SignCoinSpendsParams {
+    coinSpends: CoinSpend[]
+    partialSign?: boolean
 }
