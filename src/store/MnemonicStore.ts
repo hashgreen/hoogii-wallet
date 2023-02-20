@@ -1,7 +1,7 @@
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 import Joi from 'joi'
 import { shuffle } from 'lodash'
-import { isEqual, sampleSize } from 'lodash-es'
+import { isEqual } from 'lodash-es'
 import {
     action,
     computed,
@@ -32,7 +32,7 @@ class MnemonicStore {
             schema: computed,
             create: action.bound,
             validate: action.bound,
-            createRandomInputs: action.bound,
+            createRandomIndex: action.bound,
         })
         this.walletStore = walletStore
     }

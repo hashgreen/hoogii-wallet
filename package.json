@@ -3,8 +3,7 @@
     "version": "1.0.4-dev.4",
     "private": true,
     "scripts": {
-        "dev": "vite --port 3000",
-        "dev:extension": "vite --mode extension --port 3000",
+        "dev": "vite --mode extension --port 3000",
         "build": "tsc && vite build",
         "prerelease": "npm version prerelease --preid=dev",
         "preview": "vite preview",
