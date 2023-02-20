@@ -123,6 +123,11 @@ const getAssetCoins = async (params: AssetCoinsParams) => {
 
     return spendableCoinsWithLineageProof
 }
+
+const signCoinSpend = async (params: AssetCoinsParams) => {
+    return params
+}
+
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
         !request?.isConnected ||
@@ -169,7 +174,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.GET_ASSET_BALANCE:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.SIGN_COIN_SPENDS:
-            throw Errors.UnderDevelopment
+            return signCoinSpend(request.data.params)
         case RequestMethodEnum.SIGN_MESSAGE:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.SEND_TRANSACTION:
