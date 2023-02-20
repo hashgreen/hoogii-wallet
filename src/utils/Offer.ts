@@ -61,13 +61,14 @@ export default class Offer {
     }): Program => {
         const nonce = this.getNonce()
         return Program.fromList([
-            Program.fromBytes(nonce),
+            Program.fromHex(Program.fromBytes(nonce).toHex()),
             Program.fromList([
                 Program.fromHex(sanitizeHex(puzzle_hash)),
-                Program.fromBigInt(
-                    BigInt(Number(amount) * Math.pow(10, assetId ? 3 : 12))
-                ),
-                Program.fromList([Program.fromText(memo || '')]),
+                Program.fromBigInt(BigInt(amount)),
+                Program.fromList([
+                    ...(assetId ? [Program.fromHex(puzzle_hash)] : []),
+                    ...(memo ? [Program.fromSource(memo)] : []),
+                ]),
             ]),
         ])
     }
@@ -94,15 +95,17 @@ export default class Offer {
         offerPaymentList: OfferAsset[],
         fee: string = '0'
     ) {
+        const settlement = this.generateSettlement(undefined)
         // verify is unlock
         const seed = await Secure.getSeed()
         const puzzle = await Secure.getPuzzle()
+        const puzzleHash = puzzle.hashHex()
 
         const requestPaymentAnnouncements: Announcement[] = requestAssets.map(
             (payment) => {
                 const message = Offer.toMsg({
                     payment,
-                    puzzle_hash: puzzle.hashHex(),
+                    puzzle_hash: puzzleHash,
                 })
 
                 const settlement = Offer.generateSettlement(payment.assetId)
@@ -115,19 +118,20 @@ export default class Offer {
             const coin: Coin = {
                 parent_coin_info:
                     '0x0000000000000000000000000000000000000000000000000000000000000000',
-                puzzle_hash: this.generateSettlement(assetId).hashHex(),
+                puzzle_hash: Offer.generateSettlement(assetId).hashHex(),
                 amount: 0n,
             }
             const nonce = this.getNonce()
             const settlementSolution = Program.fromList([
                 Program.fromList([
-                    Program.fromBytes(nonce),
+                    Program.fromHex(Program.fromBytes(nonce).toHex()),
                     Program.fromList([
-                        Program.fromHex(sanitizeHex(puzzle.hashHex())),
+                        Program.fromHex(sanitizeHex(puzzleHash)),
                         Program.fromBigInt(BigInt(amount)),
-                        Program.fromList(
-                            assetId ? [Program.fromText(memo || '')] : []
-                        ),
+                        Program.fromList([
+                            ...(assetId ? [Program.fromHex(puzzleHash)] : []),
+                            ...(memo ? [Program.fromSource(memo)] : []),
+                        ]),
                     ]),
                 ]),
             ])
@@ -152,13 +156,15 @@ export default class Offer {
 
         for (let i = 0; i < offerPaymentList.length; i++) {
             const offerPayment = offerPaymentList[i]
-            const settlement = this.generateSettlement(undefined)
+
+            const memos: string[] = []
+            if (offerPayment.memo) {
+                memos.push(offerPayment.memo)
+            }
 
             if (offerPayment.assetId) {
                 const assetId = fromHex(offerPayment.assetId)
-
                 const cat = new CAT(assetId, puzzle)
-
                 const masterPrivateKey = PrivateKey.fromSeed(seed)
                 const walletPrivateKey =
                     Wallet.derivePrivateKey(masterPrivateKey)
@@ -172,7 +178,6 @@ export default class Offer {
                 } = await callGetBalance({
                     puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
                 })
-
                 if (BigInt(data) < BigInt(offerPayment.amount)) {
                     throw new Error("You don't have enough coin to spend")
                 }
@@ -184,34 +189,31 @@ export default class Offer {
                     spendableCoinList: await Wallet.getCoinList(cat.hashHex()),
                     assetId,
                     additionalConditions: announcementAssertions,
-                    memo: offerPayment.memo,
+                    memos,
                 })
 
                 spendList.push(...CATCoinSpendList)
                 // if offer cat and add fee in first coin
-                if (BigInt(fee) > 0n && i === 0) {
+                if (BigInt(fee) > 0n) {
+                    console.log('if offer cat and add fee in first coin')
                     const feeSpendList = await Wallet.generateXCHSpendList({
                         fee: BigInt(fee),
                         amount: 0n,
-                        targetPuzzleHash: settlement.hashHex(),
+                        targetPuzzleHash: '',
                         puzzle,
-                        spendableCoinList: await Wallet.getCoinList(
-                            puzzle.hashHex()
-                        ),
-                        additionalConditions: announcementAssertions,
+                        spendableCoinList: await Wallet.getCoinList(puzzleHash),
                     })
                     spendList.push(...feeSpendList)
                 }
             } else {
                 const XCHSpendList = await Wallet.generateXCHSpendList({
-                    fee: i === 0 ? BigInt(fee) : 0n, // add fee in first coin
+                    fee: BigInt(fee), // add fee in first coin
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
                     puzzle,
-                    spendableCoinList: await Wallet.getCoinList(
-                        puzzle.hashHex()
-                    ),
+                    spendableCoinList: await Wallet.getCoinList(puzzleHash),
                     additionalConditions: announcementAssertions,
+                    memos,
                 })
                 spendList.push(...XCHSpendList)
             }

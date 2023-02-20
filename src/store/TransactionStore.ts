@@ -27,8 +27,8 @@ class TransactionStore {
     sendXCHTx = async (
         targetAddress: string,
         amount: string,
-        memo: string,
-        fee: string
+        fee: string,
+        memos?: string[]
     ): Promise<void> => {
         const { seed, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
@@ -49,7 +49,7 @@ class TransactionStore {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle,
                 amount: BigInt(amount),
-                memo,
+                memos,
                 fee: BigInt(fee),
                 targetPuzzleHash: Program.fromBytes(
                     addressInfo(targetAddress).hash
@@ -84,8 +84,8 @@ class TransactionStore {
         targetAddress: string,
         asset: string,
         amount: string,
-        memo: string,
-        fee: string
+        fee: string,
+        memos?: string[]
     ): Promise<void> => {
         const { seed, address, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
@@ -118,7 +118,7 @@ class TransactionStore {
             wallet,
             assetId,
             amount: BigInt(amount),
-            memo,
+            memos,
             targetPuzzleHash: Program.fromBytes(
                 addressInfo(targetAddress).hash
             ).toHex(),
@@ -142,7 +142,6 @@ class TransactionStore {
             const XCHspendsList = await Wallet.generateXCHSpendList({
                 puzzle,
                 amount: 0n,
-                memo: '', // memo is unnecessary for fee
                 fee: BigInt(fee),
                 spendableCoinList,
                 targetPuzzleHash: Program.fromBytes(
