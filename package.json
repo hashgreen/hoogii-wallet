@@ -59,6 +59,7 @@
         "react-markdown": "^8.0.3",
         "react-router-dom": "^6.2.2",
         "react-toastify": "^9.1.1",
+        "react-tooltip": "^5.8.1",
         "react-zlib-js": "^1.0.5",
         "remark-gfm": "^3.0.1",
         "remark-rehype": "^10.1.0"
