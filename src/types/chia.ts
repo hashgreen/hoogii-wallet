@@ -1,6 +1,7 @@
 export enum ChainEnum {
     Mainnet = '0x01',
     Testnet = '0x02',
+    Develop = '0x99',
 }
 
 export interface IChain {
