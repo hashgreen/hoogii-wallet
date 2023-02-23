@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { observer } from 'mobx-react-lite'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Tooltip } from 'react-tooltip'
 
 import CopyTooltip from '~/components/CopyTooltip'
 import rootStore from '~/store'
@@ -17,6 +18,7 @@ import BottomIcon from '~icons/hoogii/bottom.jsx'
 import CopyIcon from '~icons/hoogii/copy.jsx'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
 
+import MemoDisplay from './MemoDisplay'
 import { Collapse } from './Transaction.style'
 import { ITransaction, ITxStatus, ITxType, IType } from './type'
 
@@ -66,21 +68,19 @@ const Transaction = ({
 
     // NOTE : if the tx is cat transfer, then the first memo is puzzlehash, so do not show it
     const filteredMemo =
-        memos && txType === ITxType.TX_TYPE_CAT_TRANSFER
-            ? memos.slice(1)
-            : memos
+        txType === ITxType.TX_TYPE_CAT_TRANSFER ? memos.slice(1) : memos
 
     return (
         <Collapse
             className={classNames(
-                'cursor-pointer px-4 py-3 border rounded-lg box-border bg-white/5 border-primary/30 hover:border-primary w-full'
+                'px-4 py-3 border rounded-lg box-border bg-white/5 border-primary/30 hover:border-primary w-full'
             )}
         >
             <div
                 onClick={() => {
                     setOpen(!open)
                 }}
-                className="justify-between w-full mb-1 flex-row-center"
+                className="justify-between w-full mb-1 flex-row-center cursor-pointer"
             >
                 <div className="flex-row-center">
                     <div
@@ -228,16 +228,19 @@ const Transaction = ({
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
                         {filteredMemo?.map((memo, index) => (
-                            <span
-                                className="break-words"
+                            <MemoDisplay
                                 key={`${index}-${memo}`}
-                            >
-                                {`${memo} `}
-                            </span>
+                                id={txId}
+                                memo={memo}
+                            />
                         ))}
                     </div>
                 </div>
             </div>
+            <Tooltip
+                id={txId}
+                className="bg-primary-100 w-[380px] break-words text-black rounded-lg z-50"
+            />
         </Collapse>
     )
 }

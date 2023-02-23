@@ -111,14 +111,16 @@ export class CAT extends Program {
             })
         }
 
-        const conditionList: Program[] = primaryList.map((primary) => {
+        const conditionList: Program[] = primaryList.map((primary, index) => {
             const additionalMemoList: Program[] = []
-            if (primary.puzzlehash === targetPuzzleHash) {
+
+            if (primary.puzzlehash === targetPuzzleHash && index === 0) {
                 additionalMemoList.push(Program.fromHex(primary.puzzlehash))
-                if (primary.memos?.length) {
-                    additionalMemoList.push(Program.fromHex(primary.puzzlehash))
-                }
+                primary?.memos?.forEach((memo) => {
+                    additionalMemoList.push(Program.fromSource(memo))
+                })
             }
+            console.log('additionalMemoList', additionalMemoList)
             return Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),

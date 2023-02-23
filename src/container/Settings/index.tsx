@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
+import Version from '~/components/Version'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import { isDev } from '~/utils/env'
 import BottomIcon from '~icons/hoogii/bottom.jsx'
@@ -146,13 +147,7 @@ const Settings = () => {
             </ul>
             <div className="grow"></div>
             <div className="flex-col-center">
-                <span className="text-center text-body2 text-primary-100">
-                    {t('version_text', {
-                        version: isDev
-                            ? __APP_VERSION__
-                            : __APP_VERSION__.split('-')[0],
-                    })}
-                </span>
+                <Version />
             </div>
         </div>
     )
