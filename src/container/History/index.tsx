@@ -1,5 +1,5 @@
 import { formatDistanceToNowStrict } from 'date-fns'
-import { groupBy, orderBy } from 'lodash-es'
+import { groupBy } from 'lodash-es'
 import { observer } from 'mobx-react-lite'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
