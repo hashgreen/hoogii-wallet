@@ -40,10 +40,10 @@ test('Should create StandardTx SpendBundle without fee and check spendBundle is 
     const spendAmount: string = '0.0001'
     const XCHspendsList = await Wallet.generateXCHSpendList({
         puzzle: coinOwnerPuzzle,
-        memo: 'test',
+        memos: ['test'],
         spendableCoinList: mockCoinList,
         amount: BigInt(xchToMojo(spendAmount).toString()),
-        targetAddress: testTargetAddress,
+        targetPuzzleHash: testTargetAddress,
     })
     const XCHsignatures = AugSchemeMPL.aggregate(
         XCHspendsList.map((spend) =>
