@@ -239,7 +239,7 @@ const Transaction = ({
             </div>
             <Tooltip
                 id={txId}
-                className="bg-primary-100 w-[380px] break-words text-black rounded-lg"
+                className="bg-primary-100 w-[380px] break-words text-black rounded-lg z-50"
             />
         </Collapse>
     )
