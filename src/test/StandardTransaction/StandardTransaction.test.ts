@@ -1,5 +1,4 @@
 import { AugSchemeMPL, PrivateKey } from '@rigidity/bls-signatures'
-import { addressInfo } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { generateMnemonicAsync, mnemonicToSeedAsync } from 'bip39-web'
 
@@ -41,12 +40,10 @@ test('Should create StandardTx SpendBundle without fee and check spendBundle is 
     const spendAmount: string = '0.0001'
     const XCHspendsList = await Wallet.generateXCHSpendList({
         puzzle: coinOwnerPuzzle,
-        memo: 'test',
+        memos: ['test'],
         spendableCoinList: mockCoinList,
         amount: BigInt(xchToMojo(spendAmount).toString()),
-        targetPuzzleHash: Program.fromBytes(
-            addressInfo(testTargetAddress).hash
-        ).toHex(),
+        targetPuzzleHash: testTargetAddress,
     })
     const XCHsignatures = AugSchemeMPL.aggregate(
         XCHspendsList.map((spend) =>
