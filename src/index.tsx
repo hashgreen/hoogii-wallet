@@ -1,4 +1,5 @@
 import 'react-toastify/dist/ReactToastify.css'
+import 'react-tooltip/dist/react-tooltip.css'
 import '~/utils/i18n'
 import './index.scss'
 
