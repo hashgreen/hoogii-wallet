@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { ErrorPopup } from '~/components/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
+import PushTxInfo from '~/popup/components/pushTxInfo'
 import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
 import {
@@ -61,11 +62,11 @@ const Transaction = ({
                 params.to,
                 params.assetId,
                 params.amount,
-                params.memos?.[0],
-                fee
+                fee,
+                params.memos
             )
         } else {
-            await sendXCHTx?.(params.to, params.amount, params.memos?.[0], fee)
+            await sendXCHTx?.(params.to, params.amount, fee, params.memos)
         }
     }
 
@@ -122,57 +123,63 @@ const Transaction = ({
                 <TransferInfo request={request} controller={controller} />
             )}
 
-            <div className="w-max">
-                <div className="mb-3 text-left text-caption text-primary-100">
-                    {t('send-fee-description')}
+            {request.data?.method === RequestMethodEnum.SEND_TRANSACTION && (
+                <PushTxInfo request={request} controller={controller} />
+            )}
+            {request.data?.method !== RequestMethodEnum.SEND_TRANSACTION && (
+                <div className="w-max">
+                    <div className="mb-3 text-left text-caption text-primary-100">
+                        {t('send-fee-description')}
+                    </div>
+                    <div className="flex-wrap gap-2  flex-row-center ">
+                        {[
+                            {
+                                fee: '0',
+                                note: t('send-fee-slow'),
+                                description: '',
+                            },
+                            {
+                                fee: '0.00005',
+                                note: t('send-fee-medium'),
+                                description: '',
+                            },
+                            {
+                                fee: '0.0005',
+                                note: t('send-fee-fast'),
+                                description: '',
+                            },
+                        ].map((item) => (
+                            <label
+                                key={item.note}
+                                htmlFor={item.note}
+                                className={classNames(
+                                    'flex flex-col gap-1 px-3 py-4 ring-1 rounded-lg bg-white/5 hover:ring-primary shrink cursor-pointer text-subtitle1',
+                                    fee === item.fee
+                                        ? 'ring-primary'
+                                        : 'ring-primary/30'
+                                )}
+                            >
+                                <span className="font-semibold whitespace-nowrap">
+                                    {item.fee} {XCH.code}
+                                </span>
+                                <span className="capitalize text-body3 text-primary-100">
+                                    {item.note}
+                                </span>
+                                <InfoIcon className="w-3 h-3 text-active" />
+                                <input
+                                    type="radio"
+                                    id={item.note}
+                                    value={item.fee}
+                                    checked={fee === item.fee}
+                                    className="sr-only"
+                                    {...register('fee')}
+                                />
+                            </label>
+                        ))}
+                    </div>
                 </div>
-                <div className="flex-wrap gap-2  flex-row-center ">
-                    {[
-                        {
-                            fee: '0',
-                            note: t('send-fee-slow'),
-                            description: '',
-                        },
-                        {
-                            fee: '0.00005',
-                            note: t('send-fee-medium'),
-                            description: '',
-                        },
-                        {
-                            fee: '0.0005',
-                            note: t('send-fee-fast'),
-                            description: '',
-                        },
-                    ].map((item) => (
-                        <label
-                            key={item.note}
-                            htmlFor={item.note}
-                            className={classNames(
-                                'flex flex-col gap-1 px-3 py-4 ring-1 rounded-lg bg-white/5 hover:ring-primary shrink cursor-pointer text-subtitle1',
-                                fee === item.fee
-                                    ? 'ring-primary'
-                                    : 'ring-primary/30'
-                            )}
-                        >
-                            <span className="font-semibold whitespace-nowrap">
-                                {item.fee} {XCH.code}
-                            </span>
-                            <span className="capitalize text-body3 text-primary-100">
-                                {item.note}
-                            </span>
-                            <InfoIcon className="w-3 h-3 text-active" />
-                            <input
-                                type="radio"
-                                id={item.note}
-                                value={item.fee}
-                                checked={fee === item.fee}
-                                className="sr-only"
-                                {...register('fee')}
-                            />
-                        </label>
-                    ))}
-                </div>
-            </div>
+            )}
+
             <div className="flex flex-col w-full">
                 <div className="flex justify-between">
                     <button
