@@ -201,3 +201,14 @@ export interface SignCoinSpendsParams {
     coinSpends: CoinSpend[]
     partialSign?: boolean
 }
+
+export enum MempoolInclusionStatus {
+    SUCCESS = 1, // Transaction added to mempool
+    PENDING = 2, // Transaction not yet added to mempool
+    FAILED = 3, // Transaction was invalid and dropped
+}
+
+export interface TransactionResp {
+    status: MempoolInclusionStatus
+    error?: string
+}
