@@ -67,7 +67,7 @@ class AssetsStore {
     get XCH() {
         return {
             assetId: 'XCH',
-            code: chains[this.walletStore.chain.id].prefix,
+            code: chains[this.walletStore.chain.id].prefix.toUpperCase(),
             iconUrl: '/chia.png',
         }
     }
