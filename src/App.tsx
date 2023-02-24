@@ -43,7 +43,7 @@ const App = () => {
                         }/auth`,
                         authCallback: async (data, callback) => {
                             const formData = new FormData()
-                            formData.append('puzzle_hash', puzzleHash)
+                            formData.append('puzzle_hash', '0x' + puzzleHash)
                             const tokenData = await callGetAblyAccessToken(
                                 formData
                             )
