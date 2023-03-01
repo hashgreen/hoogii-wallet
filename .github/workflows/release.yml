@@ -5,6 +5,9 @@ on:
     tags:
       - '*'
 
+env:
+  SUBMODULE_ACCESS: ${{ secrets.SUBMODULE_ACCESS }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
