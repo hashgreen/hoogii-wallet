@@ -1,43 +1,29 @@
 import axios from 'axios'
 
-export const GA_TRACKING_ID = 'G-GMGV923KNB'
-export const GA_API_KEY = '0S5Sd7crT6mV0nvBW7nBwg'
-
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
+export const GA_API_SECRET = import.meta.env.VITE_GA_API_SECRET
 interface MeasurementParams {
-    v: string // Version
-    t: string // Event Type
-    tid: string // Tracking ID
-    cid: string // Client ID
-    dp?: string // Document Path
-    dr?: string // Document Referrer
-    ea?: string // Event Action
-    ec?: string // Event Category
-    el?: string // Event Label
-    ev?: number // Event Value
+    client_id: string // Client ID
+    events: { name: string; params?: { [key: string]: any } }[] // Event data
 }
 
-// Send a Google Analytics Measurement Protocol request
+// Send a Google Analytics 4 Measurement Protocol request
 export async function sendMeasurement(
     params: MeasurementParams
 ): Promise<void> {
-    // Add the Measurement Protocol API key to the request parameters
+    // Add the Measurement Protocol API secret to the request parameters
     const requestData = {
         ...params,
-        api_secret: GA_API_KEY,
+        // api_secret: GA_API_SECRET,
     }
-
-    // Serialize the request parameters as a URL-encoded string
-    const requestDataString = Object.entries(requestData)
-        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-        .join('&')
 
     // Send the request using Axios
     const response = await axios.post(
-        'https://www.google-analytics.com/collect',
-        requestDataString,
+        `https://www.google-analytics.com/mp/collect?measurement_id=${GA_MEASUREMENT_ID}&&api_secret=${GA_API_SECRET}`,
+        requestData,
         {
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
             },
         }
     )
@@ -52,22 +38,30 @@ export async function sendMeasurement(
 
 // Send a pageview event
 sendMeasurement({
-    v: '1',
-    t: 'pageview',
-    tid: GA_TRACKING_ID,
-    cid: 'CLIENT_ID',
-    dp: '/path/to/page',
-    dr: 'http://referrer.com',
+    client_id: 'CLIENT_ID',
+    events: [
+        {
+            name: 'page_view',
+            params: {
+                page_location: 'https://www.example.com/path/to/page',
+                page_referrer: 'https://www.example.com/referrer',
+            },
+        },
+    ],
 })
 
 // Send a custom event
 sendMeasurement({
-    v: '1',
-    t: 'event',
-    tid: GA_TRACKING_ID,
-    cid: 'CLIENT_ID',
-    ec: 'category',
-    ea: 'action',
-    el: 'label',
-    ev: 1,
+    client_id: 'CLIENT_ID',
+    events: [
+        {
+            name: 'custom_event',
+            params: {
+                category: 'CATEGORY',
+                action: 'ACTION',
+                label: 'LABEL',
+                value: 1,
+            },
+        },
+    ],
 })
