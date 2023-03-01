@@ -12,14 +12,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - name: clone submodule
-      uses: actions/checkout@v2
-      with:
-        repository: hashgreen/hoogii-wallet-configs
-        path: .
-        ssh-key: ${{ secrets.SSH_KEY }}
-        persist-credentials: true
-
     - name: checkout submodule
       run: |
         git submodule init
