@@ -16,7 +16,6 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: hashgreen/hoogii-wallet-configs
-        path: main
         ssh-key: ${{ secrets.SSH_KEY }}
         persist-credentials: true
 
