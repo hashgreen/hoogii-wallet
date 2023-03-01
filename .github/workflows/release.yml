@@ -19,6 +19,7 @@ jobs:
         ssh-key: ${{ secrets.SSH_KEY }}
     - name: checkout submodule
       run: |
+        git submodule init 
         git submodule update --init --recursive
     - name: Check source code
       uses: actions/checkout@v3
