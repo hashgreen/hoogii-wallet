@@ -68,7 +68,7 @@ const Transaction = ({
 
     // NOTE : if the tx is cat transfer, then the first memo is puzzlehash, so do not show it
     const filteredMemo =
-        txType === ITxType.TX_TYPE_CAT_TRANSFER ? memos.slice(1) : memos
+        txType === ITxType.TX_TYPE_CAT_TRANSFER ? memos?.slice(1) : memos
 
     return (
         <Collapse

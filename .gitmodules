@@ -1,0 +1,3 @@
+[submodule "hoogii-wallet-configs"]
+	path = hoogii-wallet-configs
+	url = https://github.com/hashgreen/hoogii-wallet-configs

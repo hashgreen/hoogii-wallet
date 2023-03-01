@@ -10,6 +10,9 @@ import { memoryRouter } from '~/router'
 import rootStore from '~/store'
 import { apiEndpointSets } from '~/utils/constants'
 import { getStorage } from '~/utils/extension/storage'
+
+import { sendMeasurement } from './api/ga'
+
 const App = () => {
     const {
         walletStore: { puzzleHash },
@@ -29,6 +32,16 @@ const App = () => {
         //         document.documentElement.classList.remove('dark')
         //     }
         // })
+
+        // Send a pageview event
+        sendMeasurement({
+            client_id: 'page_view',
+            events: [
+                {
+                    name: 'page_view',
+                },
+            ],
+        })
     }, [])
 
     useEffect(() => {
