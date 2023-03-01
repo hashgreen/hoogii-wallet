@@ -10,9 +10,14 @@ help: ## show help
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-17s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: clean
-clean: ## remove artifacts
+clean: env ## remove artifacts
 	@rm -rf dist/* release_*.zip
 	@echo 'Prior build removed!'
+
+.PHONY: env
+env: ## move .env
+	@cp hoogii-wallet-configs/.env.yuumi-wallet .env
+	@echo 'move .env success'
 
 .PHONY: build
 build: clean ## the main program as dist folder
