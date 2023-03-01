@@ -52,7 +52,9 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                         <div className="flex">
                             <AssetIcon
                                 src={finsAsset?.icon_url}
-                                assetId={request?.data?.params.assetId || 'XCH'}
+                                assetId={
+                                    request?.data?.params.assetId || XCH.code
+                                }
                                 className="mr-1 w-6 h-6"
                             />
 
