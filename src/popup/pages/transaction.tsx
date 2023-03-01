@@ -4,6 +4,7 @@ import { useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { sendTx } from '~/api/api'
 import { ErrorPopup } from '~/components/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
 import PushTxInfo from '~/popup/components/pushTxInfo'
@@ -79,16 +80,26 @@ const Transaction = ({
             controller.returnData({
                 data: { id: offer.getId(), offer: offer.encode(5) },
             })
+            window.close()
         }
-
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
             await transfer(
                 request.data?.params,
                 xchToMojo(data?.fee).toString()
             )
+            window.close()
         }
-        window.close()
+
+        if (request.data?.method === RequestMethodEnum.SEND_TRANSACTION) {
+            await sendTx({
+                data: {
+                    spend_bundle: request.data?.params?.spendBundle,
+                },
+            })
+            window.close()
+        }
     }
+
     useLayoutEffect(() => {
         rootStore.walletStore.init()
     }, [])
