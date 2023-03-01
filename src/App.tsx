@@ -10,6 +10,9 @@ import { memoryRouter } from '~/router'
 import rootStore from '~/store'
 import { apiEndpointSets } from '~/utils/constants'
 import { getStorage } from '~/utils/extension/storage'
+
+import { GA_TRACKING_ID, sendMeasurement } from './api/ga'
+
 const App = () => {
     const {
         walletStore: { puzzleHash },
@@ -29,6 +32,16 @@ const App = () => {
         //         document.documentElement.classList.remove('dark')
         //     }
         // })
+
+        // Send a pageview event
+        sendMeasurement({
+            v: '1',
+            t: 'pageview',
+            tid: GA_TRACKING_ID,
+            cid: 'CLIENT_ID',
+            dp: '/path/to/page',
+            dr: 'http://referrer.com',
+        })
     }, [])
 
     useEffect(() => {
