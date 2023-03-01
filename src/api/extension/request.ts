@@ -89,11 +89,12 @@ const getAssetCoins = async (params: AssetCoinsParams) => {
         }
     }
 
-    const spendableCoins = (
-        await getSpendableCoins({
-            puzzle_hash: puzzleHash,
-        })
-    ).data?.data
+    const spendableCoins =
+        (
+            await getSpendableCoins({
+                puzzle_hash: puzzleHash,
+            })
+        ).data?.data ?? []
 
     const offset = params?.offset ?? 0
 
