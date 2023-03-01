@@ -194,6 +194,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.ACCOUNTS:
             return accounts()
         case RequestMethodEnum.TRANSFER:
+            return response
         case RequestMethodEnum.GET_PUBLIC_KEYS:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.FILTER_UNLOCK_COINS:
