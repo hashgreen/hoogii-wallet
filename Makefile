@@ -14,6 +14,14 @@ clean: ## remove artifacts
 	@rm -rf dist/* release_*.zip
 	@echo 'Prior build removed!'
 
+.PHONY: env
+env: ## move .env
+	@cd hoogii-wallet-configs
+	@ls
+	@cd ..
+	@cp hoogii-wallet-configs/.env.yuumi-wallet .env
+	@echo 'move .env success'
+
 .PHONY: build
 build: clean ## the main program as dist folder
 	@yarn build

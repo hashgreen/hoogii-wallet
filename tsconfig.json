@@ -1,52 +1,31 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "~/*": [
-        "./src/*"
-      ],
-      "~config/*": [
-        "./config/*"
-      ],
-      "~tabs/*": [
-        "./src/tabs/*"
-      ]
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "~/*": ["./src/*"],
+            "~config/*": ["./config/*"],
+            "~tabs/*": ["./src/tabs/*"]
+        },
+        "lib": ["dom", "dom.iterable", "esnext", "WebWorker"],
+        "module": "esnext",
+        "target": "esnext",
+        "allowJs": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        // "module": "ESNext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-jsx",
+        "noImplicitAny": false,
+        "useDefineForClassFields": true
     },
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext",
-    ],
-    "module": "esnext",
-    "target": "esnext",
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    // "module": "ESNext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "noImplicitAny": false,
-    "useDefineForClassFields": true,
-        
-  },
-  "include": [
-    "src",
-    "global.d.ts"
-  ],
-  "types": [
-    "src/**/*.d.ts",
-    "unplugin-icons/types/react",
-    "chrome"
-  ],
-  "files": ["global.d.ts"]
-  
-
-
+    "include": ["src", "global.d.ts"],
+    "types": ["src/**/*.d.ts", "unplugin-icons/types/react", "chrome"],
+    "files": ["global.d.ts"]
 }
