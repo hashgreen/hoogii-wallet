@@ -3,8 +3,10 @@ import { getBucket } from '@extend-chrome/storage'
 export const setStorage = async <T extends { [key: string]: any } = any>(
     item: T
 ): Promise<void> => {
-    const bucket = getBucket('store', 'local')
-    await bucket.set(item)
+    try {
+        const bucket = getBucket('store', 'local')
+        await bucket.set(item)
+    } catch (error) {}
 }
 
 export const getStorage = async <

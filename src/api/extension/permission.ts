@@ -9,5 +9,6 @@ export const permission = {
             RequestMethodEnum.WALLET_SWITCH_CHAIN,
         [RequestMethodEnum.CREATE_OFFER]: RequestMethodEnum.CREATE_OFFER,
         [RequestMethodEnum.TAKE_OFFER]: RequestMethodEnum.TAKE_OFFER,
+        [RequestMethodEnum.TRANSFER]: RequestMethodEnum.TRANSFER,
     },
 }

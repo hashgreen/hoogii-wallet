@@ -1,6 +1,6 @@
 import { getDataFromMemory } from '~/api/extension'
+import { getStorage } from '~/utils/extension/storage'
 import { getProgramBySeed } from '~/utils/signature'
-import { getStorage } from '~/utils/storage'
 
 import { retrieveSeed } from './extension'
 

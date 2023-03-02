@@ -1,7 +1,7 @@
 import { createMemoryRouter, redirect, RouteObject } from 'react-router-dom'
 
 import { MethodEnum } from '~/types/extension'
-import { getStorage } from '~/utils/storage'
+import { getStorage } from '~/utils/extension/storage'
 import {
     CreateMnemonic,
     DisplayMnemonic,

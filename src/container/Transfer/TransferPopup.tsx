@@ -69,7 +69,7 @@ const TransferPopup = ({
         } else {
             await sendCATTx?.(
                 address.address,
-                asset,
+                asset?.assetId,
                 catToMojo(amount).toString(),
                 xchToMojo(fee).toString(),
                 memos

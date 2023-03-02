@@ -17,6 +17,7 @@ import { Primary, Wallet } from './Wallet/Wallet'
 interface CATPayload extends Omit<XCHPayload, 'puzzle'> {
     wallet: Wallet
     assetId: Uint8Array
+    lineageProof?: (childCoin: Coin) => Promise<Program>
 }
 export class CAT extends Program {
     constructor(tailPuzzleHash: Uint8Array, innerPuzzle: Program) {
@@ -60,6 +61,7 @@ export class CAT extends Program {
                 coin_solution: { puzzle_reveal },
             },
         } = puzzleAndSolutionRecord
+
         const unCurry = Program.deserializeHex(
             sanitizeHex(puzzle_reveal)
         ).uncurry()
@@ -79,10 +81,12 @@ export class CAT extends Program {
         targetPuzzleHash,
         spendableCoinList,
         additionalConditions,
+        lineageProof = CAT.getLineageProof,
     }: CATPayload): Promise<CoinSpend[]> => {
         const cat = new CAT(assetId, wallet)
         const spendAmount = amount
 
+        // move to out
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
         const sumSpendingValue = coinList.reduce(
@@ -149,6 +153,7 @@ export class CAT extends Program {
             innerSolution: Program
         }
         const spendableCATList: SpendableCAT[] = []
+
         spendableCATList.push({
             coin: firstCoin,
             innerPuzzle: wallet,
@@ -220,7 +225,7 @@ export class CAT extends Program {
             const myInfo = generateInfo(spendInfo.coin)
             const solution: Program[] = [
                 spendInfo.innerSolution,
-                await CAT.getLineageProof(spendInfo.coin),
+                await lineageProof(spendInfo.coin),
                 Program.fromHex(
                     sanitizeHex(Program.fromBytes(prevId).toString())
                 ),

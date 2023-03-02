@@ -18,7 +18,7 @@ import rootStore from '~/store'
 import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
 import { CAT } from '~/utils/CAT'
 import { chains } from '~/utils/constants'
-import { getStorage, setStorage } from '~/utils/storage'
+import { getStorage, setStorage } from '~/utils/extension/storage'
 import { Wallet } from '~/utils/Wallet/Wallet'
 import defaultCATs from '~config/defaultCATs.json'
 

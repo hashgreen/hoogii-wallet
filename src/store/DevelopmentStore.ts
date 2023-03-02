@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 
 import { IApiEndpointSet } from '~/types/chia'
-import { getStorage, setStorage } from '~/utils/storage'
+import { getStorage, setStorage } from '~/utils/extension/storage'
 
 type DevelopmentOptions = {
     enable: boolean

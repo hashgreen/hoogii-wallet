@@ -3,7 +3,7 @@ import rootStore from '~/store'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { EventEnum, MethodEnum, SenderEnum } from '~/types/extension'
 import { bcryptHash } from '~/utils'
-import { setStorage } from '~/utils/storage'
+import { setStorage } from '~/utils/extension/storage'
 const idlePeriod = 15 * 60
 
 chrome.idle.setDetectionInterval(idlePeriod)

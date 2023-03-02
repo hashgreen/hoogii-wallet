@@ -69,6 +69,7 @@ export enum RequestMethodEnum {
     SIGN_COIN_SPENDS = 'signCoinSpends',
     SIGN_MESSAGE = 'signMessage',
     SEND_TRANSACTION = 'sendTransaction',
+    TRANSFER = 'transfer',
     CREATE_OFFER = 'createOffer',
     TAKE_OFFER = 'takeOffer',
 }
@@ -169,6 +170,12 @@ export interface OfferAsset {
 export interface OfferParams {
     requestAssets: OfferAsset[]
     offerAssets: OfferAsset[]
+}
+export interface TransferParams {
+    to: string
+    amount: string
+    memos: string[]
+    assetId: string
 }
 
 export enum OfferTypeEnum {

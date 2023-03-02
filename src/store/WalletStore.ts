@@ -25,13 +25,13 @@ import { bcryptHash, bcryptVerify } from '~/utils'
 import { chains } from '~/utils/constants'
 import { bytesToString, decrypt, encrypt } from '~/utils/encryption'
 import { retrieveChain, retrieveSeed } from '~/utils/extension'
-import { seedToAddress, seedToPuzzle } from '~/utils/signature'
 import {
     clearStorage,
     getStorage,
     removeItemsFromStorage,
     setStorage,
-} from '~/utils/storage'
+} from '~/utils/extension/storage'
+import { seedToAddress, seedToPuzzle } from '~/utils/signature'
 class WalletStore {
     isAblyConnected = false
     locked: boolean = false
