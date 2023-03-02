@@ -61,7 +61,7 @@ export class Wallet extends Program {
             concatBytes(
                 fromHex(sanitizeHex(coin.parent_coin_info)),
                 fromHex(sanitizeHex(coin.puzzle_hash)),
-                encodeInt(Number(coin.amount))
+                encodeInt(Number(coin.amount || 0))
             )
         )
 

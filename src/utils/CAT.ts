@@ -39,7 +39,7 @@ export class CAT extends Program {
             )
         )
 
-    static getLineageProof = async (childCoin: Coin): Promise<Program> => {
+    static getLineageProof = async (childCoin: Coin) => {
         const parentCoinRecord = await getCoinRecordsByName({
             data: {
                 name: childCoin.parent_coin_info,
@@ -66,9 +66,26 @@ export class CAT extends Program {
             sanitizeHex(puzzle_reveal)
         ).uncurry()
 
+        const innerPuzzleHash = unCurry?.[1][2].hashHex()
+        if (!innerPuzzleHash) {
+            throw new Error('Can not get innerPuzzleHash!!')
+        }
+
+        return {
+            parentName: coin.parent_coin_info,
+            innerPuzzleHash: `0x${innerPuzzleHash}`,
+            amount: coin.amount,
+        }
+    }
+
+    static getLineageProofToProgram = async (
+        childCoin: Coin
+    ): Promise<Program> => {
+        const coin = await this.getLineageProof(childCoin)
+
         return Program.fromList([
-            Program.fromHex(sanitizeHex(coin.parent_coin_info)),
-            Program.fromHex(unCurry?.[1][2].hashHex() ?? ''),
+            Program.fromHex(sanitizeHex(coin.parentName)),
+            Program.fromHex(sanitizeHex(coin.innerPuzzleHash)),
             Program.fromBigInt(BigInt(coin.amount)),
         ])
     }
@@ -81,7 +98,7 @@ export class CAT extends Program {
         targetPuzzleHash,
         spendableCoinList,
         additionalConditions,
-        lineageProof = CAT.getLineageProof,
+        lineageProof = CAT.getLineageProofToProgram,
     }: CATPayload): Promise<CoinSpend[]> => {
         const cat = new CAT(assetId, wallet)
         const spendAmount = amount

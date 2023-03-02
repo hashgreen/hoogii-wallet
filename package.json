@@ -34,6 +34,8 @@
         "@rigidity/bls-signatures": "^2.0.5",
         "@rigidity/chia": "^1.7.0",
         "@rigidity/clvm": "^4.0.0",
+        "@vespaiach/axios-fetch-adapter": "^0.3.1",
+        "axios-chrome-messaging-adapter": "^0.6.0",
         "bcryptjs": "^2.4.3",
         "bip39-web": "^1.0.0",
         "buffer": "^6.0.3",

@@ -100,6 +100,7 @@ class Messaging {
                 isConnected: Boolean(isConnectedRes.data),
                 isLocked: Boolean(isLockRes.data),
             })
+
             console.log(
                 '[content script]:from websites << ' + JSON.stringify(response)
             )
@@ -141,6 +142,7 @@ class Messaging {
                     e: MessageEvent<IMessage<MethodReturnDataType<T>>>
                 ) {
                     const response = e.data
+
                     if (
                         response.target !== SenderEnum.WEBPAGE ||
                         response.sender !== SenderEnum.EXTENSION ||
