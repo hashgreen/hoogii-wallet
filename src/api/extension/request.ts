@@ -156,8 +156,6 @@ const signCoinSpend = async ({ coinSpends }: SignCoinSpendsParams) => {
     return signatures.toHex()
 }
 
-const sendTransaction = async () => {}
-
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
         !request?.isConnected ||
@@ -209,7 +207,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.SIGN_MESSAGE:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.SEND_TRANSACTION:
-            return sendTransaction()
+            return response
         case RequestMethodEnum.CREATE_OFFER:
             return response
         case RequestMethodEnum.TAKE_OFFER:

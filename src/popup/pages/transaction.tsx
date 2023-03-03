@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios'
 import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import { useLayoutEffect, useState } from 'react'
@@ -11,6 +12,7 @@ import PushTxInfo from '~/popup/components/spendBundleInfo'
 import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
 import {
+    MempoolInclusionStatus,
     MethodEnum,
     OfferParams,
     RequestMethodEnum,
@@ -71,7 +73,7 @@ const Transaction = ({
         }
     }
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: any) => {
         if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
             const offer = await createOffer(
                 request.data?.params,
@@ -91,11 +93,28 @@ const Transaction = ({
         }
 
         if (request.data?.method === RequestMethodEnum.SEND_TRANSACTION) {
-            await sendTx({
-                data: {
-                    spend_bundle: request.data?.params?.spendBundle,
-                },
-            })
+            try {
+                const res = await sendTx({
+                    data: {
+                        spend_bundle: request.data?.params?.spendBundle,
+                    },
+                })
+
+                controller.returnData({
+                    data: {
+                        status: res?.data?.data,
+                    },
+                })
+            } catch (error) {
+                const resError = error as AxiosError
+
+                controller.returnData({
+                    data: {
+                        status: MempoolInclusionStatus.FAILED,
+                        error: resError?.response?.data?.msg,
+                    },
+                })
+            }
             window.close()
         }
     }
