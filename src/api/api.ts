@@ -3,7 +3,12 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { registerMessageHandler } from 'axios-chrome-messaging-adapter'
 import { toast } from 'react-toastify'
 
-import { IMarket, RequestConfig } from '~/types/api'
+import {
+    IMarket,
+    IResponseData,
+    ISpendBundleParse,
+    RequestConfig,
+} from '~/types/api'
 import { ChainEnum } from '~/types/chia'
 import { apiEndpointSets } from '~/utils/constants'
 import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
@@ -74,7 +79,7 @@ export const getParseSpendBundle = (
     params: AxiosRequestConfig,
     config: RequestConfig = { isShowToast: false }
 ) =>
-    apiHandler(
+    apiHandler<IResponseData<ISpendBundleParse>>(
         {
             url: '/addon/parse_spend_bundle ',
             method: 'post',

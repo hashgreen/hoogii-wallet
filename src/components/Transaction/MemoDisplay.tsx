@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import { useState } from 'react'
 import DetectableOverflow from 'react-detectable-overflow'
+import { Tooltip } from 'react-tooltip'
 
 import InfoIcon from '~icons/hoogii/info.jsx'
 interface IMemoDisplay {
@@ -24,6 +25,11 @@ const MemoDisplay = ({ id, memo }: IMemoDisplay) => {
             >
                 <InfoIcon className="w-3 h-3 text-active" />
             </a>
+
+            <Tooltip
+                id={id}
+                className="bg-primary-100 w-[380px] break-words text-black rounded-lg z-50 absolute text-sm p-1"
+            />
         </div>
     )
 }

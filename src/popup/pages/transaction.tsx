@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { sendTx } from '~/api/api'
 import { ErrorPopup } from '~/components/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
-import PushTxInfo from '~/popup/components/pushTxInfo'
+import PushTxInfo from '~/popup/components/spendBundleInfo'
 import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
 import {

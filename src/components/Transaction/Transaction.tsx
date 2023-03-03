@@ -3,7 +3,6 @@ import { format } from 'date-fns'
 import { observer } from 'mobx-react-lite'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Tooltip } from 'react-tooltip'
 
 import CopyTooltip from '~/components/CopyTooltip'
 import rootStore from '~/store'
@@ -237,10 +236,6 @@ const Transaction = ({
                     </div>
                 </div>
             </div>
-            <Tooltip
-                id={txId}
-                className="bg-primary-100 w-[380px] break-words text-black rounded-lg z-50"
-            />
         </Collapse>
     )
 }
