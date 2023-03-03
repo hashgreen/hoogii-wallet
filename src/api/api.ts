@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 import {
     IMarket,
     IResponseData,
-    ISpendBundleParse,
+    ITransaction,
     RequestConfig,
 } from '~/types/api'
 import { ChainEnum } from '~/types/chia'
@@ -79,7 +79,7 @@ export const getParseSpendBundle = (
     params: AxiosRequestConfig,
     config: RequestConfig = { isShowToast: false }
 ) =>
-    apiHandler<IResponseData<ISpendBundleParse>>(
+    apiHandler<IResponseData<ITransaction>>(
         {
             url: '/addon/parse_spend_bundle ',
             method: 'post',

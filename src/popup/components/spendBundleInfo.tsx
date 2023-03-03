@@ -5,7 +5,7 @@ import { getParseSpendBundle } from '~/api/api'
 import AssetIcon from '~/components/AssetIcon'
 import MemoDisplay from '~/components/Transaction/MemoDisplay'
 import rootStore from '~/store'
-import { ISpendBundleParse } from '~/types/api'
+import { ITransaction } from '~/types/api'
 import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
@@ -13,9 +13,7 @@ import { add0x } from '~/utils/encryption'
 
 import { IPopupPageProps } from '../types'
 function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
-    const [parseBundle, setParseBundle] = useState<
-        ISpendBundleParse | undefined
-    >()
+    const [parseBundle, setParseBundle] = useState<ITransaction | undefined>()
 
     const { metadata } = parseBundle || {}
 
