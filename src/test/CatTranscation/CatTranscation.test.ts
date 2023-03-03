@@ -77,7 +77,7 @@ test('Should create CAT TX SpendBundle without fee and check spendBundle is vali
         wallet,
         assetId,
         amount: spendAmount,
-        memo: 'test',
+        memos: ['test'],
         targetPuzzleHash: Program.fromBytes(
             addressInfo(testTargetAddress).hash
         ).toHex(),

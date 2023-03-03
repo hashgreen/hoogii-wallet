@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios'
 import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import { useLayoutEffect, useState } from 'react'
@@ -7,10 +8,11 @@ import { useTranslation } from 'react-i18next'
 import { sendTx } from '~/api/api'
 import { ErrorPopup } from '~/components/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
-import PushTxInfo from '~/popup/components/pushTxInfo'
+import SpendBundleInfo from '~/popup/components/spendBundleInfo'
 import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
 import {
+    MempoolInclusionStatus,
     MethodEnum,
     OfferParams,
     RequestMethodEnum,
@@ -21,6 +23,11 @@ import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
+const withoutFee = [
+    RequestMethodEnum.SEND_TRANSACTION,
+    RequestMethodEnum.SIGN_COIN_SPENDS,
+]
+
 const Transaction = ({
     controller,
     request,
@@ -71,7 +78,7 @@ const Transaction = ({
         }
     }
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: any) => {
         if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
             const offer = await createOffer(
                 request.data?.params,
@@ -91,10 +98,33 @@ const Transaction = ({
         }
 
         if (request.data?.method === RequestMethodEnum.SEND_TRANSACTION) {
-            await sendTx({
-                data: {
-                    spend_bundle: request.data?.params?.spendBundle,
-                },
+            try {
+                const res = await sendTx({
+                    data: {
+                        spend_bundle: request.data?.params?.spendBundle,
+                    },
+                })
+
+                controller.returnData({
+                    data: {
+                        status: res?.data?.data,
+                    },
+                })
+            } catch (error) {
+                const resError = error as AxiosError
+
+                controller.returnData({
+                    data: {
+                        status: MempoolInclusionStatus.FAILED,
+                        error: resError?.response?.data?.msg,
+                    },
+                })
+            }
+            window.close()
+        }
+        if (request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS) {
+            controller.returnData({
+                data: true,
             })
             window.close()
         }
@@ -135,9 +165,14 @@ const Transaction = ({
             )}
 
             {request.data?.method === RequestMethodEnum.SEND_TRANSACTION && (
-                <PushTxInfo request={request} controller={controller} />
+                <SpendBundleInfo request={request} controller={controller} />
             )}
-            {request.data?.method !== RequestMethodEnum.SEND_TRANSACTION && (
+
+            {request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS && (
+                <SpendBundleInfo request={request} controller={controller} />
+            )}
+
+            {!withoutFee.some((method) => request.data?.method === method) && (
                 <div className="w-max">
                     <div className="mb-3 text-left text-caption text-primary-100">
                         {t('send-fee-description')}

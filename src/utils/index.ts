@@ -3,11 +3,12 @@ import { Program } from '@rigidity/clvm'
 import bcrypt from 'bcryptjs'
 
 export const shortenHash = (
-    hash: string,
+    hash: string | undefined,
     head: number = 5,
     tail: number = 7,
     separator = '...'
 ) => {
+    if (!hash) return hash
     if (head + tail >= hash.length) return hash
     return `${hash.slice(0, head)}${separator}${hash.slice(-tail)}`
 }

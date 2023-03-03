@@ -86,7 +86,7 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                                     {asset.assetId
                                         ? finsAsset?.name ||
                                           `CAT ${shortenHash(asset.assetId)}`
-                                        : XCH.code}
+                                        : 'XCH'}
                                 </div>
                                 <div
                                     className={`${

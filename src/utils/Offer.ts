@@ -83,10 +83,10 @@ export default class Offer {
         if (assetId) {
             return new CAT(
                 fromHex(sanitizeHex(assetId)),
-                puzzles.settlementPaymentsOld
+                puzzles.settlementPayments
             )
         } else {
-            return puzzles.settlementPaymentsOld
+            return puzzles.settlementPayments
         }
     }
 

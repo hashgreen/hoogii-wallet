@@ -48,6 +48,9 @@ const App = observer(() => {
                     case RequestMethodEnum.SEND_TRANSACTION:
                         navigate('/transaction')
                         break
+                    case RequestMethodEnum.SIGN_COIN_SPENDS:
+                        navigate('/transaction')
+                        break
                     default:
                         returnData({
                             data: true,
