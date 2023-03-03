@@ -69,3 +69,14 @@ export const decrypt = async (
     )
     return new TextDecoder().decode(plainText)
 }
+export const add0x = (str?: string): string => {
+    if (!str) {
+        return '0x'
+    }
+
+    if (str.startsWith('0x')) {
+        return str
+    } else {
+        return `0x${str}`
+    }
+}

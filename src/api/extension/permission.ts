@@ -12,5 +12,7 @@ export const permission = {
         [RequestMethodEnum.TRANSFER]: RequestMethodEnum.TRANSFER,
         [RequestMethodEnum.SEND_TRANSACTION]:
             RequestMethodEnum.SEND_TRANSACTION,
+        [RequestMethodEnum.SIGN_COIN_SPENDS]:
+            RequestMethodEnum.SIGN_COIN_SPENDS,
     },
 }

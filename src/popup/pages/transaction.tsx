@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { sendTx } from '~/api/api'
 import { ErrorPopup } from '~/components/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
-import PushTxInfo from '~/popup/components/spendBundleInfo'
+import SpendBundleInfo from '~/popup/components/spendBundleInfo'
 import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
 import {
@@ -23,6 +23,11 @@ import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
+const withoutFee = [
+    RequestMethodEnum.SEND_TRANSACTION,
+    RequestMethodEnum.SIGN_COIN_SPENDS,
+]
+
 const Transaction = ({
     controller,
     request,
@@ -117,6 +122,12 @@ const Transaction = ({
             }
             window.close()
         }
+        if (request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS) {
+            controller.returnData({
+                data: true,
+            })
+            window.close()
+        }
     }
 
     useLayoutEffect(() => {
@@ -154,9 +165,14 @@ const Transaction = ({
             )}
 
             {request.data?.method === RequestMethodEnum.SEND_TRANSACTION && (
-                <PushTxInfo request={request} controller={controller} />
+                <SpendBundleInfo request={request} controller={controller} />
             )}
-            {request.data?.method !== RequestMethodEnum.SEND_TRANSACTION && (
+
+            {request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS && (
+                <SpendBundleInfo request={request} controller={controller} />
+            )}
+
+            {!withoutFee.some((method) => request.data?.method === method) && (
                 <div className="w-max">
                     <div className="mb-3 text-left text-caption text-primary-100">
                         {t('send-fee-description')}
