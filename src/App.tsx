@@ -12,6 +12,7 @@ import { apiEndpointSets } from '~/utils/constants'
 import { getStorage } from '~/utils/extension/storage'
 
 import { sendMeasurement } from './api/ga'
+import { add0x } from './utils/encryption'
 
 const App = () => {
     const {
@@ -35,7 +36,7 @@ const App = () => {
 
         // Send a pageview event
         sendMeasurement({
-            client_id: 'page_view',
+            client_id: add0x(puzzleHash),
             events: [
                 {
                     name: 'page_view',
