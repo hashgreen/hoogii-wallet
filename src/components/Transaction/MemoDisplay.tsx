@@ -8,7 +8,6 @@ interface IMemoDisplay {
     id: string
     memo: string
 }
-
 const MemoDisplay = ({ id, memo }: IMemoDisplay) => {
     const [overflow, setOverflow] = useState(false)
 
@@ -25,11 +24,8 @@ const MemoDisplay = ({ id, memo }: IMemoDisplay) => {
             >
                 <InfoIcon className="w-3 h-3 text-active" />
             </a>
-
-            <Tooltip
-                id={id}
-                className="bg-primary-100 w-[380px] break-words text-black rounded-lg z-50 absolute text-sm p-1"
-            />
+            {/* TODO  refactor use tailwind here */}
+            <Tooltip id={id} className="custom-tooltips" />
         </div>
     )
 }

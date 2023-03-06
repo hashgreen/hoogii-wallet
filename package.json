@@ -1,6 +1,6 @@
 {
     "name": "Hoogii",
-    "version": "1.0.5-dev.16",
+    "version": "1.0.5-dev.19",
     "private": true,
     "scripts": {
         "dev": "vite --mode extension --port 3000",
