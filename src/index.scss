@@ -202,4 +202,10 @@
     .skeleton-text {
         @apply rounded h-3;
     }
+
+    .custom-tooltips {
+         @apply bg-primary-100 w-[380px] break-words text-black rounded-lg z-50 absolute text-sm p-1 #{!important};
+    
+    }
+    
 }
