@@ -80,7 +80,7 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                                 <div className="flex">
                                     <AssetIcon
                                         src={finsAsset?.icon_url}
-                                        assetId={asset.assetId || XCH.code}
+                                        assetId={asset.assetId || 'XCH'}
                                         className="mr-1 w-6 h-6"
                                     />
                                     {asset.assetId

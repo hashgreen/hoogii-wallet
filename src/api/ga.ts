@@ -27,12 +27,10 @@ export async function sendMeasurement(
             },
         }
     )
-    console.log('response', response)
+
     // Log an error message if the request fails
     if (response.status !== 200) {
-        console.error(
-            `Google Analytics Measurement Protocol request failed with status ${response.status}`
-        )
+        // log error here
     }
 }
 

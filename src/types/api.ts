@@ -50,3 +50,23 @@ export interface IFetchData<T> {
     isFetching: boolean
     data: T
 }
+
+export interface ISpendBundleParse extends IBase {
+    cost: number
+    created_by: string
+    depth: number
+    fee: number
+    header_hash: string
+    height: number
+    metadata: {
+        amount: number
+        asset_id: string
+        from_puzzle_hash: string
+        memos: string[]
+        to_puzzle_hashes: string[]
+    }
+    name: string
+    status: number
+    timestamp: number
+    type: number
+}

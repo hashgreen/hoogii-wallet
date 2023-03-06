@@ -1,14 +1,18 @@
+import { AxiosError } from 'axios'
 import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import { useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { sendTx } from '~/api/api'
 import { ErrorPopup } from '~/components/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
+import SpendBundleInfo from '~/popup/components/spendBundleInfo'
 import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
 import {
+    MempoolInclusionStatus,
     MethodEnum,
     OfferParams,
     RequestMethodEnum,
@@ -19,6 +23,11 @@ import Offer from '~/utils/Offer'
 import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
+const withoutFee = [
+    RequestMethodEnum.SEND_TRANSACTION,
+    RequestMethodEnum.SIGN_COIN_SPENDS,
+]
+
 const Transaction = ({
     controller,
     request,
@@ -61,15 +70,15 @@ const Transaction = ({
                 params.to,
                 params.assetId,
                 params.amount,
-                params.memos?.[0],
-                fee
+                fee,
+                params.memos
             )
         } else {
-            await sendXCHTx?.(params.to, params.amount, params.memos?.[0], fee)
+            await sendXCHTx?.(params.to, params.amount, fee, params.memos)
         }
     }
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data: any) => {
         if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
             const offer = await createOffer(
                 request.data?.params,
@@ -78,16 +87,49 @@ const Transaction = ({
             controller.returnData({
                 data: { id: offer.getId(), offer: offer.encode(5) },
             })
+            window.close()
         }
-
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
             await transfer(
                 request.data?.params,
                 xchToMojo(data?.fee).toString()
             )
+            window.close()
         }
-        window.close()
+
+        if (request.data?.method === RequestMethodEnum.SEND_TRANSACTION) {
+            try {
+                const res = await sendTx({
+                    data: {
+                        spend_bundle: request.data?.params?.spendBundle,
+                    },
+                })
+
+                controller.returnData({
+                    data: {
+                        status: res?.data?.data,
+                    },
+                })
+            } catch (error) {
+                const resError = error as AxiosError
+
+                controller.returnData({
+                    data: {
+                        status: MempoolInclusionStatus.FAILED,
+                        error: resError?.response?.data?.msg,
+                    },
+                })
+            }
+            window.close()
+        }
+        if (request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS) {
+            controller.returnData({
+                data: true,
+            })
+            window.close()
+        }
     }
+
     useLayoutEffect(() => {
         rootStore.walletStore.init()
     }, [])
@@ -122,57 +164,68 @@ const Transaction = ({
                 <TransferInfo request={request} controller={controller} />
             )}
 
-            <div className="w-max">
-                <div className="mb-3 text-left text-caption text-primary-100">
-                    {t('send-fee-description')}
+            {request.data?.method === RequestMethodEnum.SEND_TRANSACTION && (
+                <SpendBundleInfo request={request} controller={controller} />
+            )}
+
+            {request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS && (
+                <SpendBundleInfo request={request} controller={controller} />
+            )}
+
+            {!withoutFee.some((method) => request.data?.method === method) && (
+                <div className="w-max">
+                    <div className="mb-3 text-left text-caption text-primary-100">
+                        {t('send-fee-description')}
+                    </div>
+                    <div className="flex-wrap gap-2  flex-row-center ">
+                        {[
+                            {
+                                fee: '0',
+                                note: t('send-fee-slow'),
+                                description: '',
+                            },
+                            {
+                                fee: '0.00005',
+                                note: t('send-fee-medium'),
+                                description: '',
+                            },
+                            {
+                                fee: '0.0005',
+                                note: t('send-fee-fast'),
+                                description: '',
+                            },
+                        ].map((item) => (
+                            <label
+                                key={item.note}
+                                htmlFor={item.note}
+                                className={classNames(
+                                    'flex flex-col gap-1 px-3 py-4 ring-1 rounded-lg bg-white/5 hover:ring-primary shrink cursor-pointer text-subtitle1',
+                                    fee === item.fee
+                                        ? 'ring-primary'
+                                        : 'ring-primary/30'
+                                )}
+                            >
+                                <span className="font-semibold whitespace-nowrap">
+                                    {item.fee} {XCH.code}
+                                </span>
+                                <span className="capitalize text-body3 text-primary-100">
+                                    {item.note}
+                                </span>
+                                <InfoIcon className="w-3 h-3 text-active" />
+                                <input
+                                    type="radio"
+                                    id={item.note}
+                                    value={item.fee}
+                                    checked={fee === item.fee}
+                                    className="sr-only"
+                                    {...register('fee')}
+                                />
+                            </label>
+                        ))}
+                    </div>
                 </div>
-                <div className="flex-wrap gap-2  flex-row-center ">
-                    {[
-                        {
-                            fee: '0',
-                            note: t('send-fee-slow'),
-                            description: '',
-                        },
-                        {
-                            fee: '0.00005',
-                            note: t('send-fee-medium'),
-                            description: '',
-                        },
-                        {
-                            fee: '0.0005',
-                            note: t('send-fee-fast'),
-                            description: '',
-                        },
-                    ].map((item) => (
-                        <label
-                            key={item.note}
-                            htmlFor={item.note}
-                            className={classNames(
-                                'flex flex-col gap-1 px-3 py-4 ring-1 rounded-lg bg-white/5 hover:ring-primary shrink cursor-pointer text-subtitle1',
-                                fee === item.fee
-                                    ? 'ring-primary'
-                                    : 'ring-primary/30'
-                            )}
-                        >
-                            <span className="font-semibold whitespace-nowrap">
-                                {item.fee} {XCH.code}
-                            </span>
-                            <span className="capitalize text-body3 text-primary-100">
-                                {item.note}
-                            </span>
-                            <InfoIcon className="w-3 h-3 text-active" />
-                            <input
-                                type="radio"
-                                id={item.note}
-                                value={item.fee}
-                                checked={fee === item.fee}
-                                className="sr-only"
-                                {...register('fee')}
-                            />
-                        </label>
-                    ))}
-                </div>
-            </div>
+            )}
+
             <div className="flex flex-col w-full">
                 <div className="flex justify-between">
                     <button

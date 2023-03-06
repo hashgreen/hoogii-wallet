@@ -201,3 +201,15 @@ export interface SignCoinSpendsParams {
     coinSpends: CoinSpend[]
     partialSign?: boolean
 }
+
+// stay the same as [transaction_ack](https://docs.chia.net/docs/10protocol/wallet_protocol/#transaction_ack)
+export enum MempoolInclusionStatus {
+    SUCCESS = 1, // Transaction added to mempool
+    PENDING = 2, // Transaction not yet added to mempool
+    FAILED = 3, // Transaction was invalid and dropped
+}
+
+export interface TransactionResp {
+    status: MempoolInclusionStatus
+    error?: string
+}
