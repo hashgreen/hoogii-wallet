@@ -6,6 +6,7 @@
         "dev": "vite --mode extension --port 3000",
         "build": "tsc && vite build",
         "prerelease": "npm version prerelease --preid=dev",
+        "release": "npm version patch",
         "preview": "vite preview",
         "commit": "git add . && cz",
         "test": "jest --coverage=false",
