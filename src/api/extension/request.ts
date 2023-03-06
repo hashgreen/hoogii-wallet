@@ -8,6 +8,7 @@ import { ChainEnum } from '~/types/chia'
 import {
     AssetCoinsParams,
     AssetCoinsTypeEnum,
+    GetPublicKeysParams,
     IMessage,
     MethodEnum,
     PopupEnum,
@@ -63,7 +64,15 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
 
     return [account]
 }
-
+const getPublicKeys = async (
+    params: GetPublicKeysParams
+): Promise<string[]> => {
+    const puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
+    const publicKeyList = [puzzleHash]
+    const offset = params?.offset ?? 0
+    const limit = params?.limit ?? publicKeyList.length
+    return publicKeyList.slice(offset, offset + limit)
+}
 const getAssetCoins = async (params: AssetCoinsParams) => {
     const puzzle = await Secure.getPuzzle()
 
@@ -195,7 +204,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.TRANSFER:
             return response
         case RequestMethodEnum.GET_PUBLIC_KEYS:
-            throw Errors.UnderDevelopment
+            return getPublicKeys(request.data.params)
         case RequestMethodEnum.FILTER_UNLOCK_COINS:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.GET_ASSET_COINS:
