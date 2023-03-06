@@ -39,6 +39,9 @@ const App = () => {
             events: [
                 {
                     name: 'page_view',
+                    params: {
+                        engagement_time_msec: 1,
+                    },
                 },
             ],
         })
