@@ -197,6 +197,11 @@ export interface AssetCoinsParams {
     offset?: number
     limit?: number
 }
+
+export interface GetPublicKeysParams {
+    offset?: number
+    limit?: number
+}
 export interface SignCoinSpendsParams {
     coinSpends: CoinSpend[]
     partialSign?: boolean

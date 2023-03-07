@@ -204,8 +204,8 @@
     }
 
     .custom-tooltips {
-         @apply bg-primary-100 w-[380px] break-words text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
-    
+        @apply bg-primary-100 w-[380px] break-words text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
+        opacity: 1 !important;
     }
     
 }

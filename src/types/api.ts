@@ -51,7 +51,7 @@ export interface IFetchData<T> {
     data: T
 }
 
-export interface ISpendBundleParse extends IBase {
+export interface ITransaction extends IBase {
     cost: number
     created_by: string
     depth: number
