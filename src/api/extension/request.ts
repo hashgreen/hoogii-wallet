@@ -91,10 +91,12 @@ const getAssetCoins = async (params: AssetCoinsParams) => {
 
         if (params.type === AssetCoinsTypeEnum.NFT) {
             // TODO: develop when NFT implement
+            throw Errors.UnderDevelopment
         }
 
         if (params.type === AssetCoinsTypeEnum.DID) {
             // TODO:develop when DID implement
+            throw Errors.UnderDevelopment
         }
     }
 
@@ -106,7 +108,7 @@ const getAssetCoins = async (params: AssetCoinsParams) => {
         ).data?.data ?? []
 
     const offset = params?.offset ?? 0
-
+    const limit = params?.limit ?? 100
     const spendableCoinsWithLineageProof: any[] = []
     for (let i = offset; i < spendableCoins.length; i++) {
         const coinInfo = spendableCoins[i]
@@ -125,10 +127,7 @@ const getAssetCoins = async (params: AssetCoinsParams) => {
             confirmedBlockIndex: coinInfo.confirmed_block_index,
             lineageProof,
         })
-        if (
-            params?.limit &&
-            spendableCoinsWithLineageProof.length >= params.limit
-        ) {
+        if (spendableCoinsWithLineageProof.length >= limit) {
             break
         }
     }
