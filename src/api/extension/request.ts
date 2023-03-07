@@ -108,7 +108,7 @@ const getAssetCoins = async (params: AssetCoinsParams) => {
         ).data?.data ?? []
 
     const offset = params?.offset ?? 0
-    const limit = params?.limit ?? 100
+    const limit = params?.limit ?? 10
     const spendableCoinsWithLineageProof: any[] = []
     for (let i = offset; i < spendableCoins.length; i++) {
         const coinInfo = spendableCoins[i]
