@@ -134,50 +134,52 @@ class Messaging {
         method: T,
         data?: MethodDataType<T>
     ) => {
-        return new Promise<IMessage<MethodReturnDataType<T>>>((resolve) => {
-            const requestId = uniqueId(`${MethodEnum[method]}_`)
-            window.addEventListener(
-                'message',
-                function responseHandler(
-                    e: MessageEvent<IMessage<MethodReturnDataType<T>>>
-                ) {
-                    const response = e.data
-
-                    if (
-                        response.target !== SenderEnum.WEBPAGE ||
-                        response.sender !== SenderEnum.EXTENSION ||
-                        response.id !== requestId
+        return new Promise<IMessage<MethodReturnDataType<T>>>(
+            (resolve, reject) => {
+                const requestId = uniqueId(`${MethodEnum[method]}_`)
+                window.addEventListener(
+                    'message',
+                    function responseHandler(
+                        e: MessageEvent<IMessage<MethodReturnDataType<T>>>
                     ) {
-                        return
+                        const response = e.data
+
+                        if (
+                            response.target !== SenderEnum.WEBPAGE ||
+                            response.sender !== SenderEnum.EXTENSION ||
+                            response.id !== requestId
+                        ) {
+                            return
+                        }
+                        console.log('to content << ' + JSON.stringify(response))
+
+                        window.removeEventListener('message', responseHandler)
+
+                        if (response.data?.error) {
+                            reject(response.data)
+                        }
+
+                        resolve(response)
                     }
-                    console.log('to content << ' + JSON.stringify(response))
+                )
+                console.log('to content >> ' + JSON.stringify(data))
 
-                    window.removeEventListener('message', responseHandler)
-
-                    if (response.data?.error) {
-                        throw response.data
-                    }
-
-                    resolve(response)
-                }
-            )
-            console.log('to content >> ' + JSON.stringify(data))
-
-            const favicon = document.querySelector(
-                'link[rel="icon"]'
-            ) as HTMLLinkElement
-            const iconUrl = favicon?.href
-            const origin = window.origin
-            window.postMessage({
-                id: requestId,
-                method,
-                data,
-                iconUrl,
-                origin,
-                target: SenderEnum.EXTENSION,
-                sender: SenderEnum.WEBPAGE,
-            })
-        })
+                const favicon = document.querySelector(
+                    'link[rel="icon"]'
+                ) as HTMLLinkElement
+                const iconUrl = favicon?.href
+                const origin = window.origin
+                window.postMessage({
+                    id: requestId,
+                    method,
+                    data,
+                    iconUrl,
+                    origin,
+                    target: SenderEnum.EXTENSION,
+                    sender: SenderEnum.WEBPAGE,
+                })
+            }
+        )
     }
 
     static toInternal = <T extends MethodEnum>(
