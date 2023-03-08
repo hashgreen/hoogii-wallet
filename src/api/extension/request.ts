@@ -20,6 +20,7 @@ import { StorageEnum } from '~/types/storage'
 import { CAT } from '~/utils/CAT'
 import CoinSpend from '~/utils/CoinSpend'
 import { apiEndpointSets, chains } from '~/utils/constants'
+import { add0x } from '~/utils/encryption'
 import { getStorage, setStorage } from '~/utils/extension/storage'
 import Secure from '~/utils/Secure'
 import { puzzleHashToAddress } from '~/utils/signature'
@@ -161,7 +162,7 @@ const signCoinSpend = async ({ coinSpends }: SignCoinSpendsParams) => {
                 )
             )
     )
-    return signatures.toHex()
+    return add0x(signatures.toHex())
 }
 
 const authHandler = async (request: IMessage<RequestArguments>) => {
