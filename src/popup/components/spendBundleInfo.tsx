@@ -9,6 +9,7 @@ import { ITransaction } from '~/types/api'
 import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
+import { add0x } from '~/utils/encryption'
 
 import { IPopupPageProps } from '../types'
 function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
@@ -64,7 +65,9 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
         if (request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS) {
             spendBundle = {
                 coin_spends: request?.data?.params?.coinSpends,
-                aggregated_signature: '0c' + Array(191).fill('0').join(''),
+                aggregated_signature: add0x(
+                    'c' + Array(191).fill('0').join('')
+                ),
             }
         }
 
@@ -160,7 +163,10 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                     <div className="bg-box flex flex-col gap-1 px-2 py-3 shrink cursor-pointer rounded-sm ">
                         <div className="text-caption text-primary-100 h-[180px] overflow-y-auto">
                             <JsonView
-                                data={request?.data?.params?.spendBundle}
+                                data={
+                                    request?.data?.params?.spendBundle ||
+                                    request?.data?.params?.coinSpends
+                                }
                                 shouldInitiallyExpand={() => true}
                             />
                         </div>
