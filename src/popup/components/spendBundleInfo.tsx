@@ -9,7 +9,6 @@ import { ITransaction } from '~/types/api'
 import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
-import { add0x } from '~/utils/encryption'
 
 import { IPopupPageProps } from '../types'
 function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
@@ -65,9 +64,7 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
         if (request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS) {
             spendBundle = {
                 coin_spends: request?.data?.params?.coinSpends,
-                aggregated_signature: add0x(
-                    '0c' + Array(191).fill('0').join('')
-                ),
+                aggregated_signature: '0c' + Array(191).fill('0').join(''),
             }
         }
 
