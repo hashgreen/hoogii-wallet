@@ -80,13 +80,19 @@ const Transaction = ({
 
     const onSubmit = async (data: any) => {
         if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
-            const offer = await createOffer(
-                request.data?.params,
-                xchToMojo(data?.fee).toString()
-            )
-            controller.returnData({
-                data: { id: offer.getId(), offer: offer.encode(5) },
-            })
+            try {
+                const offer = await createOffer(
+                    request.data?.params,
+                    xchToMojo(data?.fee).toString()
+                )
+                controller.returnData({
+                    data: { id: offer.getId(), offer: offer.encode(5) },
+                })
+            } catch (error) {
+                controller.returnData({
+                    data: error,
+                })
+            }
             window.close()
         }
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
