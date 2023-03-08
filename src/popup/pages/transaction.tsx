@@ -90,7 +90,7 @@ const Transaction = ({
                 })
             } catch (error) {
                 const resError = error as AxiosError
-                console.log('error', resError.message)
+
                 const message =
                     resError.message || resError?.response?.data?.msg
                 controller.returnData({
