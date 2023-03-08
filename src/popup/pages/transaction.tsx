@@ -89,8 +89,12 @@ const Transaction = ({
                     data: { id: offer.getId(), offer: offer.encode(5) },
                 })
             } catch (error) {
+                const resError = error as AxiosError
+                console.log('error', resError.message)
+                const message =
+                    resError.message || resError?.response?.data?.msg
                 controller.returnData({
-                    data: error,
+                    data: { error: true, message },
                 })
             }
             window.close()
@@ -122,7 +126,8 @@ const Transaction = ({
                 controller.returnData({
                     data: {
                         status: MempoolInclusionStatus.FAILED,
-                        error: resError?.response?.data?.msg,
+                        error: true,
+                        message: resError?.response?.data?.msg,
                     },
                 })
             }
