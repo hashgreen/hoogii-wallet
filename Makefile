@@ -16,9 +16,17 @@ clean: ## remove artifacts
 
 .PHONY: env
 env: ## move .env
+	submodule
 	@ls -al
 	@cp hoogii-wallet-configs/hoogii.env .env
 	@echo 'move .env success'
+
+
+.PHONY: submodule
+submodule: ## move .env
+	@git submodule init 
+	@git submodule update --init --recursive
+	@echo 'submodule success'
 
 .PHONY: build
 build: clean ## the main program as dist folder
