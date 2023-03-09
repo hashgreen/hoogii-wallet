@@ -203,9 +203,20 @@
         @apply rounded h-3;
     }
 
-    .custom-tooltips {
-        @apply bg-primary-100 w-[380px] break-words text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
+    .custom-tooltips {       
         opacity: 1 !important;
+        @apply bg-primary-100 w-[380px]  break-all text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
+        
+    }
+
+    .custom-tooltips-content {
+        width:332px ;
+        overflow: hidden ;
+        text-overflow: ellipsis ;
+        white-space: normal ;
+        display: -webkit-box  ;
+        -webkit-line-clamp: 6 ;
+        -webkit-box-orient: vertical ;
     }
     
 }
