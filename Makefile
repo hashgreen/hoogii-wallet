@@ -16,7 +16,7 @@ clean: ## remove artifacts
 
 .PHONY: env
 env: ## move .env
-	@ls
+	@ls -al  hoogii-wallet-configs
 	@cp hoogii-wallet-configs/.env.yuumi-wallet .env
 	@echo 'move .env success'
 
