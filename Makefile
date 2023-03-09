@@ -14,19 +14,18 @@ clean: ## remove artifacts
 	@rm -rf dist/* release_*.zip
 	@echo 'Prior build removed!'
 
+.PHONY: submodule
+submodule: 
+	@git submodule init 
+	@git submodule update --init --recursive
+	@ls -al hoogii-wallet-configs
+	@echo 'submodule success'
+
 .PHONY: env
 env: ## move .env
-	submodule
 	@ls -al
 	@cp hoogii-wallet-configs/hoogii.env .env
 	@echo 'move .env success'
-
-
-.PHONY: submodule
-submodule: ## move .env
-	@git submodule init 
-	@git submodule update --init --recursive
-	@echo 'submodule success'
 
 .PHONY: build
 build: clean ## the main program as dist folder
