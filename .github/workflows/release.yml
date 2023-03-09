@@ -14,7 +14,6 @@ jobs:
     - name: Check source code
       uses: actions/checkout@v3
       with:
-        repository: hashgreen/hoogii-wallet-configs
         submodules: recursive
         ssh-key: ${{ secrets.SSH_KEY }}
         args: git submodule update --init --recursive
