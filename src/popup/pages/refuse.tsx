@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
+import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
 import { APIError, MethodEnum } from '~/types/extension'
 
 import { IPopupPageProps } from '../types'
@@ -12,16 +13,7 @@ const Refuse = ({
     return (
         <div className="container flex flex-col justify-between w-full h-full py-12">
             <div className="flex flex-col gap-2 items-center">
-                <div className="min-w-[164px] h-[44px] border-solid border-primary-100 border rounded-lg flex justify-center items-center m-1 p-1">
-                    <img
-                        src={request.iconUrl}
-                        alt="icon"
-                        className="w-7 h-7 mr-1"
-                    />
-                    <div className="text-body3 text-primary-100 break-all">
-                        {request.origin}
-                    </div>
-                </div>
+                <ConnectSiteInfo request={request} controller={controller} />
                 <div className="flex gap-2 text-center text-xl">
                     Connect with Hoogii:
                 </div>

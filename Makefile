@@ -14,12 +14,17 @@ clean: ## remove artifacts
 	@rm -rf dist/* release_*.zip
 	@echo 'Prior build removed!'
 
+.PHONY: submodule
+submodule: 
+	@git submodule init 
+	@git submodule update --init --recursive
+	@ls -al hoogii-wallet-configs
+	@echo 'submodule success'
+
 .PHONY: env
 env: ## move .env
-	@cd hoogii-wallet-configs
-	@ls
-	@cd ..
-	@cp hoogii-wallet-configs/.env.yuumi-wallet .env
+	@ls -al
+	@cp hoogii-wallet-configs/hoogii.env .env
 	@echo 'move .env success'
 
 .PHONY: build

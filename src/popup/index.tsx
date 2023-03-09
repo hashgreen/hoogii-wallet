@@ -24,6 +24,12 @@ const App = observer(() => {
     useEffect(() => {
         document.documentElement.classList.add('dark')
         // TODO: support dark/light switch
+
+        window.addEventListener('beforeunload', () => {
+            controller.returnData({
+                data: false,
+            })
+        })
     }, [])
 
     useEffect(() => {

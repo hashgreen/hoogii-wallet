@@ -27,11 +27,7 @@ export async function sendMeasurement(
             },
         }
     )
-
-    // Log an error message if the request fails
-    if (response.status !== 200) {
-        // log error here
-    }
+    console.log('ga res:', response)
 }
 
 // Send a pageview event

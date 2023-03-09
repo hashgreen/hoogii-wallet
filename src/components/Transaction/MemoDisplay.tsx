@@ -18,9 +18,10 @@ const MemoDisplay = ({ id, memo }: IMemoDisplay) => {
             </DetectableOverflow>
             <a
                 data-tooltip-id={id}
-                data-tooltip-content={memo}
+                // data-tooltip-content={memo}
                 data-tooltip-place="top"
                 className={classNames('w-4', overflow ? '' : 'hidden')}
+                data-tooltip-html={`<span class="custom-tooltips-content">${memo}</span>`}
             >
                 <InfoIcon className="w-3 h-3 text-active" />
             </a>
