@@ -11,17 +11,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-    - name: clone submodule
-      uses: actions/checkout@v2
-      with:
-        repository: hashgreen/hoogii-wallet-configs
-        submodules: recursive
-        ssh-key: ${{ secrets.SSH_KEY }}
-    - name: checkout submodule
-      run: |
-        git submodule init 
-        git submodule update --init --recursive
-        cp hoogii.env /home/runner/work/hoogii-wallet/hoogii-wallet/.env
     - name: Check source code
       uses: actions/checkout@v3
     - name: Setup node
@@ -36,9 +25,20 @@ jobs:
       run:  |
         git config user.name "GitHub Actions Bot"
         git config user.email "Devops <devops@hashgreen.net>"
+    - name: clone submodule
+      uses: actions/checkout@v2
+      with:
+        repository: hashgreen/hoogii-wallet-configs
+        submodules: recursive
+        ssh-key: ${{ secrets.SSH_KEY }}
+    - name: checkout submodule
+      run: |
+        git submodule init 
+        git submodule update --init --recursive
+        cp hoogii.env /home/runner/work/hoogii-wallet/hoogii-wallet/.env
     - name: Package
       run: |
-        ls
+        ls -al
         make package
     - name: Release
       uses: ncipollo/release-action@v1
