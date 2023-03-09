@@ -19,7 +19,8 @@ jobs:
         ssh-key: ${{ secrets.SSH_KEY }}
     - name: Copy .env file
       run: |
-          cp hoogii-wallet-configs/hoogii.env ./.env
+          ls -al /home/runner/work/hoogii-wallet
+          cp /home/runner/work/hoogii-wallet/hoogii-wallet/hoogii-wallet-configs/hoogii.env /home/runner/work/hoogii-wallet/hoogii-wallet/.env
     - name: Check source code
       uses: actions/checkout@v3
     - name: Setup node
