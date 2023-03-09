@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { sendTx } from '~/api/api'
 import { ErrorPopup } from '~/components/Popup'
+import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
 import OfferInfo from '~/popup/components/offerInfo'
 import SpendBundleInfo from '~/popup/components/spendBundleInfo'
 import TransferInfo from '~/popup/components/transferInfo'
@@ -157,12 +158,7 @@ const Transaction = ({
             className="container flex flex-col justify-between  w-full h-full py-12"
         >
             <div className="flex flex-col gap-2 items-center">
-                <div className="w-[164px] h-[44px] border-solid border-primary-100 border rounded-lg flex justify-center items-center m-1">
-                    <img src={request.iconUrl} alt="icon" className="w-7 h-7" />
-                    <div className="text-body3 text-primary-100">
-                        {request.origin}
-                    </div>
-                </div>
+                <ConnectSiteInfo request={request} controller={controller} />
                 <div className="flex gap-2 text-center text-xl">
                     Requests a signature for:
                 </div>
