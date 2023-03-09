@@ -12,15 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: clone submodule
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
       with:
         repository: hashgreen/hoogii-wallet-configs
         submodules: recursive
         ssh-key: ${{ secrets.SSH_KEY }}
+        args: git submodule update --init --recursive
     - name: Copy .env file
       run: |
-          ls -al /home/runner/work/hoogii-wallet
-          cp /home/runner/work/hoogii-wallet/hoogii-wallet/hoogii-wallet-configs/hoogii.env /home/runner/work/hoogii-wallet/hoogii-wallet/.env
+        ls -al
+        echo '-----'
+        ls -al /home/runner/work/hoogii-wallet/hoogii-wallet
+        echo '-----'
+        s -al /home/runner/work/hoogii-wallet/hoogii-wallet/hoogii-configs
+        cp /home/runner/work/hoogii-wallet/hoogii-wallet/hoogii-wallet-configs/hoogii.env /home/runner/work/hoogii-wallet/hoogii-wallet/.env
     - name: Check source code
       uses: actions/checkout@v3
     - name: Setup node
