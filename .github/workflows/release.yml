@@ -20,12 +20,7 @@ jobs:
         args: git submodule update --init --recursive
     - name: Copy .env file
       run: |
-        ls -al
-        echo '-----'
-        ls -al /home/runner/work/hoogii-wallet/hoogii-wallet
-        echo '-----'
-        s -al /home/runner/work/hoogii-wallet/hoogii-wallet/hoogii-configs
-        cp /home/runner/work/hoogii-wallet/hoogii-wallet/hoogii-wallet-configs/hoogii.env /home/runner/work/hoogii-wallet/hoogii-wallet/.env
+        cp hoogii.env .env
     - name: Check source code
       uses: actions/checkout@v3
     - name: Setup node
@@ -42,6 +37,7 @@ jobs:
         git config user.email "Devops <devops@hashgreen.net>"
     - name: Package
       run: |
+        ls -al
         make package
     - name: Release
       uses: ncipollo/release-action@v1
