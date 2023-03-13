@@ -68,8 +68,8 @@ const accounts = async (): Promise<string[] | Errors.Error> => {
 const getPublicKeys = async (
     params: GetPublicKeysParams
 ): Promise<string[]> => {
-    const puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
-    const publicKeyList = [puzzleHash]
+    const walletPublicKey = await Secure.getWalletPublicKey()
+    const publicKeyList = [walletPublicKey.toHex()]
     const offset = params?.offset ?? 0
     const limit = params?.limit ?? publicKeyList.length
     return publicKeyList.slice(offset, offset + limit)

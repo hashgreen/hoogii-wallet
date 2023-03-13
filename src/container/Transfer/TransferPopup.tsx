@@ -86,6 +86,7 @@ const TransferPopup = ({
                         type="submit"
                         form="confirm-form"
                         className="btn btn-primary"
+                        disabled={isSubmitting}
                     >
                         {t('btn-confirm')}
                     </button>

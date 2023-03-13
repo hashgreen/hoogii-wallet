@@ -20,6 +20,7 @@ export const getProgramBySeed = (seed: Uint8Array): Program => {
 
     return program
 }
+
 export const seedToPuzzle = (seed: Uint8Array): Program => {
     return getProgramBySeed(seed)
 }

@@ -29,33 +29,33 @@ export async function sendMeasurement(
     )
     console.log('ga res:', response)
 }
-
+// Demo:
 // Send a pageview event
-sendMeasurement({
-    client_id: 'CLIENT_ID',
-    events: [
-        {
-            name: 'page_view',
-            params: {
-                page_location: 'https://www.example.com/path/to/page',
-                page_referrer: 'https://www.example.com/referrer',
-            },
-        },
-    ],
-})
+// sendMeasurement({
+//     client_id: 'CLIENT_ID',
+//     events: [
+//         {
+//             name: 'page_view',
+//             params: {
+//                 page_location: 'https://www.example.com/path/to/page',
+//                 page_referrer: 'https://www.example.com/referrer',
+//             },
+//         },
+//     ],
+// })
 
 // Send a custom event
-sendMeasurement({
-    client_id: 'CLIENT_ID',
-    events: [
-        {
-            name: 'custom_event',
-            params: {
-                category: 'CATEGORY',
-                action: 'ACTION',
-                label: 'LABEL',
-                value: 1,
-            },
-        },
-    ],
-})
+// sendMeasurement({
+//     client_id: 'CLIENT_ID',
+//     events: [
+//         {
+//             name: 'custom_event',
+//             params: {
+//                 category: 'CATEGORY',
+//                 action: 'ACTION',
+//                 label: 'LABEL',
+//                 value: 1,
+//             },
+//         },
+//     ],
+// })

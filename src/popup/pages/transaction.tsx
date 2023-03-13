@@ -243,12 +243,14 @@ const Transaction = ({
                             })
                             window.close()
                         }}
+                        disabled={isSubmitting}
                     >
                         Cancel
                     </button>
                     <button
                         className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
                         type="submit"
+                        disabled={isSubmitting}
                     >
                         Sign
                     </button>
