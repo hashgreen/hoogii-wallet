@@ -6,7 +6,7 @@ export enum EventEnum {
     MEMO = 'memo',
     SEND = 'send',
     ACTIVITY_DETAIL = 'activity_detail',
-    COPY_ADDRESS_FORM_SENDER = 'copy_address_from_sender',
+    COPY_ADDRESS_FROM_SENDER = 'copy_address_from_sender',
     EXPAND_MEMO = 'expand_memo',
     ACTIVITY_MORE = 'activity_more',
     IMPORT_TOKEN = 'import_token',
