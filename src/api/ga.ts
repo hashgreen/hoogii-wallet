@@ -1,15 +1,30 @@
 import axios from 'axios'
 
+import { EventEnum } from '~/types/extension'
+import { ActionEnum, CategoryEnum } from '~/types/ga'
+
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
 export const GA_API_SECRET = import.meta.env.VITE_GA_API_SECRET
-interface MeasurementParams {
+
+interface IEventParams {
+    category: CategoryEnum
+    action: ActionEnum
+    value: any
+}
+
+interface IEvent {
+    name: EventEnum
+    params?: IEventParams
+}
+
+interface IMeasurementParams {
     client_id: string // Client ID
-    events: { name: string; params?: { [key: string]: any } }[] // Event data
+    events: IEvent[] // Event data
 }
 
 // Send a Google Analytics 4 Measurement Protocol request
 export async function sendMeasurement(
-    params: MeasurementParams
+    params: IMeasurementParams
 ): Promise<void> {
     // Add the Measurement Protocol API secret to the request parameters
     const requestData = {
