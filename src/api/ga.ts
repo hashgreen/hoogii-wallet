@@ -1,7 +1,9 @@
 import axios from 'axios'
 
-import { EventEnum } from '~/types/extension'
-import { ActionEnum, CategoryEnum } from '~/types/ga'
+import rootStore from '~/store'
+import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
+import { StorageEnum } from '~/types/storage'
+import { getStorage } from '~/utils/extension/storage'
 
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
 export const GA_API_SECRET = import.meta.env.VITE_GA_API_SECRET
@@ -9,16 +11,15 @@ export const GA_API_SECRET = import.meta.env.VITE_GA_API_SECRET
 interface IEventParams {
     category: CategoryEnum
     action: ActionEnum
-    value: any
+    value?: any
 }
-
 interface IEvent {
     name: EventEnum
     params?: IEventParams
 }
 
 interface IMeasurementParams {
-    client_id: string // Client ID
+    client_id?: string // Client ID
     events: IEvent[] // Event data
 }
 
@@ -27,8 +28,24 @@ export async function sendMeasurement(
     params: IMeasurementParams
 ): Promise<void> {
     // Add the Measurement Protocol API secret to the request parameters
+    const chainId = await getStorage<string>(StorageEnum.chainId)
+    const {
+        walletStore: { puzzleHash },
+    } = rootStore
+
     const requestData = {
         ...params,
+        client_id: puzzleHash,
+        // add the chain id to each event's params
+        events: params.events.map((event) => {
+            return {
+                name: event.name,
+                params: {
+                    ...event.params,
+                    chain_id: chainId,
+                },
+            }
+        }),
         // api_secret: GA_API_SECRET,
     }
 
