@@ -9,6 +9,7 @@ import CopyTooltip from '~/components/CopyTooltip'
 import Account from '~/layouts/Account'
 import rootStore from '~/store'
 import { ChainEnum } from '~/types/chia'
+import { CategoryEnum } from '~/types/ga'
 import { shortenHash } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
 import { isDev } from '~/utils/env'
@@ -50,6 +51,7 @@ const Header = ({ className }: IProps) => {
             </div>
             <div className="gap-2 flex-row-center">
                 <CopyTooltip
+                    gaCategory={CategoryEnum.MAIN_PAGE}
                     dataTip={t('tooltip-copy_address')}
                     copiedDataTip={t('tooltip-copied')}
                     value={address}
