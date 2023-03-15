@@ -3,8 +3,10 @@ import { observer } from 'mobx-react-lite'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { sendMeasurement } from '~/api/ga'
 import { AssetItem, LoadingAssetItem } from '~/components/Item'
 import rootStore from '~/store'
+import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
 import { fuseOptions, search } from '~/utils/fuse'
 
@@ -26,11 +28,26 @@ const Info = ({ query }: { query: string }) => {
         [query, assets]
     )
 
+    const handleOnClick = (assetId: string) => {
+        sendMeasurement({
+            events: [
+                {
+                    name: EventEnum.ASSET_DETAIL,
+                    params: {
+                        category: CategoryEnum.MAIN_PAGE,
+                        action: ActionEnum.CLICK,
+                        value: assetId,
+                    },
+                },
+            ],
+        })
+    }
+
     return (
         <>
             <span className="ml-3 font-medium capitalize text-body3 text-primary-100">
                 {balancesData.isFetching ? (
-                    <div className="skeleton skeleton-text w-10"></div>
+                    <div className="w-10 skeleton skeleton-text"></div>
                 ) : (
                     t('count-asset', {
                         count: filteredAssets.length,
@@ -45,6 +62,7 @@ const Info = ({ query }: { query: string }) => {
                       const isXCH = assetId === 'XCH'
                       return (
                           <AssetItem
+                              onClick={() => handleOnClick(assetId)}
                               key={assetId}
                               asset={{
                                   assetId,
