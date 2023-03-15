@@ -3,8 +3,8 @@ import { PropsWithChildren, useState } from 'react'
 
 import { sendMeasurement } from '~/api/ga'
 import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
-
 interface IProps {
+    gaCategory?: CategoryEnum
     dataTip: string
     copiedDataTip: string
     value: string
@@ -13,6 +13,7 @@ interface IProps {
 }
 
 const CopyTooltip = ({
+    gaCategory,
     dataTip,
     copiedDataTip,
     value,
@@ -25,19 +26,39 @@ const CopyTooltip = ({
     const copy = async () => {
         try {
             await navigator.clipboard.writeText(value)
-
-            await sendMeasurement({
-                // client_id: puzzleHash,
-                events: [
-                    {
-                        name: EventEnum.COPY_ADDRESS,
-                        params: {
-                            category: CategoryEnum.MAIN_PAGE,
-                            action: ActionEnum.CLICK,
-                        },
-                    },
-                ],
-            })
+            // ga events
+            switch (gaCategory) {
+                case CategoryEnum.MAIN_PAGE:
+                    sendMeasurement({
+                        // client_id: puzzleHash,
+                        events: [
+                            {
+                                name: EventEnum.COPY_ADDRESS,
+                                params: {
+                                    category: CategoryEnum.MAIN_PAGE,
+                                    action: ActionEnum.CLICK,
+                                },
+                            },
+                        ],
+                    })
+                    break
+                case CategoryEnum.ACTIVITY:
+                    sendMeasurement({
+                        // client_id: puzzleHash,
+                        events: [
+                            {
+                                name: EventEnum.COPY_ADDRESS_FROM_SENDER,
+                                params: {
+                                    category: CategoryEnum.ACTIVITY,
+                                    action: ActionEnum.CLICK,
+                                },
+                            },
+                        ],
+                    })
+                    break
+                default:
+                    break
+            }
 
             setDataTip(copiedDataTip)
 
