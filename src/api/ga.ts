@@ -42,7 +42,7 @@ export async function sendMeasurement(
                 name: event.name,
                 params: {
                     ...event.params,
-                    chain_id: chainId,
+                    chain_id: 'chain-' + chainId,
                 },
             }
         }),
