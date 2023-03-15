@@ -6,11 +6,13 @@ import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { sendMeasurement } from '~/api/ga'
 import ErrorMessage from '~/components/ErrorMessage'
 import { IAddress, IAsset } from '~/db'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
+import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import Validation from '~/utils/validation'
 
 import AddressCombobox from './components/AddressCombobox'
@@ -69,6 +71,32 @@ const Transfer = () => {
     }, [])
 
     const onSubmit = async () => {
+        if (memo.length > 0) {
+            sendMeasurement({
+                events: [
+                    {
+                        name: EventEnum.MEMO,
+                        params: {
+                            category: CategoryEnum.SEND,
+                            action: ActionEnum.FILL,
+                        },
+                    },
+                ],
+            })
+        }
+
+        sendMeasurement({
+            events: [
+                {
+                    name: EventEnum.SEND,
+                    params: {
+                        category: CategoryEnum.SEND,
+                        action: ActionEnum.CLICK,
+                    },
+                },
+            ],
+        })
+
         setOpen(true)
     }
 
@@ -167,7 +195,7 @@ const Transfer = () => {
                         />
                         {/* Decimal */}
                     </div>
-                    <hr className="my-5 w-full h-px border-primary/30 " />
+                    <hr className="w-full h-px my-5 border-primary/30 " />
                     <input
                         type="text"
                         inputMode="text"
