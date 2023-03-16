@@ -10,7 +10,7 @@ import {
     OfferTypeEnum,
 } from '~/types/extension'
 import { shortenHash } from '~/utils'
-import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
+import { mojoToBalance } from '~/utils/CoinConverter'
 
 import { IPopupPageProps } from '../types'
 
@@ -63,10 +63,10 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                         Offer
                     </div>
                     {offerAssets.map((asset) => {
-                        const amount = asset.assetId
-                            ? mojoToCat(asset.amount.toString()).toFixed(3)
-                            : mojoToXch(asset.amount.toString()).toFixed(12)
-
+                        const amount = mojoToBalance(
+                            asset.amount.toString(),
+                            asset.assetId
+                        )
                         const finsAsset = availableAssets?.data?.find(
                             (availableAsset) =>
                                 availableAsset.asset_id === asset.assetId
