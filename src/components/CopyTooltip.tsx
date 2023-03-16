@@ -30,7 +30,6 @@ const CopyTooltip = ({
             switch (gaCategory) {
                 case CategoryEnum.MAIN_PAGE:
                     sendMeasurement({
-                        // client_id: puzzleHash,
                         events: [
                             {
                                 name: EventEnum.COPY_ADDRESS,
@@ -44,7 +43,6 @@ const CopyTooltip = ({
                     break
                 case CategoryEnum.ACTIVITY:
                     sendMeasurement({
-                        // client_id: puzzleHash,
                         events: [
                             {
                                 name: EventEnum.COPY_ADDRESS_FROM_SENDER,

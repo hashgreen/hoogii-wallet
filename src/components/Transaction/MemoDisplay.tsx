@@ -22,7 +22,6 @@ const MemoDisplay = ({ id, memo, gaCategory }: IMemoDisplay) => {
             switch (gaCategory) {
                 case CategoryEnum.ACTIVITY:
                     sendMeasurement({
-                        // client_id: puzzleHash,
                         events: [
                             {
                                 name: EventEnum.EXPAND_MEMO,
