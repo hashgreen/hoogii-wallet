@@ -66,7 +66,7 @@ const Transaction = ({
     }
 
     const transfer = async (params: TransferParams, fee: string) => {
-        if (params.to) {
+        if (params.assetId) {
             await sendCATTx?.(
                 params.to,
                 params.assetId,

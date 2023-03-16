@@ -22,9 +22,9 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     const mojoToBalance = useCallback(
         (amount) => {
             if (request?.data?.params.assetId) {
-                return mojoToCat(amount).toString()
+                return mojoToCat(amount).toFixed(3).toString()
             } else {
-                return mojoToXch(amount).toString()
+                return mojoToXch(amount).toFixed(12).toString()
             }
         },
         [request?.data?.params.assetId]
