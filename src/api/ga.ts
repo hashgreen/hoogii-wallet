@@ -33,9 +33,12 @@ export async function sendMeasurement(
         walletStore: { puzzleHash },
     } = rootStore
 
+    const clientId =
+        puzzleHash || (await getStorage<string>(StorageEnum.puzzleHash))
+
     const requestData = {
         ...params,
-        client_id: puzzleHash,
+        client_id: clientId,
         // add the chain id to each event's params
         events: params.events.map((event) => {
             return {
