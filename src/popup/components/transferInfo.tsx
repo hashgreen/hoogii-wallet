@@ -1,11 +1,10 @@
 import { observer } from 'mobx-react-lite'
-import { useCallback } from 'react'
 
 import AssetIcon from '~/components/AssetIcon'
 import rootStore from '~/store'
 import { MethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
-import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
+import { mojoToBalance } from '~/utils/CoinConverter'
 
 import { IPopupPageProps } from '../types'
 
@@ -18,18 +17,6 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
         (availableAsset) =>
             request?.data?.params.assetId === availableAsset.asset_id
     )
-
-    const mojoToBalance = useCallback(
-        (amount) => {
-            if (request?.data?.params.assetId) {
-                return mojoToCat(amount).toFixed(3).toString()
-            } else {
-                return mojoToXch(amount).toFixed(12).toString()
-            }
-        },
-        [request?.data?.params.assetId]
-    )
-
     return (
         <>
             <div>
@@ -64,7 +51,11 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                                 : XCH.code}
                         </div>
                         <div className={'text-status-send'}>
-                            -{mojoToBalance(request?.data?.params.amount)}
+                            -
+                            {mojoToBalance(
+                                request?.data?.params.amount,
+                                request?.data?.params.assetId
+                            )}
                         </div>
                     </div>
                 </div>

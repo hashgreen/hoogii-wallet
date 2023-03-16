@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { JsonView } from 'react-json-view-lite'
 
 import { getParseSpendBundle } from '~/api/api'
@@ -8,7 +8,7 @@ import rootStore from '~/store'
 import { ITransaction } from '~/types/api'
 import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
-import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
+import { mojoToBalance } from '~/utils/CoinConverter'
 import { add0x } from '~/utils/encryption'
 
 import { IPopupPageProps } from '../types'
@@ -36,15 +36,6 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     const finsAsset = availableAssets?.data?.find(
         (availableAsset) => metadata?.asset_id === availableAsset.asset_id
     )
-
-    const mojoToBalance = useCallback((amount, asset_id?) => {
-        if (asset_id) {
-            return mojoToCat(amount).toString()
-        } else {
-            return mojoToXch(amount).toString()
-        }
-    }, [])
-
     const onGetParseSpendBundle = async (spendBundle) => {
         try {
             const res = await getParseSpendBundle({
@@ -56,7 +47,7 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
         } catch (error) {}
     }
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         let spendBundle = {}
         if (request.data?.method === RequestMethodEnum.SEND_TRANSACTION) {
             spendBundle = request?.data?.params?.spendBundle
