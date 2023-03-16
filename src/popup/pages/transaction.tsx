@@ -67,7 +67,7 @@ const Transaction = ({
 
     const transfer = async (params: TransferParams, fee: string) => {
         if (params.assetId) {
-            await sendCATTx?.(
+            await sendCATTx(
                 params.to,
                 params.assetId,
                 params.amount,
@@ -75,7 +75,7 @@ const Transaction = ({
                 params.memos
             )
         } else {
-            await sendXCHTx?.(params.to, params.amount, fee, params.memos)
+            await sendXCHTx(params.to, params.amount, fee, params.memos)
         }
     }
 
@@ -103,8 +103,11 @@ const Transaction = ({
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
             await transfer(
                 request.data?.params,
-                xchToMojo(data?.fee).toString()
+                xchToMojo(data?.fee).toFixed().toString()
             )
+            controller.returnData({
+                data: true,
+            })
             window.close()
         }
 
