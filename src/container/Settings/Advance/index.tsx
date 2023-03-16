@@ -4,9 +4,11 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 import Popup from '~/components/Popup'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
+import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { isDev } from '~/utils/env'
 import RightIcon from '~icons/hoogii/right.jsx'
 
@@ -17,6 +19,21 @@ const Advance = () => {
         walletStore: { logout },
     } = rootStore
     const [open, setOpen] = useState(false)
+
+    const handleResetWallet = () => {
+        setOpen(true)
+        sendMeasurement({
+            events: [
+                {
+                    name: EventEnum.RESET_WALLET,
+                    params: {
+                        category: CategoryEnum.SETTING,
+                        action: ActionEnum.CLICK,
+                    },
+                },
+            ],
+        })
+    }
     return (
         <>
             <ul>
@@ -64,7 +81,7 @@ const Advance = () => {
             <div className="gap-5 flex-col-center">
                 <button
                     className="min-w-0 btn btn-error btn-outline"
-                    onClick={() => setOpen(true)}
+                    onClick={() => handleResetWallet()}
                 >
                     {t('btn-reset_wallet')}
                 </button>
