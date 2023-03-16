@@ -4,11 +4,13 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 import { AddressBookItem } from '~/components/Item'
 import SearchBar from '~/components/SearchBar'
 import { IAddress } from '~/db'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
+import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { fuseOptions, search } from '~/utils/fuse'
 
 export interface IForm {
@@ -79,7 +81,23 @@ const AddressBook = () => {
             {!addresses.length && (
                 <div className="gap-3 flex-col-center fixed-center text-body1 text-primary-100 whitespace-nowrap">
                     {t('setting-address_book-description')}
-                    <Link to="add" className="btn btn-primary btn-outline">
+                    <Link
+                        to="add"
+                        onClick={() =>
+                            sendMeasurement({
+                                events: [
+                                    {
+                                        name: EventEnum.ADD_ADDRESS_BOOK,
+                                        params: {
+                                            category: CategoryEnum.SETTING,
+                                            action: ActionEnum.CLICK,
+                                        },
+                                    },
+                                ],
+                            })
+                        }
+                        className="btn btn-primary btn-outline"
+                    >
                         {t('btn-add_address')}
                     </Link>
                 </div>
