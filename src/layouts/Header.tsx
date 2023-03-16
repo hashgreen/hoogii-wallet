@@ -5,11 +5,12 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 import CopyTooltip from '~/components/CopyTooltip'
 import Account from '~/layouts/Account'
 import rootStore from '~/store'
 import { ChainEnum } from '~/types/chia'
-import { CategoryEnum } from '~/types/ga'
+import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { shortenHash } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
 import { isDev } from '~/utils/env'
@@ -32,6 +33,22 @@ const Header = ({ className }: IProps) => {
     } = rootStore
     const shortenAddress = useMemo(() => shortenHash(address), [address])
     const xchBalance = mojoToXch(getBalanceByPuzzleHash('0x' + puzzleHash))
+
+    const handleOnLock = () => {
+        lock()
+        sendMeasurement({
+            events: [
+                {
+                    name: EventEnum.LOCK,
+
+                    params: {
+                        category: CategoryEnum.LOCK,
+                        action: ActionEnum.CLICK,
+                    },
+                },
+            ],
+        })
+    }
 
     return (
         <nav
@@ -70,7 +87,7 @@ const Header = ({ className }: IProps) => {
                         >
                             <Link
                                 to="/"
-                                onClick={lock}
+                                onClick={() => handleOnLock()}
                                 className="btn btn-primary btn-outline"
                             >
                                 {t('btn-lock')}
