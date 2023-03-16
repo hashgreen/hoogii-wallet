@@ -7,9 +7,11 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 // import AssetIcon from '~/components/AssetIcon'
 import ErrorMessage from '~/components/ErrorMessage'
 import rootStore from '~/store'
+import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 
 interface IForm {
     code: string
@@ -59,6 +61,17 @@ const CustomPage = () => {
             assetId,
             code,
             iconUrl: '',
+        })
+        sendMeasurement({
+            events: [
+                {
+                    name: EventEnum.CUSTOM_IMPORT_TOKEN,
+                    params: {
+                        category: CategoryEnum.IMPORT_TOKEN,
+                        action: ActionEnum.CLICK,
+                    },
+                },
+            ],
         })
         navigate(-1)
     }
