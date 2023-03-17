@@ -9,7 +9,6 @@ import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 import { ICryptocurrency } from '~/types/api'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { fuseOptions, search } from '~/utils/fuse'
 
 import CustomPage from './components/CustomPage'
@@ -48,10 +47,10 @@ function ImportCAT() {
             sendMeasurement({
                 events: [
                     {
-                        name: EventEnum.IMPORT_TOKEN,
+                        name: 'import_token',
                         params: {
-                            category: CategoryEnum.IMPORT_TOKEN,
-                            action: ActionEnum.CLICK,
+                            category: 'import_token',
+                            action: 'click',
                         },
                     },
                 ],

@@ -10,7 +10,6 @@ import CopyTooltip from '~/components/CopyTooltip'
 import Account from '~/layouts/Account'
 import rootStore from '~/store'
 import { ChainEnum } from '~/types/chia'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { shortenHash } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
 import { isDev } from '~/utils/env'
@@ -39,11 +38,11 @@ const Header = ({ className }: IProps) => {
         sendMeasurement({
             events: [
                 {
-                    name: EventEnum.LOCK,
+                    name: 'lock',
 
                     params: {
-                        category: CategoryEnum.LOCK,
-                        action: ActionEnum.CLICK,
+                        category: 'lock',
+                        action: 'click',
                     },
                 },
             ],
@@ -68,7 +67,7 @@ const Header = ({ className }: IProps) => {
             </div>
             <div className="gap-2 flex-row-center">
                 <CopyTooltip
-                    gaCategory={CategoryEnum.MAIN_PAGE}
+                    gaCategory={'main_page'}
                     dataTip={t('tooltip-copy_address')}
                     copiedDataTip={t('tooltip-copied')}
                     value={address}

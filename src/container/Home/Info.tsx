@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { sendMeasurement } from '~/api/ga'
 import { AssetItem, LoadingAssetItem } from '~/components/Item'
 import rootStore from '~/store'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
 import { fuseOptions, search } from '~/utils/fuse'
 
@@ -32,10 +31,10 @@ const Info = ({ query }: { query: string }) => {
         sendMeasurement({
             events: [
                 {
-                    name: EventEnum.ASSET_DETAIL,
+                    name: 'asset_detail',
                     params: {
-                        category: CategoryEnum.MAIN_PAGE,
-                        action: ActionEnum.CLICK,
+                        category: 'main_page',
+                        action: 'click',
                         value: assetId,
                     },
                 },

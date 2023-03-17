@@ -2,9 +2,9 @@ import classNames from 'classnames'
 import { PropsWithChildren, useState } from 'react'
 
 import { sendMeasurement } from '~/api/ga'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
+import { CategoryEnum } from '~/types/ga'
 interface IProps {
-    gaCategory?: CategoryEnum
+    gaCategory?: keyof typeof CategoryEnum
     dataTip: string
     copiedDataTip: string
     value: string
@@ -28,27 +28,27 @@ const CopyTooltip = ({
             await navigator.clipboard.writeText(value)
             // ga events
             switch (gaCategory) {
-                case CategoryEnum.MAIN_PAGE:
+                case 'main_page':
                     sendMeasurement({
                         events: [
                             {
-                                name: EventEnum.COPY_ADDRESS,
+                                name: 'copy_address',
                                 params: {
-                                    category: CategoryEnum.MAIN_PAGE,
-                                    action: ActionEnum.CLICK,
+                                    category: 'main_page',
+                                    action: 'click',
                                 },
                             },
                         ],
                     })
                     break
-                case CategoryEnum.ACTIVITY:
+                case 'activity':
                     sendMeasurement({
                         events: [
                             {
-                                name: EventEnum.COPY_ADDRESS_FROM_SENDER,
+                                name: 'copy_address_from_sender',
                                 params: {
-                                    category: CategoryEnum.ACTIVITY,
-                                    action: ActionEnum.CLICK,
+                                    category: 'activity',
+                                    action: 'click',
                                 },
                             },
                         ],

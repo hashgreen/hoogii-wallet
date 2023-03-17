@@ -11,7 +11,6 @@ import Tabs from '~/components/Tabs'
 import Header from '~/layouts/Header'
 import rootStore from '~/store'
 import { ChainEnum } from '~/types/chia'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { enumArray } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
 import { puzzleHashToAddress } from '~/utils/signature'
@@ -70,10 +69,10 @@ const Home = ({ initialTab = 0 }: IProps) => {
             sendMeasurement({
                 events: [
                     {
-                        name: EventEnum.CHECK_BALANCE,
+                        name: 'check_balance',
                         params: {
-                            category: CategoryEnum.MAIN_PAGE,
-                            action: ActionEnum.MOUSE,
+                            category: 'main_page',
+                            action: 'mouse',
                         },
                     },
                 ],
@@ -98,10 +97,10 @@ const Home = ({ initialTab = 0 }: IProps) => {
         await sendMeasurement({
             events: [
                 {
-                    name: EventEnum.BUY_USDS,
+                    name: 'buy_USDS',
                     params: {
-                        category: CategoryEnum.MAIN_PAGE,
-                        action: ActionEnum.CLICK,
+                        category: 'main_page',
+                        action: 'click',
                     },
                 },
             ],

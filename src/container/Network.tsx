@@ -6,7 +6,6 @@ import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 import developmentStore from '~/store/DevelopmentStore'
 import { ChainEnum, IChain } from '~/types/chia'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { chains } from '~/utils/constants'
 
 const Network = () => {
@@ -21,11 +20,11 @@ const Network = () => {
                 {
                     name:
                         chain.name === 'Mainnet'
-                            ? EventEnum.SWITCH_TO_MAINNET
-                            : EventEnum.SWITCH_TO_TESTNET,
+                            ? 'switch_to_mainnet'
+                            : 'switch_to_testnet',
                     params: {
-                        category: CategoryEnum.NETWORK,
-                        action: ActionEnum.CLICK,
+                        category: 'network',
+                        action: 'click',
                     },
                 },
             ],

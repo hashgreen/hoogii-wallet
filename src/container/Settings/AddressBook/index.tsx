@@ -10,7 +10,6 @@ import SearchBar from '~/components/SearchBar'
 import { IAddress } from '~/db'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { fuseOptions, search } from '~/utils/fuse'
 
 export interface IForm {
@@ -87,10 +86,10 @@ const AddressBook = () => {
                             sendMeasurement({
                                 events: [
                                     {
-                                        name: EventEnum.ADD_ADDRESS_BOOK,
+                                        name: 'add_address_book',
                                         params: {
-                                            category: CategoryEnum.SETTING,
-                                            action: ActionEnum.CLICK,
+                                            category: 'setting',
+                                            action: 'click',
                                         },
                                     },
                                 ],

@@ -4,10 +4,10 @@ import DetectableOverflow from 'react-detectable-overflow'
 import { Tooltip } from 'react-tooltip'
 
 import { sendMeasurement } from '~/api/ga'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
+import { CategoryEnum } from '~/types/ga'
 import InfoIcon from '~icons/hoogii/info.jsx'
 interface IMemoDisplay {
-    gaCategory?: CategoryEnum
+    gaCategory?: keyof typeof CategoryEnum
     id: string
     memo: string
 }
@@ -20,14 +20,14 @@ const MemoDisplay = ({ id, memo, gaCategory }: IMemoDisplay) => {
         setTimeout(() => {
             // ga events
             switch (gaCategory) {
-                case CategoryEnum.ACTIVITY:
+                case 'activity':
                     sendMeasurement({
                         events: [
                             {
-                                name: EventEnum.EXPAND_MEMO,
+                                name: 'expand_memo',
                                 params: {
-                                    category: CategoryEnum.ACTIVITY,
-                                    action: ActionEnum.MOUSE,
+                                    category: 'activity',
+                                    action: 'mouse',
                                 },
                             },
                         ],

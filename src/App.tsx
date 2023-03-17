@@ -8,7 +8,6 @@ import { callGetAblyAccessToken } from '~/api/api'
 import LoadingComponent from '~/components/Loading'
 import { memoryRouter } from '~/router'
 import rootStore from '~/store'
-import { EventEnum } from '~/types/ga'
 import { apiEndpointSets } from '~/utils/constants'
 import { getStorage } from '~/utils/extension/storage'
 
@@ -38,7 +37,7 @@ const App = () => {
         sendMeasurement({
             events: [
                 {
-                    name: EventEnum.PAGE_VIEW,
+                    name: 'page_view',
                     params: {},
                 },
             ],

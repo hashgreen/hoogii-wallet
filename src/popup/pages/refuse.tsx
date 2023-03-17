@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { sendMeasurement } from '~/api/ga'
 import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
 import { APIError, MethodEnum } from '~/types/extension'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 
 import { IPopupPageProps } from '../types'
 
@@ -60,10 +59,10 @@ const Refuse = ({
                             sendMeasurement({
                                 events: [
                                     {
-                                        name: EventEnum.CONNECT_SITE,
+                                        name: 'connect_site',
                                         params: {
-                                            category: CategoryEnum.CONNENT_SITE,
-                                            action: ActionEnum.CLICK,
+                                            category: 'connent_site',
+                                            action: 'click',
                                             value: request.origin,
                                         },
                                     },

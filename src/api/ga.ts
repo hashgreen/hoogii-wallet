@@ -10,13 +10,13 @@ const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
 export const GA_API_SECRET = import.meta.env.VITE_GA_API_SECRET
 
 interface IEventParams {
-    category?: CategoryEnum
-    action?: ActionEnum
+    category?: keyof typeof CategoryEnum
+    action?: keyof typeof ActionEnum
     engagement_time_msec?: number
     value?: any
 }
 interface IEvent {
-    name: EventEnum
+    name: keyof typeof EventEnum
     params: IEventParams
 }
 

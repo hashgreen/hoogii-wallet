@@ -12,7 +12,6 @@ import { IAddress, IAsset } from '~/db'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import Validation from '~/utils/validation'
 
 import AddressCombobox from './components/AddressCombobox'
@@ -75,10 +74,10 @@ const Transfer = () => {
             sendMeasurement({
                 events: [
                     {
-                        name: EventEnum.MEMO,
+                        name: 'memo',
                         params: {
-                            category: CategoryEnum.SEND,
-                            action: ActionEnum.FILL,
+                            category: 'send',
+                            action: 'fill',
                         },
                     },
                 ],
@@ -88,10 +87,10 @@ const Transfer = () => {
         sendMeasurement({
             events: [
                 {
-                    name: EventEnum.SEND,
+                    name: 'send',
                     params: {
-                        category: CategoryEnum.SEND,
-                        action: ActionEnum.CLICK,
+                        category: 'send',
+                        action: 'click',
                     },
                 },
             ],

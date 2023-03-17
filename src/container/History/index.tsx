@@ -9,7 +9,6 @@ import Ably from '~/components/Ably'
 import Transaction from '~/components/Transaction/Transaction'
 import TransactionLoading from '~/components/Transaction/TransactionLoading'
 import rootStore from '~/store'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
 const History = () => {
     const { t } = useTranslation()
@@ -44,10 +43,10 @@ const History = () => {
         sendMeasurement({
             events: [
                 {
-                    name: EventEnum.ACTIVITY_MORE,
+                    name: 'activity_more',
                     params: {
-                        category: CategoryEnum.ACTIVITY,
-                        action: ActionEnum.CLICK,
+                        category: 'activity',
+                        action: 'click',
                     },
                 },
             ],

@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { sendMeasurement } from '~/api/ga'
 import CopyTooltip from '~/components/CopyTooltip'
 import rootStore from '~/store'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { shortenHash } from '~/utils'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
 import { puzzleHashToAddress } from '~/utils/signature'
@@ -84,10 +83,10 @@ const Transaction = ({
                         sendMeasurement({
                             events: [
                                 {
-                                    name: EventEnum.ACTIVITY_DETAIL,
+                                    name: 'activity_detail',
                                     params: {
-                                        category: CategoryEnum.ACTIVITY,
-                                        action: ActionEnum.CLICK,
+                                        category: 'activity',
+                                        action: 'click',
                                     },
                                 },
                             ],
@@ -210,7 +209,7 @@ const Transaction = ({
                     <>
                         {chain && (
                             <CopyTooltip
-                                gaCategory={CategoryEnum.ACTIVITY}
+                                gaCategory={'activity'}
                                 dataTip={t('tooltip-copy_address')}
                                 copiedDataTip={t('tooltip-copied')}
                                 value={puzzleHashToAddress(
@@ -244,7 +243,7 @@ const Transaction = ({
                     <div className="mt-1 text-tertiary">
                         {filteredMemo?.map((memo, index) => (
                             <MemoDisplay
-                                gaCategory={CategoryEnum.ACTIVITY}
+                                gaCategory={'activity'}
                                 key={`${index}-${memo}`}
                                 id={txId}
                                 memo={memo}

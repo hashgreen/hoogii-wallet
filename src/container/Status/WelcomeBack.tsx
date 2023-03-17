@@ -10,7 +10,6 @@ import HaloImg from '~/components/HaloImg'
 import PublicRouteLayout from '~/layouts/PublicRoute'
 import rootStore from '~/store'
 import { MethodEnum, SenderEnum } from '~/types/extension'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 
 export const WelcomeBack = observer(() => {
     const { t } = useTranslation()
@@ -42,11 +41,11 @@ export const WelcomeBack = observer(() => {
             sendMeasurement({
                 events: [
                     {
-                        name: EventEnum.UNLOCK,
+                        name: 'unlock',
 
                         params: {
-                            category: CategoryEnum.LOCK,
-                            action: ActionEnum.CLICK,
+                            category: 'lock',
+                            action: 'click',
                         },
                     },
                 ],

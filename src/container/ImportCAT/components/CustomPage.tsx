@@ -11,7 +11,6 @@ import { sendMeasurement } from '~/api/ga'
 // import AssetIcon from '~/components/AssetIcon'
 import ErrorMessage from '~/components/ErrorMessage'
 import rootStore from '~/store'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 
 interface IForm {
     code: string
@@ -65,10 +64,10 @@ const CustomPage = () => {
         sendMeasurement({
             events: [
                 {
-                    name: EventEnum.CUSTOM_IMPORT_TOKEN,
+                    name: 'custom_import_token',
                     params: {
-                        category: CategoryEnum.IMPORT_TOKEN,
-                        action: ActionEnum.CLICK,
+                        category: 'import_token',
+                        action: 'click',
                     },
                 },
             ],

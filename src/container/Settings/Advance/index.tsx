@@ -8,7 +8,6 @@ import { sendMeasurement } from '~/api/ga'
 import Popup from '~/components/Popup'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
-import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { isDev } from '~/utils/env'
 import RightIcon from '~icons/hoogii/right.jsx'
 
@@ -25,10 +24,10 @@ const Advance = () => {
         sendMeasurement({
             events: [
                 {
-                    name: EventEnum.RESET_WALLET,
+                    name: 'reset_wallet',
                     params: {
-                        category: CategoryEnum.SETTING,
-                        action: ActionEnum.CLICK,
+                        category: 'setting',
+                        action: 'click',
                     },
                 },
             ],
