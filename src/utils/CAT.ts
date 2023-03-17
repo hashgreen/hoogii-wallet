@@ -134,7 +134,7 @@ export class CAT extends Program {
             if (primary.puzzlehash === targetPuzzleHash && index === 0) {
                 additionalMemoList.push(Program.fromHex(primary.puzzlehash))
                 primary?.memos?.forEach((memo) => {
-                    additionalMemoList.push(Program.fromSource(memo))
+                    additionalMemoList.push(Program.fromText(memo))
                 })
             }
             console.log('additionalMemoList', additionalMemoList)
