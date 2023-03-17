@@ -70,7 +70,7 @@ const Transfer = () => {
     }, [])
 
     const onSubmit = async () => {
-        if (memo.length > 0) {
+        if (memo) {
             sendMeasurement({
                 events: [
                     {
