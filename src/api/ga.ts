@@ -3,19 +3,21 @@ import axios from 'axios'
 import rootStore from '~/store'
 import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { StorageEnum } from '~/types/storage'
+import { add0x } from '~/utils/encryption'
 import { getStorage } from '~/utils/extension/storage'
 
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
 export const GA_API_SECRET = import.meta.env.VITE_GA_API_SECRET
 
 interface IEventParams {
-    category: CategoryEnum
-    action: ActionEnum
+    category?: CategoryEnum
+    action?: ActionEnum
+    engagement_time_msec?: number
     value?: any
 }
 interface IEvent {
     name: EventEnum
-    params?: IEventParams
+    params: IEventParams
 }
 
 interface IMeasurementParams {
@@ -38,13 +40,14 @@ export async function sendMeasurement(
 
     const requestData = {
         ...params,
-        client_id: clientId,
+        client_id: add0x(clientId),
         // add the chain id to each event's params
         events: params.events.map((event) => {
             return {
                 name: event.name,
                 params: {
                     ...event.params,
+                    engagement_time_msec: 1,
                     chain_id: 'chain-' + chainId,
                 },
             }

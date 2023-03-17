@@ -8,11 +8,11 @@ import { callGetAblyAccessToken } from '~/api/api'
 import LoadingComponent from '~/components/Loading'
 import { memoryRouter } from '~/router'
 import rootStore from '~/store'
+import { EventEnum } from '~/types/ga'
 import { apiEndpointSets } from '~/utils/constants'
 import { getStorage } from '~/utils/extension/storage'
 
 import { sendMeasurement } from './api/ga'
-import { add0x } from './utils/encryption'
 
 const App = () => {
     const {
@@ -36,13 +36,10 @@ const App = () => {
 
         // Send a pageview event
         sendMeasurement({
-            client_id: add0x(puzzleHash),
             events: [
                 {
-                    name: 'page_view',
-                    params: {
-                        engagement_time_msec: 1,
-                    },
+                    name: EventEnum.PAGE_VIEW,
+                    params: {},
                 },
             ],
         })

@@ -18,6 +18,7 @@ export enum EventEnum {
     LOCK = 'lock',
     UNLOCK = 'unlock',
     CONNECT_SITE = 'connect_site',
+    PAGE_VIEW = 'page_view',
 }
 
 export enum ActionEnum {
