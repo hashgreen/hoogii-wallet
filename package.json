@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "vite --mode extension --port 3000",
         "build": "tsc && vite build",
-        "prerelease": "npm version prerelease --preid=dev && git push --tags",
+        "prerelease": "npm version prerelease --preid=dev && git push --tags && git push",
         "preview": "vite preview",
         "commit": "git add . && cz",
         "test": "jest --coverage=false",
