@@ -10,3 +10,11 @@ export const mojoToCat = (catAmount: Amount): Decimal =>
     new Decimal(catAmount).div(Math.pow(10, 3))
 export const mojoToXch = (xchAmount: Amount): Decimal =>
     new Decimal(xchAmount).div(Math.pow(10, 12))
+
+export const mojoToBalance = (amount: number | string, assetId?: string) => {
+    if (assetId) {
+        return mojoToCat(amount).toFixed().toString()
+    } else {
+        return mojoToXch(amount).toFixed().toString()
+    }
+}
