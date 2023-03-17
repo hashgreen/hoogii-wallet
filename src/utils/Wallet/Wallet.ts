@@ -328,7 +328,7 @@ export class Wallet extends Program {
                     ? [
                           Program.fromList(
                               primary.memos.map((memo) =>
-                                  Program.fromSource(memo)
+                                  Program.fromText(memo)
                               )
                           ),
                       ]

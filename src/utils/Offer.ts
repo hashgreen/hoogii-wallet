@@ -67,7 +67,7 @@ export default class Offer {
                 Program.fromBigInt(BigInt(amount)),
                 Program.fromList([
                     ...(assetId ? [Program.fromHex(puzzle_hash)] : []),
-                    ...(memo ? [Program.fromSource(memo)] : []),
+                    ...(memo ? [Program.fromText(memo)] : []),
                 ]),
             ]),
         ])
@@ -130,7 +130,7 @@ export default class Offer {
                         Program.fromBigInt(BigInt(amount)),
                         Program.fromList([
                             ...(assetId ? [Program.fromHex(puzzleHash)] : []),
-                            ...(memo ? [Program.fromSource(memo)] : []),
+                            ...(memo ? [Program.fromText(memo)] : []),
                         ]),
                     ]),
                 ]),
