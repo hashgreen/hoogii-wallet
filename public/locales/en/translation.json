@@ -105,6 +105,7 @@
     "transaction-memo": "memo",
     "transaction-farming-rewards": "Farming Rewards",
     "transaction-fee": "Fee: {{fee}} {{code}}",
+    "transfer-insufficient-balance": "Insufficient balance",
     "setting-title": "setting",
     "setting-language": "language",
     "setting-mode": "theme",

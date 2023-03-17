@@ -2,7 +2,7 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import Decimal from 'decimal.js-light'
 import * as joi from 'joi'
 import { observer } from 'mobx-react-lite'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -31,8 +31,8 @@ const Transfer = () => {
     const [open, setOpen] = useState(false)
 
     const {
-        walletStore: { addresses, chain },
-        assetsStore: { assets, XCH },
+        walletStore: { addresses, chain, puzzleHash },
+        assetsStore: { assets, XCH, getCovertedBalanceByAsset },
         historyStore: { recentAddress },
     } = rootStore
 
@@ -99,6 +99,25 @@ const Transfer = () => {
 
         setOpen(true)
     }
+
+    const isVaildAmount = useMemo(() => {
+        if (asset?.assetId && amount) {
+            const currentAssetBlance = getCovertedBalanceByAsset(
+                asset.assetId,
+                puzzleHash
+            )
+            console.log(
+                '🚀 ~ file: Transfer.tsx:109 ~ isVaildTransfer ~ assetBlance:',
+                currentAssetBlance
+            )
+            console.log(
+                'amount <= currentAssetBlance',
+                amount <= currentAssetBlance
+            )
+            return amount <= currentAssetBlance
+        }
+        return true
+    }, [asset, amount])
 
     const onKeyDown = (event, nextField: keyof IForm) => {
         if (event.key.toLowerCase() === 'enter') {
@@ -168,32 +187,56 @@ const Transfer = () => {
                                 />
                             )}
                         />
-                        <input
-                            type="text"
-                            inputMode="numeric"
-                            autoComplete="off"
-                            className="input"
-                            disabled={!asset}
-                            placeholder={t('input-send-amount-placeholder')}
-                            {...register('amount', {
-                                onChange: (e) => {
-                                    const fixed =
-                                        asset.assetId === XCH.assetId ? 12 : 3
-                                    const value = new Decimal(e.target.value)
+                        <div className="w-full">
+                            <input
+                                type="text"
+                                inputMode="numeric"
+                                autoComplete="off"
+                                className={`input ${
+                                    !isVaildAmount && 'input-error'
+                                }`}
+                                disabled={!asset}
+                                placeholder={t('input-send-amount-placeholder')}
+                                {...register('amount', {
+                                    onChange: (e) => {
+                                        const fixed =
+                                            asset.assetId === XCH.assetId
+                                                ? 12
+                                                : 3
+                                        const value = new Decimal(
+                                            e.target.value
+                                        )
 
-                                    setValue(
-                                        'amount',
-                                        !isNaN(Number(e.target.value))
-                                            ? Number(e.target.value) === 0 ||
-                                              value.decimalPlaces() < fixed
-                                                ? e.target.value
-                                                : value.toFixed(fixed)
-                                            : amount
-                                    )
-                                },
-                            })}
-                        />
+                                        setValue(
+                                            'amount',
+                                            !isNaN(Number(e.target.value))
+                                                ? Number(e.target.value) ===
+                                                      0 ||
+                                                  value.decimalPlaces() < fixed
+                                                    ? e.target.value
+                                                    : value.toFixed(fixed)
+                                                : amount
+                                        )
+                                    },
+                                })}
+                            />
+                            <ErrorMessage
+                                field={{}}
+                                errors={
+                                    !isVaildAmount
+                                        ? t('transfer-insufficient-balance')
+                                        : ''
+                                }
+                                t={t}
+                            />
+                        </div>
+
                         {/* Decimal */}
+                    </div>
+                    <div className="flex flex-row w-full">
+                        {/* <p className="text-error flex-end">
+                            {t('transfer-insufficient-balance')}
+                        </p> */}
                     </div>
                     <hr className="w-full h-px my-5 border-primary/30 " />
                     <input
@@ -217,7 +260,7 @@ const Transfer = () => {
                     <button
                         type="submit"
                         className="btn btn-primary"
-                        disabled={!isValid}
+                        disabled={!isVaildAmount || !isValid}
                     >
                         {t('btn-send')}
                     </button>
