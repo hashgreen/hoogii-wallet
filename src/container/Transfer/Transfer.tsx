@@ -78,6 +78,7 @@ const Transfer = () => {
                         params: {
                             category: 'send',
                             action: 'fill',
+                            value: memo,
                         },
                     },
                 ],
