@@ -1,10 +1,11 @@
 import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
 
+import { sendMeasurement } from '~/api/ga'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
 import developmentStore from '~/store/DevelopmentStore'
-import { ChainEnum } from '~/types/chia'
+import { ChainEnum, IChain } from '~/types/chia'
 import { chains } from '~/utils/constants'
 
 const Network = () => {
@@ -12,6 +13,25 @@ const Network = () => {
     const {
         walletStore: { chain, switchChain },
     } = rootStore
+
+    const handleSwitchChain = (chain: IChain) => {
+        sendMeasurement({
+            events: [
+                {
+                    name:
+                        chain.name === 'Mainnet'
+                            ? 'switch_to_mainnet'
+                            : 'switch_to_testnet',
+                    params: {
+                        category: 'network',
+                        action: 'click',
+                    },
+                },
+            ],
+        })
+        switchChain(chain)
+    }
+
     return (
         <div className="flex flex-col">
             {Object.values(chains)
@@ -37,7 +57,7 @@ const Network = () => {
                             id={item.id}
                             value={item.id}
                             checked={item.id === chain?.id}
-                            onChange={() => switchChain(item)}
+                            onChange={() => handleSwitchChain(item)}
                         />
                         {item.name}
                     </label>
@@ -46,7 +66,7 @@ const Network = () => {
                 <input
                     type="text"
                     value={developmentStore.apiEndpoints?.jarvan}
-                    className="input mt-1"
+                    className="mt-1 input"
                     onChange={(e) => {
                         if (developmentStore.apiEndpoints) {
                             developmentStore.apiEndpoints.jarvan =

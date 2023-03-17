@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { sendMeasurement } from '~/api/ga'
 import CopyTooltip from '~/components/CopyTooltip'
 import rootStore from '~/store'
 import { shortenHash } from '~/utils'
@@ -78,8 +79,21 @@ const Transaction = ({
             <div
                 onClick={() => {
                     setOpen(!open)
+                    if (!open) {
+                        sendMeasurement({
+                            events: [
+                                {
+                                    name: 'activity_detail',
+                                    params: {
+                                        category: 'activity',
+                                        action: 'click',
+                                    },
+                                },
+                            ],
+                        })
+                    }
                 }}
-                className="justify-between w-full mb-1 flex-row-center cursor-pointer"
+                className="justify-between w-full mb-1 cursor-pointer flex-row-center"
             >
                 <div className="flex-row-center">
                     <div
@@ -175,7 +189,7 @@ const Transaction = ({
                     }
                 )}`}
             >
-                <div className="flex justify-between pt-3 text-caption select-none">
+                <div className="flex justify-between pt-3 select-none text-caption">
                     <span className="capitalize">
                         {action === IType.Send && t('transaction-to')}
                         {action === IType.Receive && t('transaction-from')}
@@ -195,13 +209,14 @@ const Transaction = ({
                     <>
                         {chain && (
                             <CopyTooltip
+                                gaCategory={'activity'}
                                 dataTip={t('tooltip-copy_address')}
                                 copiedDataTip={t('tooltip-copied')}
                                 value={puzzleHashToAddress(
                                     action === IType.Send ? receiver : sender,
                                     chain?.prefix
                                 )}
-                                className="gap-1 mt-1 text-dark-scale-100 w-min flex-row-center after:whitespace-nowrap select-none"
+                                className="gap-1 mt-1 select-none text-dark-scale-100 w-min flex-row-center after:whitespace-nowrap"
                             >
                                 {shortenHash(
                                     puzzleHashToAddress(
@@ -214,7 +229,7 @@ const Transaction = ({
                                 <CopyIcon className="w-3 h-3" />
                             </CopyTooltip>
                         )}
-                        <div className="mt-4 text-caption capitalize">
+                        <div className="mt-4 capitalize text-caption">
                             <span>{t('transaction-detail')}</span>
                         </div>
                     </>
@@ -228,6 +243,7 @@ const Transaction = ({
                     <div className="mt-1 text-tertiary">
                         {filteredMemo?.map((memo, index) => (
                             <MemoDisplay
+                                gaCategory={'activity'}
                                 key={`${index}-${memo}`}
                                 id={txId}
                                 memo={memo}

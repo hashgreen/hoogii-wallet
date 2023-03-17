@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { sendMeasurement } from '~/api/ga'
 import Ably from '~/components/Ably'
 import Transaction from '~/components/Transaction/Transaction'
 import TransactionLoading from '~/components/Transaction/TransactionLoading'
@@ -36,6 +37,21 @@ const History = () => {
     )
 
     const isFetching = fetching || availableAssets.isFetching
+
+    const handleLoadMore = () => {
+        loadMore()
+        sendMeasurement({
+            events: [
+                {
+                    name: 'activity_more',
+                    params: {
+                        category: 'activity',
+                        action: 'click',
+                    },
+                },
+            ],
+        })
+    }
 
     return (
         <div className="pb-5">
@@ -90,7 +106,7 @@ const History = () => {
                         {hasMore && !loading && (
                             <button
                                 className="btn btn-primary btn-outline w-fit"
-                                onClick={loadMore}
+                                onClick={() => handleLoadMore()}
                             >
                                 {t('btn-more')}
                             </button>

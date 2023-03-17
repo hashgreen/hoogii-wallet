@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 import { AddressBookItem } from '~/components/Item'
 import SearchBar from '~/components/SearchBar'
 import { IAddress } from '~/db'
@@ -79,7 +80,23 @@ const AddressBook = () => {
             {!addresses.length && (
                 <div className="gap-3 flex-col-center fixed-center text-body1 text-primary-100 whitespace-nowrap">
                     {t('setting-address_book-description')}
-                    <Link to="add" className="btn btn-primary btn-outline">
+                    <Link
+                        to="add"
+                        onClick={() =>
+                            sendMeasurement({
+                                events: [
+                                    {
+                                        name: 'add_address_book',
+                                        params: {
+                                            category: 'setting',
+                                            action: 'click',
+                                        },
+                                    },
+                                ],
+                            })
+                        }
+                        className="btn btn-primary btn-outline"
+                    >
                         {t('btn-add_address')}
                     </Link>
                 </div>

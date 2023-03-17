@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 // import AssetIcon from '~/components/AssetIcon'
 import ErrorMessage from '~/components/ErrorMessage'
 import rootStore from '~/store'
@@ -59,6 +60,17 @@ const CustomPage = () => {
             assetId,
             code,
             iconUrl: '',
+        })
+        sendMeasurement({
+            events: [
+                {
+                    name: 'custom_import_token',
+                    params: {
+                        category: 'import_token',
+                        action: 'click',
+                    },
+                },
+            ],
         })
         navigate(-1)
     }

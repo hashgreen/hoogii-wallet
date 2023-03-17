@@ -1,10 +1,11 @@
 import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import Messaging from '~/api/extension/messaging'
+import { sendMeasurement } from '~/api/ga'
 import HaloImg from '~/components/HaloImg'
 import PublicRouteLayout from '~/layouts/PublicRoute'
 import rootStore from '~/store'
@@ -29,17 +30,34 @@ export const WelcomeBack = observer(() => {
         })
     }
 
+    const handleUnLock = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        const isValid = await checkPassword(password)
+
+        setIsValid(isValid)
+        if (isValid) {
+            navigate('/')
+            sendMeasurement({
+                events: [
+                    {
+                        name: 'unlock',
+
+                        params: {
+                            category: 'lock',
+                            action: 'click',
+                        },
+                    },
+                ],
+            })
+        } else setError(t('error-password-incorrect'))
+    }
+
     return (
         <PublicRouteLayout back={false}>
             <form
                 onSubmit={async (e) => {
-                    e.preventDefault()
-
-                    const isValid = await checkPassword(password)
-
-                    setIsValid(isValid)
-                    if (isValid) navigate('/')
-                    else setError(t('error-password-incorrect'))
+                    await handleUnLock(e)
                 }}
                 className="h-full pt-[116px] pb-5 flex-col-center"
             >

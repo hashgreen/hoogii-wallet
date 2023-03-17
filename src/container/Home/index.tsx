@@ -1,9 +1,10 @@
 import Decimal from 'decimal.js-light'
 import { observer } from 'mobx-react-lite'
-import { lazy, useEffect, useState } from 'react'
+import { lazy, MouseEvent, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Navigate } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 import Ably from '~/components/Ably'
 import SearchBar from '~/components/SearchBar'
 import Tabs from '~/components/Tabs'
@@ -32,6 +33,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
     const { t } = useTranslation()
     const [tab, setTab] = useState(initialTab)
     const [query, setQuery] = useState('')
+    const [onCheckBalance, setOnCheckBalance] = useState(false)
 
     const {
         walletStore: { puzzleHash, isAblyConnected, chain, isMainnet, locked },
@@ -58,6 +60,53 @@ const Home = ({ initialTab = 0 }: IProps) => {
                   .toFixed(2)
                   .toString()
             : ''
+    // todo change to useEffect
+
+    const handleOnCheckBlance = (): ReturnType<typeof setTimeout> =>
+        // while hover over 2 seconds, send a measurement
+
+        setTimeout(() => {
+            sendMeasurement({
+                events: [
+                    {
+                        name: 'check_balance',
+                        params: {
+                            category: 'main_page',
+                            action: 'mouse',
+                        },
+                    },
+                ],
+            })
+        }, 2000)
+
+    useEffect(() => {
+        if (onCheckBalance) {
+            const timerId = handleOnCheckBlance()
+
+            return () => clearTimeout(timerId)
+        }
+    }, [onCheckBalance])
+
+    const handleOnBuyUSD = async (e: MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault()
+        const redirect = `https://ramp.stably.io/?network=chia&asset=USDS&integrationId=hashgreen-a0300641&filter=true&address=${puzzleHashToAddress(
+            puzzleHash,
+            chain?.prefix
+        )}`
+
+        await sendMeasurement({
+            events: [
+                {
+                    name: 'buy_USDS',
+                    params: {
+                        category: 'main_page',
+                        action: 'click',
+                    },
+                },
+            ],
+        })
+        window.open(redirect, '_blank')
+    }
 
     useEffect(() => {
         getExchangeRate()
@@ -75,7 +124,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
                 />
             )}
             <div className="flex flex-col overflow-hidden grow">
-                <div className="overflow-auto container">
+                <div className="container overflow-auto">
                     <div className="justify-between mt-3 mb-6 flex-col-center">
                         <div className="flex flex-col-center gap-0.5 ">
                             {balancesData.isFetching ? (
@@ -83,6 +132,10 @@ const Home = ({ initialTab = 0 }: IProps) => {
                             ) : (
                                 <div
                                     className="font-bold text-headline1"
+                                    onMouseEnter={() => setOnCheckBalance(true)}
+                                    onMouseLeave={() =>
+                                        setOnCheckBalance(false)
+                                    }
                                     title={xchBalance.toFixed()}
                                 >
                                     {xchBalance.decimalPlaces() > 6
@@ -99,7 +152,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
                             )}
                             {exchangeRateData.isFetching ||
                             balancesData.isFetching ? (
-                                <div className="skeleton skeleton-text w-10" />
+                                <div className="w-10 skeleton skeleton-text" />
                             ) : (
                                 <span
                                     className="font-medium text-body2 text-primary-100"
@@ -116,15 +169,13 @@ const Home = ({ initialTab = 0 }: IProps) => {
                         <div className="flex">
                             {isMainnet && (
                                 <a
-                                    href={`https://ramp.stably.io/?network=chia&asset=USDS&integrationId=hashgreen-a0300641&filter=true&address=${puzzleHashToAddress(
-                                        puzzleHash,
-                                        chain?.prefix
-                                    )}`}
-                                    className="btn btn-CTA_main bg-none bg-white"
+                                    href="#"
+                                    className="bg-white btn btn-CTA_main bg-none"
                                     target="_blank"
                                     rel="noreferrer"
+                                    onClick={(e) => handleOnBuyUSD(e)}
                                 >
-                                    <span className="text-black mr-1">
+                                    <span className="mr-1 text-black">
                                         {t('buy')}
                                     </span>
                                     <span className="text-primary-300">
@@ -134,7 +185,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
                             )}
                             <Link
                                 to="/transfer"
-                                className="btn btn-CTA_main ml-3"
+                                className="ml-3 btn btn-CTA_main"
                             >
                                 {t('btn-send')} <SendIcon className="w-3 h-3" />
                             </Link>

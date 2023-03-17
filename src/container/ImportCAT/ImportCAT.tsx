@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { sendMeasurement } from '~/api/ga'
 import { AssetItem } from '~/components/Item'
 import SearchBar from '~/components/SearchBar'
 import BackLink from '~/layouts/BackLink'
@@ -42,13 +43,27 @@ function ImportCAT() {
     }, [])
 
     const importSelected = useCallback(() => {
-        selected.forEach(({ asset_id, code, icon_url }) =>
-            rootStore.walletStore.db.assets.add({
-                assetId: asset_id,
-                code,
-                iconUrl: icon_url,
+        if (selected.length > 0) {
+            sendMeasurement({
+                events: [
+                    {
+                        name: 'import_token',
+                        params: {
+                            category: 'import_token',
+                            action: 'click',
+                        },
+                    },
+                ],
             })
-        )
+
+            selected.forEach(({ asset_id, code, icon_url }) =>
+                rootStore.walletStore.db.assets.add({
+                    assetId: asset_id,
+                    code,
+                    iconUrl: icon_url,
+                })
+            )
+        }
     }, [selected])
 
     return (
@@ -128,6 +143,7 @@ function ImportCAT() {
                     <BackLink className="btn btn-secondary">
                         {t('btn-cancel')}
                     </BackLink>
+
                     <BackLink
                         className="btn btn-primary"
                         onClick={importSelected}

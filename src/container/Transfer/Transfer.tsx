@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { sendMeasurement } from '~/api/ga'
 import ErrorMessage from '~/components/ErrorMessage'
 import { IAddress, IAsset } from '~/db'
 import BackLink from '~/layouts/BackLink'
@@ -69,6 +70,32 @@ const Transfer = () => {
     }, [])
 
     const onSubmit = async () => {
+        if (memo.length > 0) {
+            sendMeasurement({
+                events: [
+                    {
+                        name: 'memo',
+                        params: {
+                            category: 'send',
+                            action: 'fill',
+                        },
+                    },
+                ],
+            })
+        }
+
+        sendMeasurement({
+            events: [
+                {
+                    name: 'send',
+                    params: {
+                        category: 'send',
+                        action: 'click',
+                    },
+                },
+            ],
+        })
+
         setOpen(true)
     }
 
@@ -167,7 +194,7 @@ const Transfer = () => {
                         />
                         {/* Decimal */}
                     </div>
-                    <hr className="my-5 w-full h-px border-primary/30 " />
+                    <hr className="w-full h-px my-5 border-primary/30 " />
                     <input
                         type="text"
                         inputMode="text"

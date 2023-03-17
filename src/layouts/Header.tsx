@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 import CopyTooltip from '~/components/CopyTooltip'
 import Account from '~/layouts/Account'
 import rootStore from '~/store'
@@ -32,6 +33,22 @@ const Header = ({ className }: IProps) => {
     const shortenAddress = useMemo(() => shortenHash(address), [address])
     const xchBalance = mojoToXch(getBalanceByPuzzleHash('0x' + puzzleHash))
 
+    const handleOnLock = () => {
+        lock()
+        sendMeasurement({
+            events: [
+                {
+                    name: 'lock',
+
+                    params: {
+                        category: 'lock',
+                        action: 'click',
+                    },
+                },
+            ],
+        })
+    }
+
     return (
         <nav
             className={classNames(
@@ -50,6 +67,7 @@ const Header = ({ className }: IProps) => {
             </div>
             <div className="gap-2 flex-row-center">
                 <CopyTooltip
+                    gaCategory={'main_page'}
                     dataTip={t('tooltip-copy_address')}
                     copiedDataTip={t('tooltip-copied')}
                     value={address}
@@ -68,7 +86,7 @@ const Header = ({ className }: IProps) => {
                         >
                             <Link
                                 to="/"
-                                onClick={lock}
+                                onClick={() => handleOnLock()}
                                 className="btn btn-primary btn-outline"
                             >
                                 {t('btn-lock')}

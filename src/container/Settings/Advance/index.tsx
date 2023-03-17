@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
+import { sendMeasurement } from '~/api/ga'
 import Popup from '~/components/Popup'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
@@ -17,6 +18,21 @@ const Advance = () => {
         walletStore: { logout },
     } = rootStore
     const [open, setOpen] = useState(false)
+
+    const handleResetWallet = () => {
+        setOpen(true)
+        sendMeasurement({
+            events: [
+                {
+                    name: 'reset_wallet',
+                    params: {
+                        category: 'setting',
+                        action: 'click',
+                    },
+                },
+            ],
+        })
+    }
     return (
         <>
             <ul>
@@ -64,7 +80,7 @@ const Advance = () => {
             <div className="gap-5 flex-col-center">
                 <button
                     className="min-w-0 btn btn-error btn-outline"
-                    onClick={() => setOpen(true)}
+                    onClick={() => handleResetWallet()}
                 >
                     {t('btn-reset_wallet')}
                 </button>
