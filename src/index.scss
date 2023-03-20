@@ -13,6 +13,7 @@
         width: 0px;
         background: transparent; /* make scrollbar transparent */
     }
+
     html.dark {
         --color-primary-500: 113 110 255; /* #716EFF */
         --color-primary-300: 158 1 255; /* #9E01FF */
@@ -32,7 +33,7 @@
         --color-dark-scale-100: 255 255 255; /* #FFFFFF */
         --color-skeleton: 95, 104, 129, 0.2; /* #5F6881 */
         --color-info-light: 221, 243, 255; /* #DDF3FF */
-    
+
         input {
             color-scheme: dark;
         }
@@ -44,7 +45,7 @@
         --tooltip-bg: #ced6ff;
         @apply border-none overflow-hidden text-dark-scale-100 text-body1;
         min-height: 600px;
-        min-width:400px;
+        min-width: 400px;
         width: 100vw;
         height: 100vh;
     }
@@ -66,7 +67,11 @@
             @apply scale-100;
         }
     }
-
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 }
 @layer utilities {
     /* Full */
@@ -203,20 +208,18 @@
         @apply rounded h-3;
     }
 
-    .custom-tooltips {       
+    .custom-tooltips {
         opacity: 1 !important;
         @apply bg-primary-100 w-[380px]  break-all text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
-        
     }
 
     .custom-tooltips-content {
-        width:332px ;
-        overflow: hidden ;
-        text-overflow: ellipsis ;
-        white-space: normal ;
-        display: -webkit-box  ;
-        -webkit-line-clamp: 9 ;
-        -webkit-box-orient: vertical ;
+        width: 332px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 9;
+        -webkit-box-orient: vertical;
     }
-    
 }
