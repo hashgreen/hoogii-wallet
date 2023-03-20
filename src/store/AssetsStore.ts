@@ -161,19 +161,13 @@ class AssetsStore {
             const balance = mojoToXch(
                 this.getBalanceByPuzzleHash('0x' + puzzleHash)
             ).toFixed()
-            console.log(
-                '🚀 ~ file: Transfer.tsx:113 ~ isVaildTransfer ~ balance:',
-                balance
-            )
+
             return balance
         } else {
             const balance = mojoToCat(
                 this.getBalanceByPuzzleHash(this.assetIdToPuzzleHash(assetId))
             ).toFixed()
-            console.log(
-                '🚀 ~ file: Transfer.tsx:119 ~ isVaildTransfer ~ balance:',
-                balance
-            )
+
             return balance
         }
     }

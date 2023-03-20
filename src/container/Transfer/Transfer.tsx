@@ -106,14 +106,6 @@ const Transfer = () => {
                 asset.assetId,
                 puzzleHash
             )
-            console.log(
-                '🚀 ~ file: Transfer.tsx:109 ~ isVaildTransfer ~ assetBlance:',
-                currentAssetBlance
-            )
-            console.log(
-                'amount <= currentAssetBlance',
-                amount <= currentAssetBlance
-            )
             return amount <= currentAssetBlance
         }
         return true
