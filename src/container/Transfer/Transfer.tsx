@@ -260,7 +260,7 @@ const Transfer = () => {
                     <button
                         type="submit"
                         className="btn btn-primary"
-                        disabled={!amountVaildation.isValid && isValid}
+                        disabled={!amountVaildation.isValid}
                     >
                         {t('btn-send')}
                     </button>
