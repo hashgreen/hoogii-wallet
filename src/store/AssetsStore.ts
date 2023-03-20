@@ -158,15 +158,21 @@ class AssetsStore {
         const isXCH = assetId === 'XCH'
 
         if (isXCH) {
-            const balance = mojoToXch(
-                this.getBalanceByPuzzleHash('0x' + puzzleHash)
-            ).toFixed()
+            const balance = parseFloat(
+                mojoToXch(
+                    this.getBalanceByPuzzleHash('0x' + puzzleHash)
+                ).toFixed()
+            )
 
             return balance
         } else {
-            const balance = mojoToCat(
-                this.getBalanceByPuzzleHash(this.assetIdToPuzzleHash(assetId))
-            ).toFixed()
+            const balance = parseFloat(
+                mojoToCat(
+                    this.getBalanceByPuzzleHash(
+                        this.assetIdToPuzzleHash(assetId)
+                    )
+                ).toFixed()
+            )
 
             return balance
         }

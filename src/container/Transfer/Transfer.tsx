@@ -99,17 +99,22 @@ const Transfer = () => {
 
         setOpen(true)
     }
-
-    const isVaildAmount = useMemo(() => {
+    const amountVaildation = useMemo((): {
+        isValid: boolean
+        currentBalance: number
+    } => {
         if (asset?.assetId && amount) {
             const currentAssetBlance = getCovertedBalanceByAsset(
                 asset.assetId,
                 puzzleHash
             )
-            return amount <= currentAssetBlance
+            return {
+                isValid: parseFloat(amount) <= currentAssetBlance,
+                currentBalance: currentAssetBlance,
+            }
         }
-        return true
-    }, [asset, amount])
+        return { isValid: true, currentBalance: 0 }
+    }, [asset, amount, address])
 
     const onKeyDown = (event, nextField: keyof IForm) => {
         if (event.key.toLowerCase() === 'enter') {
@@ -181,11 +186,11 @@ const Transfer = () => {
                         />
                         <div className="w-full">
                             <input
-                                type="text"
+                                type="number"
                                 inputMode="numeric"
                                 autoComplete="off"
                                 className={`input ${
-                                    !isVaildAmount && 'input-error'
+                                    !amountVaildation.isValid && 'input-error'
                                 }`}
                                 disabled={!asset}
                                 placeholder={t('input-send-amount-placeholder')}
@@ -215,8 +220,11 @@ const Transfer = () => {
                             <ErrorMessage
                                 field={{}}
                                 errors={
-                                    !isVaildAmount
-                                        ? t('transfer-insufficient-balance')
+                                    !amountVaildation.isValid
+                                        ? t('transfer-insufficient-balance', {
+                                              amount: amountVaildation.currentBalance,
+                                              code: asset.code,
+                                          })
                                         : ''
                                 }
                                 t={t}
@@ -252,7 +260,7 @@ const Transfer = () => {
                     <button
                         type="submit"
                         className="btn btn-primary"
-                        disabled={!isVaildAmount || !isValid}
+                        disabled={!amountVaildation.isValid && isValid}
                     >
                         {t('btn-send')}
                     </button>
