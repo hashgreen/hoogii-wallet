@@ -54,7 +54,7 @@ const Transfer = () => {
         setValue,
         watch,
         setFocus,
-        formState: { errors, isValid },
+        formState: { errors },
     } = useForm<IForm>({
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -232,11 +232,6 @@ const Transfer = () => {
                         </div>
 
                         {/* Decimal */}
-                    </div>
-                    <div className="flex flex-row w-full">
-                        {/* <p className="text-error flex-end">
-                            {t('transfer-insufficient-balance')}
-                        </p> */}
                     </div>
                     <hr className="w-full h-px my-5 border-primary/30 " />
                     <input
