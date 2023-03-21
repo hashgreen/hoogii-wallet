@@ -44,7 +44,7 @@ const Transfer = () => {
             .unknown()
             .required(),
         asset: joi.object().required(),
-        amount: joi.string().required(),
+        amount: joi.number().required(),
         memo: joi.string().allow(''),
     })
     const {
@@ -54,7 +54,7 @@ const Transfer = () => {
         setValue,
         watch,
         setFocus,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm<IForm>({
         mode: 'onChange',
         reValidateMode: 'onChange',
@@ -255,7 +255,7 @@ const Transfer = () => {
                     <button
                         type="submit"
                         className="btn btn-primary"
-                        disabled={!amountVaildation.isValid}
+                        disabled={!amountVaildation.isValid || !isValid}
                     >
                         {t('btn-send')}
                     </button>
