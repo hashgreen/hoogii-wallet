@@ -2,10 +2,16 @@ import classNames from 'classnames'
 import { PropsWithChildren, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import CloseIcon from '~icons/hoogii/close.jsx'
+
 interface IProps {
     actionButton?: ReactNode
     close?: () => void
     className?: string
+    childrenClassName?: string
+    closeBtn?: boolean
+    btnClassName?: string
+    closeIconBtn?: boolean
 }
 
 const Popup = ({
@@ -13,6 +19,10 @@ const Popup = ({
     actionButton,
     className,
     children,
+    childrenClassName,
+    closeBtn = true,
+    btnClassName,
+    closeIconBtn = false,
 }: PropsWithChildren<IProps>) => {
     const { t } = useTranslation()
     return (
@@ -24,19 +34,39 @@ const Popup = ({
                 )}
             >
                 <div
-                    className="-z-10 absolute-full bg-overlay"
-                    onClick={close}
-                ></div>
-                <div className="flex flex-col gap-10 px-5 pb-14 pt-7">
+                    className={classNames(
+                        ' relative flex flex-col gap-10 px-5 pb-14 pt-7',
+                        childrenClassName
+                    )}
+                >
+                    {closeIconBtn && (
+                        <div
+                            onClick={close}
+                            className="text-[#5F6881] absolute right-0"
+                        >
+                            <CloseIcon />
+                        </div>
+                    )}
                     {children}
                 </div>
-                <div className="gap-4 flex-center pb-7">
-                    <button className="btn btn-secondary" onClick={close}>
-                        {actionButton ? t('btn-cancel') : t('btn-close')}
-                    </button>
+                <div
+                    className={classNames(
+                        'gap-4 flex-center pb-7',
+                        btnClassName
+                    )}
+                >
+                    {closeBtn && (
+                        <button className="btn btn-secondary" onClick={close}>
+                            {actionButton ? t('btn-cancel') : t('btn-close')}
+                        </button>
+                    )}
                     {actionButton}
                 </div>
             </div>
+            <div
+                className="-z-10 absolute-full bg-overlay"
+                onClick={close}
+            ></div>
         </div>
     )
 }

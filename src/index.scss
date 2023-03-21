@@ -111,7 +111,7 @@
         background: #292b50;
     }
     .bg-popup {
-        @apply rounded-[20px] bg-black/80 z-50 ring-2 ring-primary;
+        @apply rounded-[20px] bg-black z-50 ring-2 ring-primary;
     }
     .bg-overlay {
         @apply bg-black/40;
@@ -151,6 +151,15 @@
             mask-composite: exclude;
         }
     }
+
+    .btn {
+        &-md {
+            &-primary {
+                @apply min-w-[100px] min-h-[28px]  text-center align-middle font-bold text-xs  bg-primary-500 rounded-[4px] text-white #{!important};
+            }
+        }
+    }
+
     .btn-CTA_main {
         @apply text-button2 bg-CTA_main rounded-lg min-w-0 px-3 py-1.5 gap-1 text-dark-scale-100;
     }
@@ -221,5 +230,42 @@
         display: -webkit-box;
         -webkit-line-clamp: 9;
         -webkit-box-orient: vertical;
+    }
+
+    .notification-popup {
+        &-container {
+            @apply w-[336px] p-5 border-none max-h-[472px] bg-white opacity-100 z-50 ring-0 #{!important};
+            &-button {
+                @apply pb-0 mt-6 #{!important};
+            }
+        }
+
+        &-content {
+            @apply gap-0 p-0 px-5 #{!important};
+        }
+
+        &-button {
+            @apply btn-md-primary;
+        }
+
+        &-text {
+            @apply text-secondary;
+            &-title {
+                @apply font-semibold  text-xl text-center;
+            }
+            &-subtitle {
+                @apply mt-2 font-semibold text-sm leading-[17px] text-center text-primary-500;
+            }
+        }
+
+        &-list {
+            @apply mt-4 text-body2;
+            &-title {
+                @apply text-left  text-black list-disc;
+            }
+            &-content {
+                @apply text-[#5F6881] font-normal;
+            }
+        }
     }
 }

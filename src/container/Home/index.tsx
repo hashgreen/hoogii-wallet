@@ -6,6 +6,7 @@ import { Link, Navigate } from 'react-router-dom'
 
 import { sendMeasurement } from '~/api/ga'
 import Ably from '~/components/Ably'
+import NotificationPopup from '~/components/NotificationPopup'
 import SearchBar from '~/components/SearchBar'
 import Tabs from '~/components/Tabs'
 import Header from '~/layouts/Header'
@@ -114,6 +115,7 @@ const Home = ({ initialTab = 0 }: IProps) => {
 
     return (
         <div className="relative flex flex-col h-full bg-main">
+            <NotificationPopup />
             <Header className="sticky left-0 right-0" />
             {isAblyConnected && puzzleHash && (
                 <Ably
