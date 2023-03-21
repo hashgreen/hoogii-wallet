@@ -59,7 +59,7 @@ const MemoDisplay = ({ id, memo, gaCategory }: IMemoDisplay) => {
                 className={classNames('w-4', overflow ? '' : 'hidden')}
                 data-tooltip-html={`<span class="custom-tooltips-content">${memo}</span>`}
             >
-                <InfoIcon className="w-3 h-3 text-active" />
+                <InfoIcon className="w-3 h-3 hover:text-active" />
             </a>
             {/* TODO  refactor use tailwind here */}
             <Tooltip id={id} className="custom-tooltips" />
