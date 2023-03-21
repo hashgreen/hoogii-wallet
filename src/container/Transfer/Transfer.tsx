@@ -44,7 +44,7 @@ const Transfer = () => {
             .unknown()
             .required(),
         asset: joi.object().required(),
-        amount: joi.string().required(),
+        amount: joi.number().required(),
         memo: joi.string().allow(''),
     })
     const {
@@ -233,11 +233,6 @@ const Transfer = () => {
 
                         {/* Decimal */}
                     </div>
-                    <div className="flex flex-row w-full">
-                        {/* <p className="text-error flex-end">
-                            {t('transfer-insufficient-balance')}
-                        </p> */}
-                    </div>
                     <hr className="w-full h-px my-5 border-primary/30 " />
                     <input
                         type="text"
@@ -260,7 +255,7 @@ const Transfer = () => {
                     <button
                         type="submit"
                         className="btn btn-primary"
-                        disabled={!amountVaildation.isValid}
+                        disabled={!amountVaildation.isValid || !isValid}
                     >
                         {t('btn-send')}
                     </button>
