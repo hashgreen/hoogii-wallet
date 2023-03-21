@@ -17,6 +17,7 @@ import { IAsset } from '~/db'
 import rootStore from '~/store'
 import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
 import { CAT } from '~/utils/CAT'
+import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
 import { chains } from '~/utils/constants'
 import { getStorage, setStorage } from '~/utils/extension/storage'
 import { Wallet } from '~/utils/Wallet/Wallet'
@@ -151,6 +152,30 @@ class AssetsStore {
         ]
 
         await this.getBalance(puzzleHashes)
+    }
+
+    getCovertedBalanceByAsset = (assetId: string, puzzleHash: string) => {
+        const isXCH = assetId === 'XCH'
+
+        if (isXCH) {
+            const balance = parseFloat(
+                mojoToXch(
+                    this.getBalanceByPuzzleHash('0x' + puzzleHash)
+                ).toFixed()
+            )
+
+            return balance
+        } else {
+            const balance = parseFloat(
+                mojoToCat(
+                    this.getBalanceByPuzzleHash(
+                        this.assetIdToPuzzleHash(assetId)
+                    )
+                ).toFixed()
+            )
+
+            return balance
+        }
     }
 
     getExchangeRate = async () => {

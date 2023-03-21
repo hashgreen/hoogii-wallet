@@ -4,12 +4,13 @@ import { TFunction } from 'react-i18next'
 
 interface IProps {
     field: {
-        key: string
+        key?: string
         value?: string
     }
     errors:
         | FieldErrorsImpl<{ [key: string]: string }>
         | Merge<FieldError, FieldErrorsImpl<{ [key: string]: string }>>
+        | string
     className?: string
     t?: TFunction
 }
@@ -20,7 +21,7 @@ const ErrorMessage = ({
     className = 'mt-2',
     t,
 }: IProps) => {
-    const message = errors?.[key]?.message
+    const message = key ? errors?.[key]?.message : errors
     return message ? (
         <div className={classNames('text-error text-caption', className)}>
             {t
