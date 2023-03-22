@@ -6,11 +6,11 @@ import { Link, Navigate } from 'react-router-dom'
 
 import { sendMeasurement } from '~/api/ga'
 import Ably from '~/components/Ably'
-import { notification } from '~/components/Notification'
 import SearchBar from '~/components/SearchBar'
 import Tabs from '~/components/Tabs'
 import Header from '~/layouts/Header'
 import rootStore from '~/store'
+import { notification } from '~/store/NotificationStore'
 import { ChainEnum } from '~/types/chia'
 import { rewardData, versionData } from '~/types/notification'
 import { enumArray } from '~/utils'
@@ -111,6 +111,13 @@ const Home = ({ initialTab = 0 }: IProps) => {
 
     useEffect(() => {
         getExchangeRate()
+        if (!locked) {
+            notification.refresh()
+            // TODO - check version
+            // notification.add(versionData)
+            // TODO - listen to websocket
+            // notification.add(rewardData)
+        }
     }, [])
     return (
         <div className="relative flex flex-col h-full bg-main">
@@ -224,15 +231,6 @@ const Home = ({ initialTab = 0 }: IProps) => {
                         )}
                     </Tabs>
                 </div>
-                <button
-                    className="m-auto btn-md-primary w-fit"
-                    onClick={() => {
-                        notification.add(rewardData)
-                        notification.add(versionData)
-                    }}
-                >
-                    test notification
-                </button>
             </div>
             {tab === 0 && (
                 <div className="pb-8 flex-center pt-7">

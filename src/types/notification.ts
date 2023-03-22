@@ -4,12 +4,12 @@ interface IContnet {
 }
 
 export interface INotification {
-    id?: string
+    id: string
     img?: string
     title: string
     subtitle: string
     contents?: IContnet[]
-    onClose: () => void
+    onClose?: () => void
 }
 
 export type NotificationType = 'version' | 'reward'
