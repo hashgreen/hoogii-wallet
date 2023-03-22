@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import CloseIcon from '~icons/hoogii/close.jsx'
 
 interface IProps {
+    id?: string
     actionButton?: ReactNode
     close?: () => void
     className?: string
@@ -15,6 +16,7 @@ interface IProps {
 }
 
 const Popup = ({
+    id,
     close,
     actionButton,
     className,
@@ -26,7 +28,7 @@ const Popup = ({
 }: PropsWithChildren<IProps>) => {
     const { t } = useTranslation()
     return (
-        <div className="fixed inset-0 z-50 px-5 py-auto flex-center">
+        <div className="fixed inset-0 z-50 px-5 py-auto flex-center" id={id}>
             <div
                 className={classNames(
                     'flex flex-col bg-popup !h-min',
@@ -42,7 +44,7 @@ const Popup = ({
                     {closeIconBtn && (
                         <div
                             onClick={close}
-                            className="text-[#5F6881] absolute right-0"
+                            className="text-[#5F6881] absolute right-0 cursor-pointer"
                         >
                             <CloseIcon />
                         </div>

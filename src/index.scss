@@ -241,11 +241,15 @@
         }
 
         &-content {
-            @apply gap-0 p-0 px-5 #{!important};
+            @apply h-full overflow-hidden gap-0 p-0 px-5 #{!important};
         }
 
         &-button {
             @apply btn-md-primary;
+        }
+
+        &-img {
+            @apply mx-auto mb-2;
         }
 
         &-text {
@@ -259,12 +263,12 @@
         }
 
         &-list {
-            @apply mt-4 text-body2;
+            @apply overflow-y-scroll mt-4 text-body2 gap-2 flex-col flex;
             &-title {
                 @apply text-left  text-black list-disc;
             }
             &-content {
-                @apply text-[#5F6881] font-normal;
+                @apply text-[#5F6881] font-normal mt-1;
             }
         }
     }

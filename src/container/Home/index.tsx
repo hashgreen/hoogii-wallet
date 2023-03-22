@@ -6,12 +6,13 @@ import { Link, Navigate } from 'react-router-dom'
 
 import { sendMeasurement } from '~/api/ga'
 import Ably from '~/components/Ably'
-import NotificationPopup from '~/components/NotificationPopup'
+import { notification } from '~/components/Notification'
 import SearchBar from '~/components/SearchBar'
 import Tabs from '~/components/Tabs'
 import Header from '~/layouts/Header'
 import rootStore from '~/store'
 import { ChainEnum } from '~/types/chia'
+import { rewardData, versionData } from '~/types/notification'
 import { enumArray } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
 import { puzzleHashToAddress } from '~/utils/signature'
@@ -29,7 +30,6 @@ enum TabEnum {
 interface IProps {
     initialTab?: number
 }
-
 const Home = ({ initialTab = 0 }: IProps) => {
     const { t } = useTranslation()
     const [tab, setTab] = useState(initialTab)
@@ -112,10 +112,8 @@ const Home = ({ initialTab = 0 }: IProps) => {
     useEffect(() => {
         getExchangeRate()
     }, [])
-
     return (
         <div className="relative flex flex-col h-full bg-main">
-            <NotificationPopup />
             <Header className="sticky left-0 right-0" />
             {isAblyConnected && puzzleHash && (
                 <Ably
@@ -226,6 +224,15 @@ const Home = ({ initialTab = 0 }: IProps) => {
                         )}
                     </Tabs>
                 </div>
+                <button
+                    className="m-auto btn-md-primary w-fit"
+                    onClick={() => {
+                        notification.add(rewardData)
+                        notification.add(versionData)
+                    }}
+                >
+                    test notification
+                </button>
             </div>
             {tab === 0 && (
                 <div className="pb-8 flex-center pt-7">

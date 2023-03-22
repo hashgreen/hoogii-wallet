@@ -68,7 +68,8 @@
         "react-tooltip": "^5.8.1",
         "react-zlib-js": "^1.0.5",
         "remark-gfm": "^3.0.1",
-        "remark-rehype": "^10.1.0"
+        "remark-rehype": "^10.1.0",
+        "uuid": "^9.0.0"
     },
     "devDependencies": {
         "@crxjs/vite-plugin": "^1.0.14",
