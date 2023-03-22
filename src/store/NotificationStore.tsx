@@ -1,4 +1,3 @@
-import { ReactElement, ReactNode } from 'react'
 import ReactDOM from 'react-dom'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -26,9 +25,7 @@ export class NotificationManager {
     public async refresh() {
         const data = (await getStorage<INotification[]>('notification')) || []
         this.notification = data
-        if (data.length === 0) {
-            setStorage({ notification: [] })
-        } else {
+        if (data.length !== 0) {
             this.render()
         }
     }
@@ -41,9 +38,16 @@ export class NotificationManager {
         }
 
         const data = [...this.notification, notification]
-
+        console.log(
+            '🚀 ~ file: NotificationStore.tsx:43 ~ NotificationManager ~ add ~ data:',
+            data
+        )
         this.notification = [...data]
         setStorage({ notification: [...data] })
+        console.log(
+            '🚀 ~ file: NotificationStore.tsx:49 ~ NotificationManager ~ add ~ setStorage:',
+            setStorage
+        )
         this.render()
     }
 
