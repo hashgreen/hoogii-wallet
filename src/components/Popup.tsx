@@ -44,7 +44,7 @@ const Popup = ({
                     {closeIconBtn && (
                         <div
                             onClick={close}
-                            className="text-[#5F6881] absolute right-0 cursor-pointer"
+                            className="text-[#5F6881] absolute top-0 right-0 cursor-pointer text-lg"
                         >
                             <CloseIcon />
                         </div>

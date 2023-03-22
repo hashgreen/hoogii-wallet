@@ -234,14 +234,14 @@
 
     .notification-popup {
         &-container {
-            @apply w-[336px] p-5 border-none max-h-[472px] bg-white opacity-100 z-50 ring-0 #{!important};
+            @apply w-[336px] px-5 py-6 rounded-xl  border-none max-h-[472px] bg-white opacity-100 z-50 ring-0 #{!important};
             &-button {
-                @apply pb-0 mt-6 #{!important};
+                @apply pb-0  #{!important};
             }
         }
 
         &-content {
-            @apply h-full overflow-hidden gap-0 p-0 px-5 #{!important};
+            @apply h-full   gap-0 p-0  overflow-y-hidden #{!important};
         }
 
         &-button {
@@ -263,12 +263,15 @@
         }
 
         &-list {
-            @apply overflow-y-scroll mt-4 text-body2 gap-2 flex-col flex;
+            @apply mt-4  gap-2 flex-col  flex max-h-full list-outside list-disc overflow-scroll pl-5;
+
             &-title {
-                @apply text-left  text-black list-disc;
+                @apply text-left text-subtitle2   #{!important};
             }
+
             &-content {
-                @apply text-[#5F6881] font-normal mt-1;
+                @apply text-body2 text-[#5F6881];
+                font-weight: 400;
             }
         }
     }

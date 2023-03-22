@@ -43,11 +43,13 @@ const Notification = ({
             <ul className="notification-popup-list">
                 {contents &&
                     contents.map(({ title, description }) => (
-                        <li
-                            key={title}
-                            className="notification-popup-list-title"
-                        >
-                            <h3>{title}</h3>
+                        <li key={title} className="">
+                            <ol>
+                                <h3 className="notification-popup-list-title">
+                                    {title}
+                                </h3>
+                            </ol>
+
                             {description && (
                                 <p className="notification-popup-list-content">
                                     {description}
