@@ -111,7 +111,7 @@
         background: #292b50;
     }
     .bg-popup {
-        @apply rounded-[20px] bg-black/80 z-50 ring-2 ring-primary;
+        @apply rounded-[20px] bg-black z-50 ring-2 ring-primary;
     }
     .bg-overlay {
         @apply bg-black/40;
@@ -151,6 +151,15 @@
             mask-composite: exclude;
         }
     }
+
+    .btn {
+        &-md {
+            &-primary {
+                @apply min-w-[100px] min-h-[28px]  text-center align-middle font-bold text-xs  bg-primary-500 rounded-[4px] text-white;
+            }
+        }
+    }
+
     .btn-CTA_main {
         @apply text-button2 bg-CTA_main rounded-lg min-w-0 px-3 py-1.5 gap-1 text-dark-scale-100;
     }

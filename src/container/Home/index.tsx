@@ -6,6 +6,7 @@ import { Link, Navigate } from 'react-router-dom'
 
 import { sendMeasurement } from '~/api/ga'
 import Ably from '~/components/Ably'
+import Notification from '~/components/Notification'
 import SearchBar from '~/components/SearchBar'
 import Tabs from '~/components/Tabs'
 import Header from '~/layouts/Header'
@@ -28,7 +29,6 @@ enum TabEnum {
 interface IProps {
     initialTab?: number
 }
-
 const Home = ({ initialTab = 0 }: IProps) => {
     const { t } = useTranslation()
     const [tab, setTab] = useState(initialTab)
@@ -111,7 +111,6 @@ const Home = ({ initialTab = 0 }: IProps) => {
     useEffect(() => {
         getExchangeRate()
     }, [])
-
     return (
         <div className="relative flex flex-col h-full bg-main">
             <Header className="sticky left-0 right-0" />
@@ -236,6 +235,8 @@ const Home = ({ initialTab = 0 }: IProps) => {
                 </div>
             )}
             {locked && <Navigate to="/locked" replace={true} />}
+
+            <Notification />
         </div>
     )
 }
