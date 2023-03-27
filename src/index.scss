@@ -155,7 +155,7 @@
     .btn {
         &-md {
             &-primary {
-                @apply min-w-[100px] min-h-[28px]  text-center align-middle font-bold text-xs  bg-primary-500 rounded-[4px] text-white #{!important};
+                @apply min-w-[100px] min-h-[28px]  text-center align-middle font-bold text-xs  bg-primary-500 rounded-[4px] text-white;
             }
         }
     }
@@ -219,7 +219,7 @@
 
     .custom-tooltips {
         opacity: 1 !important;
-        @apply bg-primary-100 w-[380px]  break-all text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
+        @apply bg-primary-100 w-[390px] break-all text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
     }
 
     .custom-tooltips-content {

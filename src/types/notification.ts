@@ -22,9 +22,3 @@ export type TxRewardNotification = Pick<
     INotification,
     'img' | 'title' | 'subtitle'
 >
-
-export const rewardData: TxRewardNotification = {
-    img: '/images/icons/tx-status-reward.svg',
-    title: 'Congratulations!!!',
-    subtitle: 'You’ve got farming rewords! Check it in activity!',
-}

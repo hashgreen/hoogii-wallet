@@ -26,7 +26,7 @@ import Secure from '~/utils/Secure'
 import { puzzleHashToAddress } from '~/utils/signature'
 import { Wallet } from '~/utils/Wallet/Wallet'
 
-import { getSpendableCoins } from '../api'
+import { callGetBalance, getSpendableCoins } from '../api'
 import * as Errors from './errors'
 import { permission } from './permission'
 const connect = async (origin: string): Promise<boolean> => {
@@ -165,6 +165,45 @@ const signCoinSpend = async ({ coinSpends }: SignCoinSpendsParams) => {
     return add0x(signatures.toHex())
 }
 
+const getAssetBalance = async (params: {
+    type: string | null
+    assetId: string | null
+}) => {
+    let puzzleHash = await getStorage<string>(StorageEnum.puzzleHash)
+    if (params.type === AssetCoinsTypeEnum.NFT) {
+        // TODO: develop when NFT implement
+        throw Errors.UnderDevelopment
+    }
+
+    if (params.type === AssetCoinsTypeEnum.DID) {
+        // TODO:develop when DID implement
+        throw Errors.UnderDevelopment
+    }
+
+    if (params.type === AssetCoinsTypeEnum.CAT) {
+        if (!params.assetId) {
+            throw Errors.InvalidParamsError
+        }
+        const walletPublicKey = await Secure.getWalletPublicKey()
+        const wallet = new Wallet(walletPublicKey, {
+            hardened: true,
+            index: 0,
+        })
+
+        const assetId = fromHex(params.assetId)
+        const cat = new CAT(assetId, wallet)
+        puzzleHash = cat.hashHex()
+    }
+
+    const balance = await callGetBalance(
+        {
+            puzzle_hash: puzzleHash,
+        },
+        { isShowToast: false }
+    )
+    return { spendableCoinCount: balance?.data?.data || 0 }
+}
+
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
         !request?.isConnected ||
@@ -210,7 +249,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.GET_ASSET_COINS:
             return getAssetCoins(request.data.params)
         case RequestMethodEnum.GET_ASSET_BALANCE:
-            throw Errors.UnderDevelopment
+            return getAssetBalance(request.data.params)
         case RequestMethodEnum.SIGN_COIN_SPENDS:
             return signCoinSpend(request.data.params)
         case RequestMethodEnum.SIGN_MESSAGE:
