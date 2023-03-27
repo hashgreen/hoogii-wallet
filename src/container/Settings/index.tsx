@@ -26,8 +26,13 @@ const languages: ILanguageItem[] = [
         supported: true,
     },
     {
-        title: 'Chinese',
-        code: 'zh-TW',
+        title: '繁體中文',
+        code: 'zh-tw',
+        supported: false,
+    },
+    {
+        title: '简体中文',
+        code: 'zh-ch',
         supported: false,
     },
 ]
@@ -121,7 +126,7 @@ const Settings = () => {
                     </button>
                 </div>
             )}
-            {isDev && <hr className="border-primary/30 my-5" />}
+            {isDev && <hr className="my-5 border-primary/30" />}
             <ul>
                 {[
                     {
