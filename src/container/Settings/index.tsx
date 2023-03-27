@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom'
 import Version from '~/components/Version'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import { isDev } from '~/utils/env'
+import { getStorage, setStorage } from '~/utils/extension/storage'
+import i18n from '~/utils/i18n'
 import BottomIcon from '~icons/hoogii/bottom.jsx'
 import DarkIcon from '~icons/hoogii/dark.jsx'
 import LightIcon from '~icons/hoogii/light.jsx'
@@ -28,25 +30,33 @@ const languages: ILanguageItem[] = [
     {
         title: '繁體中文',
         code: 'zh-tw',
-        supported: false,
+        supported: true,
     },
     {
         title: '简体中文',
         code: 'zh-ch',
-        supported: false,
+        supported: true,
     },
 ]
 
 const Settings = () => {
     const { t } = useTranslation()
     useClosablePage(t('setting-title'), '/')
-    const [language, setLanguage] = useState<ILanguageItem>(languages[0])
+    const [language, setLanguage] = useState<ILanguageItem>(
+        languages.filter((item) => item.code === i18n.language)[0]
+    )
     const [theme, setTheme] = useState<'light' | 'dark'>('dark')
 
     const toggleTheme = useCallback(() => {
         if (theme === 'light') setTheme('dark')
         else setTheme('light')
     }, [theme, setTheme])
+
+    function handleSwitchLanguage(item: ILanguageItem): void {
+        i18n.changeLanguage(item.code)
+        setLanguage(item)
+        setStorage({ locale: item.code })
+    }
 
     return (
         <div className="flex flex-col overflow-hidden grow">
@@ -88,9 +98,10 @@ const Settings = () => {
                                     key={item.code}
                                     value={item}
                                     disabled={!item.supported}
+                                    onClick={() => handleSwitchLanguage(item)}
                                     className={({ active, selected }) =>
                                         classNames(
-                                            'h-8 px-2 bg-white/5 flex-row-center rounded',
+                                            ' cursor-pointer h-8 px-2 bg-white/5 flex-row-center rounded',
                                             (active || selected) &&
                                                 'bg-white/20'
                                         )

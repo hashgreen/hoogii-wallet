@@ -125,10 +125,10 @@
     "setting-address_book-delete_popup-title": "刪除{{name}}",
     "setting-address_book-delete_popup-description": "您將從地址簿中刪除此聯繫人。",
     "setting-advance": "進階",
-    "setting-advance-feedback-menu-title": "調試反饋/交易",
-    "setting-advance-about_chia_cointset_model": "有關Chia Coinset模型",
+    "setting-advance-feedback-menu-title": "錯誤回報/交易",
+    "setting-advance-about_chia_cointset_model": "關於 Chia Coin set模型",
     "setting-advance-reset_popup-description1": "此操作將刪除此設備上的當前錢包和備份助記詞，以及您曾經編輯過的帳戶、無餘額的Token和聯繫人。您還可以重新添加以前創建的任何帳戶，以及您添加到帳戶中的任何自定義令牌也需要重新添加。",
     "setting-advance-reset_popup-description2": "請確保在繼續之前使用正確的備份助記詞。您將無法撤消此操作。",
     "setting-connected_sites": "已連接網站",
-    "setting-connected_sites-description": "您可以連接的Hoogii交易所。"
+    "setting-connected_sites-description": "您可以使用 Hoogii 連接的交易所"
 }
