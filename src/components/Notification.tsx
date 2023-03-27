@@ -71,22 +71,21 @@ const Notification = () => {
                     </div>
                     {/* list */}
                     <ul className="flex flex-col max-h-full gap-2 pl-10 mt-4 overflow-scroll list-disc list-outside">
-                        {data[0].contents &&
-                            data[0].contents.map(({ title, description }) => (
-                                <li key={title} className="">
-                                    <ol>
-                                        <h3 className="text-left text-black text-subtitle2">
-                                            {title}
-                                        </h3>
-                                    </ol>
+                        {data[0]?.contents?.map(({ title, description }) => (
+                            <li key={title} className="">
+                                <ol>
+                                    <h3 className="text-left text-black text-subtitle2">
+                                        {title}
+                                    </h3>
+                                </ol>
 
-                                    {description && (
-                                        <p className=" text-body2 text-[#5F6881] font-normal ">
-                                            {description}
-                                        </p>
-                                    )}
-                                </li>
-                            ))}
+                                {description && (
+                                    <p className=" text-body2 text-[#5F6881] font-normal ">
+                                        {description}
+                                    </p>
+                                )}
+                            </li>
+                        ))}
                     </ul>
 
                     <button
