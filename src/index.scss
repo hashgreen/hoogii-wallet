@@ -210,7 +210,7 @@
 
     .custom-tooltips {
         opacity: 1 !important;
-        @apply bg-primary-100 w-[380px]  break-all text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
+        @apply bg-primary-100 w-[390px] break-all text-black rounded-lg z-50 absolute text-sm px-6 py-4 #{!important};
     }
 
     .custom-tooltips-content {
