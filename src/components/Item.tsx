@@ -83,7 +83,7 @@ export const LoadingAssetItem = () => {
     return (
         <Item className="!px-3 pointer-events-none">
             <span className="gap-3 font-bold flex-row-center">
-                <div className="skeleton rounded-full w-10 aspect-square"></div>
+                <div className="w-10 rounded-full skeleton aspect-square"></div>
                 <div className="skeleton skeleton-text w-[120px]"></div>
             </span>
             <div className="skeleton skeleton-text w-[60px]"></div>
