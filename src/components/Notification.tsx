@@ -7,17 +7,15 @@ import CloseIcon from '~icons/hoogii/close.jsx'
 
 import pkg from '../../package.json'
 import versionData from '../../public/data/version.json'
+
 const Notification = () => {
     const [data, setData] = useState<INotification[]>([])
 
-    const handleOnClose = (version?: string) => {
-        if (version) {
-            setStorage({ last_version_notification: version })
-        }
+    const handleOnClose = () => {
+        const curVersion = pkg.version.split('-')[0]
+        setStorage({ last_version_notification: curVersion })
 
-        const newData = data.slice(1)
-
-        setData(newData)
+        setData((data) => data.slice(1))
     }
 
     const initData = async () => {
@@ -28,11 +26,11 @@ const Notification = () => {
         const curVersion = pkg.version.split('-')[0]
 
         const last_version_notification =
-            (await getStorage<string>('last_version_notification')) || false
+            (await getStorage<string>('last_version_notification')) || '0.0.0'
 
         if (
-            !last_version_notification ||
-            curVersion > last_version_notification
+            curVersion > last_version_notification &&
+            curVersion === versionData.version
         ) {
             setData([...data, versionData])
         }
@@ -51,7 +49,7 @@ const Notification = () => {
                     className="w-[336px]  flex flex-col rounded-xl  max-h-[472px] bg-white  z-50  fixed  flex-center p-5"
                 >
                     <div
-                        onClick={() => handleOnClose(data[0].version)}
+                        onClick={() => handleOnClose()}
                         className="text-[#5F6881] absolute top-5 right-5 cursor-pointer text-lg"
                     >
                         <CloseIcon />
@@ -90,7 +88,7 @@ const Notification = () => {
 
                     <button
                         className="btn-md-primary"
-                        onClick={() => handleOnClose(data[0].version)}
+                        onClick={() => handleOnClose()}
                     >
                         {t('btn-got-it')}
                     </button>
