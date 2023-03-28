@@ -47,7 +47,7 @@ function ImportCAT() {
 
         setSelected(newSelected)
 
-        if (selected.length === 1) {
+        if (newSelected.length === 0) {
             setToggleSelectedList(false)
         }
     }
