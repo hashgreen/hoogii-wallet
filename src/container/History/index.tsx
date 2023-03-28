@@ -1,4 +1,5 @@
 import { formatDistanceToNowStrict } from 'date-fns'
+import zhCN from 'date-fns/locale/zh-CN'
 import { groupBy } from 'lodash-es'
 import { observer } from 'mobx-react-lite'
 import { useMemo } from 'react'
@@ -10,6 +11,8 @@ import Transaction from '~/components/Transaction/Transaction'
 import TransactionLoading from '~/components/Transaction/TransactionLoading'
 import rootStore from '~/store'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
+
+import i18n from '../../utils/i18n'
 const History = () => {
     const { t } = useTranslation()
     const {
@@ -26,15 +29,19 @@ const History = () => {
         walletStore: { puzzleHash, isAblyConnected },
     } = rootStore
 
-    const groupedHistory = useMemo(
-        () =>
-            groupBy(history, (item) =>
-                formatDistanceToNowStrict(item.updatedAt, {
-                    addSuffix: true,
-                })
-            ),
-        [history]
-    )
+    const groupedHistory = useMemo(() => {
+        const option: { addSuffix: boolean; locale?: any } = {
+            addSuffix: true,
+        }
+
+        if (i18n.language !== 'en') {
+            option.locale = zhCN
+        }
+
+        return groupBy(history, (item) =>
+            formatDistanceToNowStrict(item.updatedAt, option)
+        )
+    }, [history, i18n.language])
 
     const isFetching = fetching || availableAssets.isFetching
 
