@@ -155,7 +155,7 @@
     .btn {
         &-md {
             &-primary {
-                @apply min-w-[100px] min-h-[28px]  text-center align-middle font-bold text-xs  bg-primary-500 rounded-[4px] text-white #{!important};
+                @apply min-w-[100px] min-h-[28px]  text-center align-middle font-bold text-xs  bg-primary-500 rounded-[4px] text-white;
             }
         }
     }

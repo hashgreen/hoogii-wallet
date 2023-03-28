@@ -6,14 +6,12 @@ import { Link, Navigate } from 'react-router-dom'
 
 import { sendMeasurement } from '~/api/ga'
 import Ably from '~/components/Ably'
+import Notification from '~/components/Notification'
 import SearchBar from '~/components/SearchBar'
 import Tabs from '~/components/Tabs'
-import versionData from '~/data/version.json'
 import Header from '~/layouts/Header'
 import rootStore from '~/store'
-import { notification } from '~/store/NotificationStore'
 import { ChainEnum } from '~/types/chia'
-import { rewardData } from '~/types/notification'
 import { enumArray } from '~/utils'
 import { mojoToXch } from '~/utils/CoinConverter'
 import { puzzleHashToAddress } from '~/utils/signature'
@@ -112,13 +110,6 @@ const Home = ({ initialTab = 0 }: IProps) => {
 
     useEffect(() => {
         getExchangeRate()
-        if (!locked) {
-            notification.refresh()
-            // TODO - check version
-            // notification.add(versionData)
-            // TODO - listen to websocket
-            // notification.add(rewardData)
-        }
     }, [])
     return (
         <div className="relative flex flex-col h-full bg-main">
@@ -244,6 +235,8 @@ const Home = ({ initialTab = 0 }: IProps) => {
                 </div>
             )}
             {locked && <Navigate to="/locked" replace={true} />}
+
+            <Notification />
         </div>
     )
 }
