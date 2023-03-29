@@ -6,6 +6,8 @@ import { StorageEnum } from '~/types/storage'
 import { add0x } from '~/utils/encryption'
 import { getStorage } from '~/utils/extension/storage'
 
+import { isDev } from '../utils/env'
+
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
 export const GA_API_SECRET = import.meta.env.VITE_GA_API_SECRET
 
@@ -29,43 +31,44 @@ interface IMeasurementParams {
 export async function sendMeasurement(
     params: IMeasurementParams
 ): Promise<void> {
-    // Add the Measurement Protocol API secret to the request parameters
-    const chainId = await getStorage<string>(StorageEnum.chainId)
-    const {
-        walletStore: { puzzleHash },
-    } = rootStore
+    if (!isDev) {
+        // Add the Measurement Protocol API secret to the request parameters
+        const chainId = await getStorage<string>(StorageEnum.chainId)
+        const {
+            walletStore: { puzzleHash },
+        } = rootStore
 
-    const clientId =
-        puzzleHash || (await getStorage<string>(StorageEnum.puzzleHash))
+        const clientId =
+            puzzleHash || (await getStorage<string>(StorageEnum.puzzleHash))
 
-    const requestData = {
-        ...params,
-        client_id: add0x(clientId),
-        // add the chain id to each event's params
-        events: params.events.map((event) => {
-            return {
-                name: event.name,
-                params: {
-                    ...event.params,
-                    engagement_time_msec: 1,
-                    chain_id: 'chain-' + chainId,
+        const requestData = {
+            ...params,
+            client_id: add0x(clientId),
+            // add the chain id to each event's params
+            events: params.events.map((event) => {
+                return {
+                    name: event.name,
+                    params: {
+                        ...event.params,
+                        engagement_time_msec: 1,
+                        chain_id: 'chain-' + chainId,
+                    },
+                }
+            }),
+            // api_secret: GA_API_SECRET,
+        }
+
+        // Send the request using Axios
+        await axios.post(
+            `https://www.google-analytics.com/mp/collect?measurement_id=${GA_MEASUREMENT_ID}&&api_secret=${GA_API_SECRET}`,
+            requestData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
                 },
             }
-        }),
-        // api_secret: GA_API_SECRET,
+        )
     }
-
-    // Send the request using Axios
-    const response = await axios.post(
-        `https://www.google-analytics.com/mp/collect?measurement_id=${GA_MEASUREMENT_ID}&&api_secret=${GA_API_SECRET}`,
-        requestData,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }
-    )
-    console.log('ga res:', response)
 }
 // Demo:
 // Send a pageview event
