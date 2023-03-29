@@ -185,9 +185,7 @@ class AssetsStore {
             this.exchangeRateData.isFetching = true
 
             const { data } = await callGetExchangeRate(
-                defaultCATs[this.walletStore.chain.name].find(
-                    (cat) => cat.code === 'USDS'
-                )?.assetId ?? '' // USDS assetId
+                '6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589' // USDS Asset ID
             )
 
             runInAction(() => {
@@ -199,8 +197,6 @@ class AssetsStore {
                 this.exchangeRateData.isFetching = false
                 this.exchangeRateData.data = null
             })
-
-            console.error(error)
         }
     }
 
