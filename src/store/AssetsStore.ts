@@ -77,14 +77,16 @@ class AssetsStore {
         return [this.XCH, ...this.existedAssets]
     }
 
-    addDefaultAsset = () => {
+    addDefaultAsset = async () => {
         // Show USDS by default on mainnet
         rootStore.walletStore.db.assets.clear()
-        defaultCATs[this.walletStore.chain.name].forEach((assetInfo) => {
-            rootStore.walletStore.db.assets.add({
+        defaultCATs[this.walletStore.chain.name].forEach(async (assetInfo) => {
+            await rootStore.walletStore.db.assets.add({
                 ...assetInfo,
             })
         })
+
+        this.getAllBalances()
     }
 
     retrieveExistedAssets = async () => {
@@ -231,10 +233,11 @@ class AssetsStore {
     }
 
     tailDatabaseImagePatch = async () => {
-        const patched = await getStorage('patchTime')
+        const patchedId = `${this.walletStore.chain.name}_patched`
+        const patched = await getStorage(patchedId)
         if (!patched) {
             await this.addDefaultAsset()
-            await setStorage({ patchTime: true })
+            await setStorage({ [patchedId]: true })
         }
     }
 }
