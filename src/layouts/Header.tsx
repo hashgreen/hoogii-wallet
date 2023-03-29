@@ -109,7 +109,7 @@ const Header = ({ className }: IProps) => {
                         </Menu.Item>
                         {[
                             {
-                                name: 'Setting',
+                                name: t('setting-title'),
                                 icon: <SettingsIcon className="w-3 h-3" />,
                                 to: '/setting',
                             },

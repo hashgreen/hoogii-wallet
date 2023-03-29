@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { sendMeasurement } from '~/api/ga'
@@ -17,18 +18,18 @@ const Refuse = ({
             <div className="flex flex-col items-center gap-2">
                 <ConnectSiteInfo request={request} controller={controller} />
                 <div className="flex gap-2 text-xl text-center">
-                    Connect with Hoogii:
+                    {t('refuse-connect-with-hoogii')}
                 </div>
                 <div className="flex gap-2 text-center text-body1 text-primary-100">
-                    This app would like to:
+                    {t('refuse-this-app-would-like-to')}
                 </div>
                 <div className="flex w-full gap-2 mt-10 text-left text-body1">
-                    Dapp’s Authorization contents
+                    {t('refuse-authorization-contents')}
                 </div>
             </div>
             <div className="flex flex-col w-full">
                 <div className="mb-5 text-center text-body1 text-primary-100">
-                    Only connect with sites you trust.
+                    {t('refuse-only-connect-with-sites-you-trust')}
                 </div>
                 <div className="flex justify-between">
                     <button
@@ -46,7 +47,7 @@ const Refuse = ({
                             window.close()
                         }}
                     >
-                        Cancel
+                        {t('btn-cancel')}
                     </button>
                     <button
                         className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
@@ -71,7 +72,7 @@ const Refuse = ({
                             navigate('/connecting')
                         }}
                     >
-                        Access
+                        {t('btn-access')}
                     </button>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import {
 } from 'react'
 import { Link, Outlet, useOutletContext } from 'react-router-dom'
 
+import i18n from '~/utils/i18n'
 import BackIcon from '~icons/hoogii/back.jsx'
 
 import Header from './Header'
@@ -69,7 +70,7 @@ export const useClosablePage = (
     useEffect(() => {
         context.setTitle(title)
         backTo && context.setBackTo(backTo)
-    }, [ref, backTo])
+    }, [ref, backTo, i18n.language])
 
     return context
 }

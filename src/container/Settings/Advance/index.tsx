@@ -103,7 +103,9 @@ const Advance = () => {
                     className="text-center"
                 >
                     <div>
-                        <div className="mb-4 text-headline3">Reset Wallet</div>
+                        <div className="mb-4 text-headline3">
+                            {t('btn-reset_wallet')}
+                        </div>
                         <div className="text-body2 text-primary-100">
                             <p>
                                 {t('setting-advance-reset_popup-description1')}

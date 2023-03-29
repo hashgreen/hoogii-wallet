@@ -86,7 +86,7 @@ const CustomPage = () => {
                         checked={checked}
                         onChange={(e) => setChecked(e.currentTarget.checked)}
                     />
-                    Custom
+                    {t('import_token-custom')}
                 </label>
                 {checked && (
                     <>
