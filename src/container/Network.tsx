@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import { t } from 'i18next'
 import { observer } from 'mobx-react-lite'
 
 import { sendMeasurement } from '~/api/ga'
@@ -9,7 +10,7 @@ import { ChainEnum, IChain } from '~/types/chia'
 import { chains } from '~/utils/constants'
 
 const Network = () => {
-    useClosablePage('Network')
+    useClosablePage(t('network'))
     const {
         walletStore: { chain, switchChain },
     } = rootStore
