@@ -83,7 +83,6 @@ const manifest = (mode) =>
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-    publicDir: 'public',
     define: {
         __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
         // ...(mode !== ModeEnum.production &&

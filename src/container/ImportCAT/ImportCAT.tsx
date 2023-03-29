@@ -42,6 +42,16 @@ function ImportCAT() {
         [keyword, availableAssets.data]
     )
 
+    const handleRemoveSelected = (id: string) => {
+        const newSelected = selected.filter((item) => item.asset_id !== id)
+
+        setSelected(newSelected)
+
+        if (newSelected.length === 0) {
+            setToggleSelectedList(false)
+        }
+    }
+
     useEffect(() => {
         return () => {
             setKeyword('')
@@ -121,18 +131,12 @@ function ImportCAT() {
                                     </span>
                                 )}
                             </div>
-                            {toggleSelectedList && selected.length ? (
+                            {toggleSelectedList && selected.length > 0 ? (
                                 <SelectedAssetList
                                     assets={selected}
-                                    display={toggleSelectedList}
-                                    onRemove={(assetId) => {
-                                        setSelected((prev) =>
-                                            prev.filter(
-                                                (item) =>
-                                                    item.asset_id !== assetId
-                                            )
-                                        )
-                                    }}
+                                    onRemove={(assetId) =>
+                                        handleRemoveSelected(assetId)
+                                    }
                                 />
                             ) : (
                                 <div className="flex flex-col gap-2 overflow-auto">
