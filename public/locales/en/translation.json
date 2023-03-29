@@ -57,6 +57,7 @@
     "import-policy-title": "Import Wallet",
     "import_token-custom": "custom",
     "import_token-custom-description": "Add Tokens to Hoogii.",
+    "import_token-custom-search-results": "*Are you looking for {{token_name}} ({{token_code}})?",
     "import_token-no_result-description": "If you are adding a custom token, check Custom to import",
     "import_token-search_results": "Search Results",
     "import_token-title": "Import Token",
