@@ -2,7 +2,7 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import classNames from 'classnames'
 import * as joi from 'joi'
 import { observer } from 'mobx-react-lite'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -11,6 +11,8 @@ import { sendMeasurement } from '~/api/ga'
 // import AssetIcon from '~/components/AssetIcon'
 import ErrorMessage from '~/components/ErrorMessage'
 import rootStore from '~/store'
+import { ICryptocurrency } from '~/types/api'
+import { fuseOptions, search } from '~/utils/fuse'
 
 interface IForm {
     code: string
@@ -22,7 +24,7 @@ const CustomPage = () => {
     const [checked, setChecked] = useState(false)
 
     const {
-        assetsStore: { existedAssets },
+        assetsStore: { existedAssets, availableAssets },
     } = rootStore
 
     const schema = joi
@@ -43,7 +45,8 @@ const CustomPage = () => {
     const {
         register,
         handleSubmit,
-        // watch,
+        watch,
+        setValue,
         formState: { errors, dirtyFields, isValid },
     } = useForm<IForm>({ mode: 'onChange', resolver: joiResolver(schema) })
     // const assetId = watch('assetId')
@@ -52,6 +55,9 @@ const CustomPage = () => {
     // )
 
     const navigate = useNavigate()
+
+    const searchField = watch('assetId')
+    const code = watch('code')
 
     const onSubmit = async (data, e) => {
         e.preventDefault()
@@ -74,6 +80,20 @@ const CustomPage = () => {
         })
         navigate(-1)
     }
+
+    const searchResults = useMemo(() => {
+        if (!errors.assetId && searchField) {
+            const result = search<ICryptocurrency>(
+                searchField,
+                availableAssets.data,
+                fuseOptions(['asset_id'])
+            )
+
+            return result?.[0]
+        }
+
+        return null
+    }, [searchField, errors.assetId])
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -147,15 +167,41 @@ const CustomPage = () => {
                 )}
             </div>
             {checked && (
-                <div className="flex-center">
-                    <button
-                        type="submit"
-                        className="mt-5 btn btn-primary"
-                        disabled={!isValid}
-                    >
-                        {t('btn-import')}
-                    </button>
-                </div>
+                <>
+                    {!errors.assetId && searchResults && (
+                        <div
+                            className="flex flex-col gap-2 mt-3 "
+                            onClick={() => setValue('code', searchResults.code)}
+                        >
+                            <span className="text-caption ">
+                                {t('import_token-custom-search-results', {
+                                    token_name: searchResults.name,
+                                    token_code: searchResults.code,
+                                })}
+                            </span>
+                            <div className="flex h-8 w-fit justify-center rounded py-[11px] px-2 flex-row cursor-pointer gap-2 text-body3 bg-white bg-opacity-5  items-center">
+                                <img
+                                    className="w-6 h-6 "
+                                    src={searchResults.icon_url}
+                                />
+                                <span>{searchResults.code}</span>
+
+                                {searchResults.code === code && (
+                                    <img src="/images/icons/checked-rounded.svg" />
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    <div className="flex-center">
+                        <button
+                            type="submit"
+                            className="mt-5 btn btn-primary"
+                            disabled={!isValid}
+                        >
+                            {t('btn-import')}
+                        </button>
+                    </div>
+                </>
             )}
             {!checked && (
                 <span className="fixed-center whitespace-nowrap text-primary-100">

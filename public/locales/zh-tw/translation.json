@@ -57,6 +57,7 @@
     "import-policy-title": "導入錢包",
     "import_token-custom": "自定義",
     "import_token-custom-description": "將代幣添加到 Hoogii。",
+    "import_token-custom-search-results": "*您是否在尋找 {{token_name}} ({{token_code}})？",
     "import_token-no_result-description": "如果您要添加自定義代幣，請勾選自定義來匯入",
     "import_token-search_results": "搜尋結果",
     "import_token-title": "匯入代幣",

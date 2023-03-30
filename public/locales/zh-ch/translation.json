@@ -57,6 +57,7 @@
     "import-policy-title": "导入钱包",
     "import_token-custom": "自定义",
     "import_token-custom-description": "将代币添加到Hoogii。",
+    "import_token-custom-search-results": "*您是否在寻找 {{token_name}} ({{token_code}})？",
     "import_token-no_result-description": "如果您要添加自定义代币，请勾选“自定义”以导入。",
     "import_token-search_results": "搜索结果",
     "import_token-title": "导入代币",

@@ -12,6 +12,7 @@ export const SelectedAssetList = ({ assets, onRemove }: ISelectedAssetList) => {
             {assets.map((asset) => (
                 <div
                     key={asset.asset_id}
+                    id={asset.asset_id}
                     className="flex items-center justify-between w-full h-10 py-2"
                 >
                     <div className="flex flex-row w-full gap-2">
