@@ -65,7 +65,7 @@ const History = () => {
         return groupBy(history, (item) =>
             formatDistanceToNowStrict(item.updatedAt, option)
         )
-    }, [history])
+    }, [history, i18n.language])
 
     const isFetching = fetching || availableAssets.isFetching
 
