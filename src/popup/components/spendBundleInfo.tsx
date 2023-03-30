@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import { useEffect, useMemo, useState } from 'react'
 import { JsonView } from 'react-json-view-lite'
 
@@ -71,26 +72,26 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                 <>
                     <div>
                         <div className="mb-3 text-left text-caption text-primary-100">
-                            Address
+                            {t('address')}
                         </div>
-                        <div className="bg-box flex flex-col gap-1 px-2 py-2 shrink cursor-pointer rounded-sm ">
+                        <div className="flex flex-col gap-1 px-2 py-2 rounded-sm cursor-pointer bg-box shrink ">
                             {shortenHash(metadata?.to_puzzle_hashes?.[0])}
                         </div>
                     </div>
                     <div>
-                        <div className="mb-1 mt-2 text-left text-caption text-primary-100">
-                            Transaction
+                        <div className="mt-2 mb-1 text-left text-caption text-primary-100">
+                            {t('transaction')}
                         </div>
-                        <div className="bg-box flex flex-col gap-1 px-2 py-3 shrink  rounded-sm ">
+                        <div className="flex flex-col gap-1 px-2 py-3 rounded-sm bg-box shrink ">
                             <div className="text-left text-caption text-primary-100">
-                                Send
+                                {t('send-title')}
                             </div>
-                            <div className="flex mb-1 flex-row justify-between">
+                            <div className="flex flex-row justify-between mb-1">
                                 <div className="flex">
                                     <AssetIcon
                                         src={finsAsset?.icon_url}
                                         assetId={metadata?.asset_id || 'XCH'}
-                                        className="mr-1 w-6 h-6"
+                                        className="w-6 h-6 mr-1"
                                     />
 
                                     {metadata?.asset_id
@@ -112,10 +113,10 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
 
                         {memos.length > 0 && (
                             <>
-                                <div className="mb-1 mt-2 text-left text-caption text-primary-100">
-                                    Memo
+                                <div className="mt-2 mb-1 text-left text-caption text-primary-100">
+                                    {t('transaction-memo')}
                                 </div>
-                                <div className="bg-box flex flex-col gap-1 px-2 py-3 shrink rounded-sm">
+                                <div className="flex flex-col gap-1 px-2 py-3 rounded-sm bg-box shrink">
                                     {memos?.map((memo, index) => (
                                         <MemoDisplay
                                             key={`${index}-${memo}`}
@@ -126,15 +127,15 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                                 </div>
                             </>
                         )}
-                        <div className="mb-1 mt-2 text-left text-caption text-primary-100">
-                            Fee
+                        <div className="mt-2 mb-1 text-left text-caption text-primary-100">
+                            {t('fee')}
                         </div>
-                        <div className="bg-box flex flex-col gap-1 px-2 py-2 shrink  rounded-sm">
+                        <div className="flex flex-col gap-1 px-2 py-2 rounded-sm bg-box shrink">
                             <div className="flex flex-row justify-between">
                                 <div className="flex">
                                     <AssetIcon
                                         assetId={'XCH'}
-                                        className="mr-1 w-6 h-6"
+                                        className="w-6 h-6 mr-1"
                                     />
 
                                     {XCH.code}
@@ -149,9 +150,9 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
             ) : (
                 <>
                     <div className="mb-2 text-left text-caption text-primary-100">
-                        Send Transaction spendBundle:
+                        {t('send-transaction-spend-bundle')}
                     </div>
-                    <div className="bg-box flex flex-col gap-1 px-2 py-3 shrink cursor-pointer rounded-sm ">
+                    <div className="flex flex-col gap-1 px-2 py-3 rounded-sm cursor-pointer bg-box shrink ">
                         <div className="text-caption text-primary-100 h-[180px] overflow-y-auto">
                             <JsonView
                                 data={

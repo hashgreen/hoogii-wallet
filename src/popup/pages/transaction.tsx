@@ -158,12 +158,12 @@ const Transaction = ({
                     setSubmitError(error as Error)
                 })
             }
-            className="container flex flex-col justify-between  w-full h-full py-12"
+            className="container flex flex-col justify-between w-full h-full py-12"
         >
-            <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col items-center gap-2">
                 <ConnectSiteInfo request={request} controller={controller} />
-                <div className="flex gap-2 text-center text-xl">
-                    Requests a signature for:
+                <div className="flex gap-2 text-xl text-center">
+                    {t('offier-request-signature-for')}
                 </div>
             </div>
             {request.data?.method === RequestMethodEnum.CREATE_OFFER && (
@@ -187,7 +187,7 @@ const Transaction = ({
                     <div className="mb-3 text-left text-caption text-primary-100">
                         {t('send-fee-description')}
                     </div>
-                    <div className="flex-wrap gap-2  flex-row-center ">
+                    <div className="flex-wrap gap-2 flex-row-center ">
                         {[
                             {
                                 fee: '0',
@@ -248,14 +248,14 @@ const Transaction = ({
                         }}
                         disabled={isSubmitting}
                     >
-                        Cancel
+                        {t('btn-cancel')}
                     </button>
                     <button
                         className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
                         type="submit"
                         disabled={isSubmitting}
                     >
-                        Sign
+                        {t('btn-sign')}
                     </button>
                 </div>
             </div>

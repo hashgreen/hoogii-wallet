@@ -1,3 +1,5 @@
+import { t } from 'i18next'
+
 import { MethodEnum } from '~/types/extension'
 import { chains } from '~/utils/constants'
 
@@ -10,11 +12,11 @@ const SwitchChain = ({
     const ChainName = chains[request?.data?.params?.chainId]
     return (
         <div className="container flex flex-col justify-between w-full h-full py-12">
-            <div className="flex flex-col gap-2 items-center">
-                <div className="flex gap-2  text-center text-xl ">
-                    Switch to Chia {ChainName?.name || 'NewWork'}?
+            <div className="flex flex-col items-center gap-2">
+                <div className="flex gap-2 text-xl text-center ">
+                    {t('switch-to-chia')} {ChainName?.name || 'NewWork'}?
                 </div>
-                <div className="flex gap-2  text-center text-sm ">
+                <div className="flex gap-2 text-sm text-center ">
                     Chain ID: {request?.data?.params?.chainId}
                 </div>
             </div>
@@ -29,7 +31,7 @@ const SwitchChain = ({
                             window.close()
                         }}
                     >
-                        Cancel
+                        {t('btn-cancel')}
                     </button>
                     <button
                         className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
@@ -40,7 +42,7 @@ const SwitchChain = ({
                             window.close()
                         }}
                     >
-                        Switch
+                        {t('switch')}
                     </button>
                 </div>
             </div>

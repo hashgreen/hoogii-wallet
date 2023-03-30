@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -28,7 +29,7 @@ const Feedback = () => {
     return (
         <form onSubmit={onSubmit} className="flex flex-col h-full gap-7">
             <span className="text-center text-body1 text-primary-100">
-                Give your feedback if there’s any question!
+                {t('feedback-title')}
             </span>
             <textarea
                 value={feedback}
@@ -36,13 +37,15 @@ const Feedback = () => {
                 className="input grow"
             ></textarea>
             <div className="flex justify-between gap-4 child:w-full">
-                <BackLink className="btn btn-secondary">Cancel</BackLink>
+                <BackLink className="btn btn-secondary">
+                    {t('btn-cancel')}
+                </BackLink>
                 <button
                     type="submit"
                     className="btn btn-primary"
                     disabled={!feedback}
                 >
-                    Feedback
+                    {t('feedback')}
                 </button>
             </div>
         </form>

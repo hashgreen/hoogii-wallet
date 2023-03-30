@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import { useEffect } from 'react'
 
 import { APIError, MethodEnum } from '~/types/extension'
@@ -17,11 +18,11 @@ const Connecting = ({
     })
     return (
         <div className="container flex flex-col justify-between w-full h-full py-12">
-            <div className="flex flex-col gap-2 items-center">
-                <div className="flex gap-2 text-center text-2xl">
-                    Connecting...
+            <div className="flex flex-col items-center gap-2">
+                <div className="flex gap-2 text-2xl text-center">
+                    {t('connecting')}
                 </div>
-                <div className="flex justify-center mt-10 items-center">
+                <div className="flex items-center justify-center mt-10">
                     <div className={roundStyle}>
                         <img
                             src="/images/logo.svg"
@@ -56,7 +57,7 @@ const Connecting = ({
                             window.close()
                         }}
                     >
-                        Cancel
+                        {t('btn-cancel')}
                     </button>
                 </div>
             </div>

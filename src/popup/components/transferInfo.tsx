@@ -1,3 +1,4 @@
+import { t } from 'i18next'
 import { observer } from 'mobx-react-lite'
 
 import AssetIcon from '~/components/AssetIcon'
@@ -21,26 +22,26 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
         <>
             <div>
                 <div className="mb-3 text-left text-caption text-primary-100">
-                    Address
+                    {t('address')}
                 </div>
-                <div className="bg-box flex flex-col gap-1 px-2 py-2 shrink cursor-pointer rounded-sm ">
+                <div className="flex flex-col gap-1 px-2 py-2 rounded-sm cursor-pointer bg-box shrink ">
                     {shortenHash(request?.data?.params.to)}
                 </div>
             </div>
             <div>
                 <div className="mb-3 text-left text-caption text-primary-100">
-                    Transaction
+                    {t('transaction')}
                 </div>
-                <div className="bg-box flex flex-col gap-1 px-2 py-3 shrink cursor-pointer rounded-sm ">
+                <div className="flex flex-col gap-1 px-2 py-3 rounded-sm cursor-pointer bg-box shrink ">
                     <div className="text-left text-caption text-primary-100">
-                        Send
+                        {t('send-title')}
                     </div>
-                    <div className="flex mb-1 flex-row justify-between">
+                    <div className="flex flex-row justify-between mb-1">
                         <div className="flex">
                             <AssetIcon
                                 src={finsAsset?.icon_url}
                                 assetId={request?.data?.params.assetId || 'XCH'}
-                                className="mr-1 w-6 h-6"
+                                className="w-6 h-6 mr-1"
                             />
 
                             {request?.data?.params.assetId
