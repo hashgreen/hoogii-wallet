@@ -6,9 +6,9 @@ import { Link } from 'react-router-dom'
 
 import Version from '~/components/Version'
 import { useClosablePage } from '~/layouts/ClosablePage'
+import { LocaleEnum } from '~/types/i18n'
 import { isDev } from '~/utils/env'
-import { getStorage, setStorage } from '~/utils/extension/storage'
-import i18n from '~/utils/i18n'
+import { setStorage } from '~/utils/extension/storage'
 import BottomIcon from '~icons/hoogii/bottom.jsx'
 import DarkIcon from '~icons/hoogii/dark.jsx'
 import LightIcon from '~icons/hoogii/light.jsx'
@@ -17,7 +17,7 @@ import UpIcon from '~icons/hoogii/up.jsx'
 
 interface ILanguageItem {
     title: string
-    code: string
+    code: keyof typeof LocaleEnum
     supported: boolean
 }
 
@@ -40,10 +40,10 @@ const languages: ILanguageItem[] = [
 ]
 
 const Settings = () => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     useClosablePage(t('setting-title'), '/')
     const [language, setLanguage] = useState<ILanguageItem>(
-        languages.filter((item) => item.code === i18n.language)[0]
+        languages.filter((item) => item.code === i18n.language)?.[0]
     )
     const [theme, setTheme] = useState<'light' | 'dark'>('dark')
 

@@ -131,7 +131,7 @@ function ImportCAT() {
                                     </span>
                                 )}
                             </div>
-                            {toggleSelectedList && selected.length > 0 ? (
+                            {toggleSelectedList ? (
                                 <SelectedAssetList
                                     assets={selected}
                                     onRemove={(assetId) =>

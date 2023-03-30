@@ -1,13 +1,6 @@
-import {
-    PropsWithChildren,
-    ReactNode,
-    useEffect,
-    useRef,
-    useState,
-} from 'react'
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react'
 import { Link, Outlet, useOutletContext } from 'react-router-dom'
 
-import i18n from '~/utils/i18n'
 import BackIcon from '~icons/hoogii/back.jsx'
 
 import Header from './Header'
@@ -64,13 +57,12 @@ export const useClosablePage = (
     title: ReactNode,
     backTo: string | number = -1
 ) => {
-    const ref = useRef(title)
     const context = useOutletContext<IOutletContext>()
 
     useEffect(() => {
         context.setTitle(title)
         backTo && context.setBackTo(backTo)
-    }, [ref, backTo, i18n.language])
+    }, [backTo, title])
 
     return context
 }
