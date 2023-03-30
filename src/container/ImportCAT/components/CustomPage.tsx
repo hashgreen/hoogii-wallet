@@ -89,7 +89,7 @@ const CustomPage = () => {
                 fuseOptions(['asset_id'])
             )
 
-            return result[0]
+            return result?.[0]
         }
 
         return null
@@ -141,7 +141,6 @@ const CustomPage = () => {
                                     errors.assetId &&
                                     'input-error'
                             )}
-                            // onChange={(e) => setSearchQuery(e.target.value)}
                         />
                         {/* {possibleAsset && (
                             <div className="flex-row-center">

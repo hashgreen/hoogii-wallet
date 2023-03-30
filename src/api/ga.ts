@@ -4,9 +4,8 @@ import rootStore from '~/store'
 import { ActionEnum, CategoryEnum, EventEnum } from '~/types/ga'
 import { StorageEnum } from '~/types/storage'
 import { add0x } from '~/utils/encryption'
+import { isDev } from '~/utils/env'
 import { getStorage } from '~/utils/extension/storage'
-
-import { isDev } from '../utils/env'
 
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID
 export const GA_API_SECRET = import.meta.env.VITE_GA_API_SECRET
