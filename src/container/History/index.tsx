@@ -1,5 +1,5 @@
-import { formatDistanceToNowStrict } from 'date-fns'
-import zhCN from 'date-fns/locale/zh-CN'
+import { formatDistanceToNowStrict, Locale } from 'date-fns'
+import { enUS, zhCN, zhTW } from 'date-fns/locale'
 import { groupBy } from 'lodash-es'
 import { observer } from 'mobx-react-lite'
 import { useMemo } from 'react'
@@ -10,11 +10,36 @@ import Ably from '~/components/Ably'
 import Transaction from '~/components/Transaction/Transaction'
 import TransactionLoading from '~/components/Transaction/TransactionLoading'
 import rootStore from '~/store'
+import { LocaleEnum } from '~/types/i18n'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
 
-import i18n from '../../utils/i18n'
+interface ILangItem {
+    locale: keyof typeof LocaleEnum
+    file: Locale
+}
+
+const langItems: ILangItem[] = [
+    {
+        locale: 'en',
+        file: enUS,
+    },
+    {
+        locale: 'zh-tw',
+        file: zhTW,
+    },
+    {
+        locale: 'zh-ch',
+        file: zhCN,
+    },
+]
+
+interface IOptions {
+    addSuffix: boolean
+    locale?: Locale
+}
+
 const History = () => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const {
         historyStore: {
             loading,
@@ -30,18 +55,17 @@ const History = () => {
     } = rootStore
 
     const groupedHistory = useMemo(() => {
-        const option: { addSuffix: boolean; locale?: any } = {
+        const option: IOptions = {
             addSuffix: true,
-        }
-
-        if (i18n.language !== 'en') {
-            option.locale = zhCN
+            locale: langItems.filter(
+                (item) => item.locale === i18n.language
+            )?.[0]?.file,
         }
 
         return groupBy(history, (item) =>
             formatDistanceToNowStrict(item.updatedAt, option)
         )
-    }, [history, i18n.language])
+    }, [history])
 
     const isFetching = fetching || availableAssets.isFetching
 

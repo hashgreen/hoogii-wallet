@@ -1,6 +1,6 @@
-import { t } from 'i18next'
 import { observer } from 'mobx-react-lite'
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import AssetIcon from '~/components/AssetIcon'
 import rootStore from '~/store'
@@ -20,6 +20,8 @@ interface IOfferAssets extends OfferAsset {
 }
 
 function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
+    const { t } = useTranslation()
+
     const {
         assetsStore: { XCH, availableAssets },
         walletStore: { address },
