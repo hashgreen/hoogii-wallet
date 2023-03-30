@@ -161,8 +161,11 @@ export const callGetMarkets = async () =>
 
 /** -------------------------- Spacescan API -------------------------- */
 export const callGetExchangeRate = (assetId: string) =>
-    apiHandler({
-        url: `https://api2.spacescan.io/v0.1/xch/cat/${assetId}`,
-        method: 'get',
-    })
+    apiHandler(
+        {
+            url: `https://api2.spacescan.io/v0.1/xch/cat/${assetId}`,
+            method: 'get',
+        },
+        { isShowToast: false }
+    )
 /** -------------------------- Spacescan API END -------------------------- */

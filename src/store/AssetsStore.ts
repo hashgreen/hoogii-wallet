@@ -77,14 +77,16 @@ class AssetsStore {
         return [this.XCH, ...this.existedAssets]
     }
 
-    addDefaultAsset = () => {
+    addDefaultAsset = async () => {
         // Show USDS by default on mainnet
         rootStore.walletStore.db.assets.clear()
-        defaultCATs[this.walletStore.chain.name].forEach((assetInfo) => {
-            rootStore.walletStore.db.assets.add({
+        defaultCATs[this.walletStore.chain.name].forEach(async (assetInfo) => {
+            await rootStore.walletStore.db.assets.add({
                 ...assetInfo,
             })
         })
+
+        this.getAllBalances()
     }
 
     retrieveExistedAssets = async () => {
@@ -183,9 +185,7 @@ class AssetsStore {
             this.exchangeRateData.isFetching = true
 
             const { data } = await callGetExchangeRate(
-                defaultCATs[this.walletStore.chain.name].find(
-                    (cat) => cat.code === 'USDS'
-                )?.assetId ?? '' // USDS assetId
+                '6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589' // USDS Asset ID
             )
 
             runInAction(() => {
@@ -197,8 +197,6 @@ class AssetsStore {
                 this.exchangeRateData.isFetching = false
                 this.exchangeRateData.data = null
             })
-
-            console.error(error)
         }
     }
 
@@ -231,10 +229,11 @@ class AssetsStore {
     }
 
     tailDatabaseImagePatch = async () => {
-        const patched = await getStorage('patchTime')
+        const patchedId = `${this.walletStore.chain.name}_patched`
+        const patched = await getStorage(patchedId)
         if (!patched) {
             await this.addDefaultAsset()
-            await setStorage({ patchTime: true })
+            await setStorage({ [patchedId]: true })
         }
     }
 }

@@ -1,21 +1,16 @@
 {
-  "Mainnet": [
-    {
-      "assetId": "6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589",
-      "code": "USDS",
-      "iconUrl": "https://images.spacescan.io/xch/cat/6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589/2.png"
-    }
-  ],
-  "Testnet": [
-    {
-      "assetId": "6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589",
-      "code": "USDS",
-      "iconUrl": "https://images.spacescan.io/xch/cat/6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589/2.png"
-    },
-    {
-      "assetId": "73dd418ff67e6079f06c7cc8cee637c7adc314210dca26997d634692f6c16087",
-      "code": "TFRIES",
-      "iconUrl": "https://www.mcdonalds.com/is/image/content/dam/usa/nfl/nutrition/items/hero/desktop/t-mcdonalds-Fries-Small-Medium.jpg"
-    }
-  ]
+    "Mainnet": [
+        {
+            "assetId": "6d95dae356e32a71db5ddcb42224754a02524c615c5fc35f568c2af04774e589",
+            "code": "USDS",
+            "iconUrl": "https://image.hashgreen.net/image/uat/1675738259_LtSFI.png"
+        }
+    ],
+    "Testnet": [
+        {
+            "assetId": "73dd418ff67e6079f06c7cc8cee637c7adc314210dca26997d634692f6c16087",
+            "code": "TFRIES",
+            "iconUrl": "https://image.hashgreen.net/image/uat/1675738466_xnY6B.jpeg"
+        }
+    ]
 }
