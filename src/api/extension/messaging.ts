@@ -165,7 +165,7 @@ class Messaging {
                 console.log('to content >> ' + JSON.stringify(data))
 
                 const favicon = document.querySelector(
-                    'link[rel="icon"]'
+                    'link[rel~="icon"]'
                 ) as HTMLLinkElement
                 const iconUrl = favicon?.href
                 const origin = window.origin
