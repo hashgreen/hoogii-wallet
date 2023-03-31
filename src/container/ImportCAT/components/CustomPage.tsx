@@ -171,7 +171,11 @@ const CustomPage = () => {
                     {!errors.assetId && searchResults && (
                         <div
                             className="flex flex-col gap-2 mt-3 "
-                            onClick={() => setValue('code', searchResults.code)}
+                            onClick={() =>
+                                setValue('code', searchResults.code, {
+                                    shouldValidate: true,
+                                })
+                            }
                         >
                             <span className="text-caption ">
                                 {t('import_token-custom-search-results', {
