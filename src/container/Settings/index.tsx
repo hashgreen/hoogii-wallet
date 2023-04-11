@@ -32,11 +32,11 @@ const languages: ILanguageItem[] = [
         code: 'zh-tw',
         supported: true,
     },
-    {
-        title: '简体中文',
-        code: 'zh-ch',
-        supported: true,
-    },
+    // {
+    //     title: '简体中文',
+    //     code: 'zh-ch',
+    //     supported: true,
+    // },
 ]
 
 const Settings = () => {
