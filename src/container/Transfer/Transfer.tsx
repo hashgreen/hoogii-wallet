@@ -12,6 +12,7 @@ import { IAddress, IAsset } from '~/db'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
+import { CAT_AMOUNT_REGEX, XCH_AMOUNT_REGEX } from '~/utils/constants'
 import Validation from '~/utils/validation'
 
 import AddressCombobox from './components/AddressCombobox'
@@ -68,7 +69,9 @@ const Transfer = () => {
     useEffect(() => {
         setFocus('address')
     }, [])
-
+    useEffect(() => {
+        setValue('amount', '')
+    }, [asset])
     const onSubmit = async () => {
         if (memo) {
             sendMeasurement({
@@ -186,7 +189,7 @@ const Transfer = () => {
                         />
                         <div className="w-full">
                             <input
-                                type="number"
+                                type="text"
                                 inputMode="numeric"
                                 autoComplete="off"
                                 className={`input ${
@@ -215,6 +218,10 @@ const Transfer = () => {
                                                 : amount
                                         )
                                     },
+                                    pattern:
+                                        asset?.assetId === XCH.assetId
+                                            ? XCH_AMOUNT_REGEX
+                                            : CAT_AMOUNT_REGEX,
                                 })}
                             />
                             <ErrorMessage
