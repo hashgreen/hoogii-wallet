@@ -1,11 +1,10 @@
 import i18n from 'i18next'
-import Backend from 'i18next-http-backend'
 import { initReactI18next } from 'react-i18next'
 
 import { getStorage } from '~/utils/extension/storage'
 
+import locale from '../../public/locales'
 import { setStorage } from './extension/storage'
-
 const initLang = async () => {
     const savedLang = await getStorage<string>('locale')
     if (!savedLang) {
@@ -15,16 +14,21 @@ const initLang = async () => {
 }
 
 i18n
-    // detect user language
-    .use(Backend)
-    // // pass the i18n instance to react-i18next.
-    // .use(LanguageDetector)
+    // // pass the i18n instance to react-i18next.// .use(LanguageDetector)
     // init i18next
     .use(initReactI18next)
     .init({
         lng: await initLang(),
-        backend: {
-            loadPath: '/locales/{{lng}}/{{ns}}.json',
+        resources: {
+            en: {
+                translation: locale.en,
+            },
+            'zh-ch': {
+                translation: locale.zhCh,
+            },
+            'zh-tw': {
+                translation: locale.zhTw,
+            },
         },
         lowerCaseLng: true,
         fallbackLng: {
