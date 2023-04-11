@@ -12,6 +12,7 @@ import { IAddress, IAsset } from '~/db'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
+import { CAT_AMOUNT_REGEX, XCH_AMOUNT_REGEX } from '~/utils/constants'
 import Validation from '~/utils/validation'
 
 import AddressCombobox from './components/AddressCombobox'
@@ -44,7 +45,7 @@ const Transfer = () => {
             .unknown()
             .required(),
         asset: joi.object().required(),
-        amount: joi.number().required(),
+        amount: joi.string().required(),
         memo: joi.string().allow(''),
     })
     const {
@@ -215,6 +216,10 @@ const Transfer = () => {
                                                 : amount
                                         )
                                     },
+                                    pattern:
+                                        asset?.assetId === XCH.assetId
+                                            ? XCH_AMOUNT_REGEX
+                                            : CAT_AMOUNT_REGEX,
                                 })}
                             />
                             <ErrorMessage

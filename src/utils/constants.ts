@@ -39,3 +39,5 @@ export const apiEndpointSets: {
         zed: 'https://testnet10.hash.green/api/v1',
     },
 } as const
+export const CAT_AMOUNT_REGEX = /^[0-9]+(.[0-9]{1,3})?$/
+export const XCH_AMOUNT_REGEX = /^[0-9]+(.[0-9]{1,12})?$/
