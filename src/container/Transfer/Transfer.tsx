@@ -45,7 +45,7 @@ const Transfer = () => {
             .unknown()
             .required(),
         asset: joi.object().required(),
-        amount: joi.string().required(),
+        amount: joi.number().required(),
         memo: joi.string().allow(''),
     })
     const {
@@ -69,7 +69,9 @@ const Transfer = () => {
     useEffect(() => {
         setFocus('address')
     }, [])
-
+    useEffect(() => {
+        setValue('amount', '')
+    }, [asset])
     const onSubmit = async () => {
         if (memo) {
             sendMeasurement({
@@ -187,7 +189,7 @@ const Transfer = () => {
                         />
                         <div className="w-full">
                             <input
-                                type="number"
+                                type="text"
                                 inputMode="numeric"
                                 autoComplete="off"
                                 className={`input ${
