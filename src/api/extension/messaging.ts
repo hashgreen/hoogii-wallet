@@ -12,6 +12,7 @@ import {
     SenderEnum,
     SendResponse,
 } from '~/types/extension'
+import { isDev } from '~/utils/env'
 
 import pkg from '../../../package.json'
 
@@ -26,9 +27,13 @@ class Messaging {
             ) {
                 return
             }
-            console.log(
-                '[content script]:from extension >> ' + JSON.stringify(response)
-            )
+
+            if (isDev) {
+                console.log(
+                    '[content script]:from extension >> ' +
+                        JSON.stringify(response)
+                )
+            }
 
             const isConnectedRes = await this.toBackground<MethodEnum>({
                 sender: SenderEnum.BACKGROUND,
@@ -56,9 +61,13 @@ class Messaging {
             ) {
                 return
             }
-            console.log(
-                '[content script]:from websites >> ' + JSON.stringify(request)
-            )
+
+            if (isDev) {
+                console.log(
+                    '[content script]:from websites >> ' +
+                        JSON.stringify(request)
+                )
+            }
 
             const isValidWalletRes =
                 await this.toBackground<MethodEnum.IS_VALID_WALLET>({
@@ -101,9 +110,13 @@ class Messaging {
                 isLocked: Boolean(isLockRes.data),
             })
 
-            console.log(
-                '[content script]:from websites << ' + JSON.stringify(response)
-            )
+            if (isDev) {
+                console.log(
+                    '[content script]:from websites << ' +
+                        JSON.stringify(response)
+                )
+            }
+
             window.postMessage(response)
         })
     }
@@ -151,7 +164,11 @@ class Messaging {
                         ) {
                             return
                         }
-                        console.log('to content << ' + JSON.stringify(response))
+                        if (isDev) {
+                            console.log(
+                                'to content << ' + JSON.stringify(response)
+                            )
+                        }
 
                         window.removeEventListener('message', responseHandler)
 
@@ -162,7 +179,10 @@ class Messaging {
                         resolve(response)
                     }
                 )
-                console.log('to content >> ' + JSON.stringify(data))
+
+                if (isDev) {
+                    console.log('to content >> ' + JSON.stringify(data))
+                }
 
                 const favicon = document.querySelector(
                     'link[rel~="icon"]'
@@ -238,10 +258,13 @@ export class BackgroundController {
     listen = () => {
         chrome.runtime.onMessage.addListener(
             (request: IMessage, _, sendResponse: SendResponse) => {
-                console.log(
-                    `background >> ${JSON.stringify(request)}`,
-                    this.methods[request.method]
-                )
+                if (isDev) {
+                    console.log(
+                        `background >> ${JSON.stringify(request)}`,
+                        this.methods[request.method]
+                    )
+                }
+
                 this.methods[request.method]?.(request, sendResponse)
                 return true
             }
