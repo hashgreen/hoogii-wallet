@@ -60,58 +60,60 @@ const Settings = () => {
 
     return (
         <div className="flex flex-col overflow-hidden grow">
-            <div>
-                <span className="capitalize text-body3 text-primary-100">
-                    {t('setting-language')}
-                </span>
-                <Listbox
-                    value={language}
-                    onChange={setLanguage}
-                    as="div"
-                    className="relative mt-2 mb-5"
-                >
-                    <Listbox.Button
-                        className={({ open }) =>
-                            classNames(
-                                'justify-between h-10 pl-4 pr-2 w-full text-body3 rounded flex-row-center bg-box',
-                                open
-                                    ? 'border-primary border-2'
-                                    : 'border-primary/70 border'
-                            )
-                        }
+            {isDev && (
+                <div>
+                    <span className="capitalize text-body3 text-primary-100">
+                        {t('setting-language')}
+                    </span>
+                    <Listbox
+                        value={language}
+                        onChange={setLanguage}
+                        as="div"
+                        className="relative mt-2 mb-5"
                     >
-                        {({ open }) => (
-                            <>
-                                {language.title}
-                                {open ? (
-                                    <UpIcon className="w-4 h-4 text-active" />
-                                ) : (
-                                    <BottomIcon className="w-4 h-4 text-active" />
-                                )}
-                            </>
-                        )}
-                    </Listbox.Button>
-                    <Listbox.Options className="absolute z-10 flex flex-col w-full gap-1 px-2 py-3 mt-2 border-2 rounded bg-box border-primary text-body3">
-                        {languages.map((item) => (
-                            <Listbox.Option
-                                key={item.code}
-                                value={item}
-                                disabled={!item.supported}
-                                onClick={() => handleSwitchLanguage(item)}
-                                className={({ active, selected }) =>
-                                    classNames(
-                                        ' cursor-pointer h-8 px-2 bg-white/5 flex-row-center rounded',
-                                        (active || selected) && 'bg-white/20'
-                                    )
-                                }
-                            >
-                                {item.title}
-                            </Listbox.Option>
-                        ))}
-                    </Listbox.Options>
-                </Listbox>
-            </div>
-
+                        <Listbox.Button
+                            className={({ open }) =>
+                                classNames(
+                                    'justify-between h-10 pl-4 pr-2 w-full text-body3 rounded flex-row-center bg-box',
+                                    open
+                                        ? 'border-primary border-2'
+                                        : 'border-primary/70 border'
+                                )
+                            }
+                        >
+                            {({ open }) => (
+                                <>
+                                    {language.title}
+                                    {open ? (
+                                        <UpIcon className="w-4 h-4 text-active" />
+                                    ) : (
+                                        <BottomIcon className="w-4 h-4 text-active" />
+                                    )}
+                                </>
+                            )}
+                        </Listbox.Button>
+                        <Listbox.Options className="absolute z-10 flex flex-col w-full gap-1 px-2 py-3 mt-2 border-2 rounded bg-box border-primary text-body3">
+                            {languages.map((item) => (
+                                <Listbox.Option
+                                    key={item.code}
+                                    value={item}
+                                    disabled={!item.supported}
+                                    onClick={() => handleSwitchLanguage(item)}
+                                    className={({ active, selected }) =>
+                                        classNames(
+                                            ' cursor-pointer h-8 px-2 bg-white/5 flex-row-center rounded',
+                                            (active || selected) &&
+                                                'bg-white/20'
+                                        )
+                                    }
+                                >
+                                    {item.title}
+                                </Listbox.Option>
+                            ))}
+                        </Listbox.Options>
+                    </Listbox>
+                </div>
+            )}
             {isDev && (
                 <div>
                     <span className="capitalize text-body3 text-primary-100">
