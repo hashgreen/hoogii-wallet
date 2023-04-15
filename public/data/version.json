@@ -5,11 +5,11 @@
     "contents": [
         {
             "title": "Hoogii now supports HashgreenSwap v0.1(testnet)!",
-            "description": "You can now use Hoogii to connect Hashgreenswap v0.1 and swap or stake on testnet!"
+            "description": "You can now use Hoogii to connect Hashgreenswap v0.1 and swap or stake on testnet(starting from April 25)!"
         },
         {
             "title": "Optimize user interface and experience",
-            "description": "Optimize the user experience when importing tokens, and add update notifications."
+            "description": "OOptimize the user experience when importing tokens, and add update notifications."
         }
     ]
 }
