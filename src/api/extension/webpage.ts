@@ -29,9 +29,9 @@ export const request = async <T = any>({
 export const event = (eventName: string, callback: (arg: any) => void) => {
     const handler = (event) => callback(event.detail)
 
-    const events = window.chia.hoogii._events[eventName] || []
+    const events = window.chia.devhoogii._events[eventName] || []
 
-    window.chia.hoogii._events[eventName] = [...events, [callback, handler]]
+    window.chia.devhoogii._events[eventName] = [...events, [callback, handler]]
 
     window.addEventListener(`${pkg.name}${eventName}`, handler)
 }
@@ -47,7 +47,7 @@ export const eventOff = (eventName: string, callback) => {
         (cb) => cb !== callback
     )
 
-    const eventHandlers = window.chia.hoogii._events[eventName]
+    const eventHandlers = window.chia.devhoogii._events[eventName]
 
     if (typeof eventHandlers !== 'undefined') {
         const matchingHandlers = filterByMatchingHandlers(eventHandlers)
@@ -56,7 +56,7 @@ export const eventOff = (eventName: string, callback) => {
             window.removeEventListener(`${pkg.name}${eventName}`, handler)
         }
 
-        window.chia.hoogii._events[eventName] =
+        window.chia.devhoogii._events[eventName] =
             filterByNonMatchingHandlers(eventHandlers)
     }
 }
