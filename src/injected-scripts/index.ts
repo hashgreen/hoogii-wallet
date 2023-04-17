@@ -24,9 +24,11 @@ Object.assign(hoogii, {
     isUnlocked: async () => !(await isLocked())?.data,
 })
 if (window.chia) {
-    window.chia.hoogii = hoogii
+    window.chia.hoogii.dev = hoogii
 } else {
     window.chia = {
-        hoogii,
+        hoogii: {
+            dev: hoogii,
+        },
     }
 }
