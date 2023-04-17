@@ -51,9 +51,6 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
 
     useEffect(() => {
         let spendBundle = {}
-        if (request.data?.method === RequestMethodEnum.SEND_TRANSACTION) {
-            spendBundle = request?.data?.params?.spendBundle
-        }
 
         if (request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS) {
             spendBundle = {

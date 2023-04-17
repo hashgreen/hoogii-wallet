@@ -1,5 +1,6 @@
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Program } from '@rigidity/clvm'
+import { AxiosError } from 'axios'
 
 import { createPopup } from '~/api/extension/extension'
 import Messaging from '~/api/extension/messaging'
@@ -10,10 +11,12 @@ import {
     AssetCoinsTypeEnum,
     GetPublicKeysParams,
     IMessage,
+    MempoolInclusionStatus,
     MethodEnum,
     PopupEnum,
     RequestArguments,
     RequestMethodEnum,
+    SendTransactionParams,
     SignCoinSpendsParams,
 } from '~/types/extension'
 import { StorageEnum } from '~/types/storage'
@@ -26,7 +29,7 @@ import Secure from '~/utils/Secure'
 import { puzzleHashToAddress } from '~/utils/signature'
 import { Wallet } from '~/utils/Wallet/Wallet'
 
-import { callGetBalance, getSpendableCoins } from '../api'
+import { callGetBalance, getSpendableCoins, sendTx } from '../api'
 import * as Errors from './errors'
 import { permission } from './permission'
 const connect = async (origin: string): Promise<boolean> => {
@@ -204,6 +207,27 @@ const getAssetBalance = async (params: {
     return { spendableCoinCount: balance?.data?.data || 0 }
 }
 
+const sendTransaction = async (params: SendTransactionParams) => {
+    try {
+        const res = await sendTx({
+            data: {
+                spend_bundle: params?.spendBundle,
+            },
+        })
+        return {
+            status: res?.data?.data,
+        }
+    } catch (error) {
+        const resError = error as AxiosError
+
+        return {
+            status: MempoolInclusionStatus.FAILED,
+            error: true,
+            message: resError?.response?.data?.msg,
+        }
+    }
+}
+
 const authHandler = async (request: IMessage<RequestArguments>) => {
     if (
         !request?.isConnected ||
@@ -255,7 +279,7 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         case RequestMethodEnum.SIGN_MESSAGE:
             throw Errors.UnderDevelopment
         case RequestMethodEnum.SEND_TRANSACTION:
-            return response
+            return sendTransaction(request.data.params)
         case RequestMethodEnum.CREATE_OFFER:
             return response
         case RequestMethodEnum.TAKE_OFFER:

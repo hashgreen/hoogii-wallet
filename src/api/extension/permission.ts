@@ -10,8 +10,6 @@ export const permission = {
         [RequestMethodEnum.CREATE_OFFER]: RequestMethodEnum.CREATE_OFFER,
         [RequestMethodEnum.TAKE_OFFER]: RequestMethodEnum.TAKE_OFFER,
         [RequestMethodEnum.TRANSFER]: RequestMethodEnum.TRANSFER,
-        [RequestMethodEnum.SEND_TRANSACTION]:
-            RequestMethodEnum.SEND_TRANSACTION,
         [RequestMethodEnum.SIGN_COIN_SPENDS]:
             RequestMethodEnum.SIGN_COIN_SPENDS,
     },

@@ -1,4 +1,4 @@
-import { CoinSpend } from '@rigidity/chia'
+import { CoinSpend, SpendBundle } from '@rigidity/chia'
 
 export interface IMessage<T = any> {
     id: string
@@ -207,6 +207,9 @@ export interface SignCoinSpendsParams {
     partialSign?: boolean
 }
 
+export interface SendTransactionParams {
+    spendBundle: SpendBundle
+}
 // stay the same as [transaction_ack](https://docs.chia.net/docs/10protocol/wallet_protocol/#transaction_ack)
 export enum MempoolInclusionStatus {
     SUCCESS = 1, // Transaction added to mempool
