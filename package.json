@@ -1,11 +1,12 @@
 {
     "name": "Hoogii",
-    "version": "1.0.7-dev.7",
+    "version": "1.0.7",
     "private": true,
     "scripts": {
         "dev": "vite --mode extension --port 3000",
         "build": "tsc && vite build",
         "prerelease": "npm version prerelease --preid=dev && git push --tags && git push",
+        "release": "npm version patch && git push --tags && git push",
         "preview": "vite preview",
         "commit": "git add . && cz",
         "test": "jest --coverage=false",
