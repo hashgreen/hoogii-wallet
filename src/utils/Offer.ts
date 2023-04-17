@@ -199,7 +199,7 @@ export default class Offer {
 
                 spendList.push(...CATCoinSpendList)
                 // if offer cat and add fee in first coin
-                if (BigInt(fee) > 0n && i === 0 && hasXch) {
+                if (BigInt(fee) > 0n && i === 0 && !hasXch) {
                     console.log('if offer cat and add fee in first coin')
                     const feeSpendList = await Wallet.generateXCHSpendList({
                         fee: BigInt(fee),
