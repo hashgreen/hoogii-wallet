@@ -222,6 +222,16 @@ export default class Offer {
                     spendList.push(...feeSpendList)
                 }
             } else {
+                const {
+                    data: { data },
+                } = await callGetBalance({
+                    puzzle_hash: await getStorage<string>(
+                        StorageEnum.puzzleHash
+                    ),
+                })
+                if (BigInt(data) < BigInt(offerPayment.amount)) {
+                    throw new Error("You don't have enough xch coin to spend")
+                }
                 const checkFee = i === 0 && hasXCH ? BigInt(fee) : 0n
                 const XCHSpendList = await Wallet.generateXCHSpendList({
                     fee: checkFee, // add fee in first coin

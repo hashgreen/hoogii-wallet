@@ -299,6 +299,10 @@ export class Wallet extends Program {
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
+        if (coinList.length === 0) {
+            throw new Error('Not enough balance(Coin) for this transaction')
+        }
+
         const sumSpendingValue = coinList.reduce((acc, cur) => {
             return acc + cur.amount
         }, 0n)
