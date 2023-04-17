@@ -107,9 +107,7 @@ export class CAT extends Program {
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
 
         if (coinList.length === 0) {
-            throw new Error(
-                `Not enough CAT(${assetId}) balance(Coin) for this transaction`
-            )
+            throw new Error('Not enough CAT balance(Coin) for this transaction')
         }
 
         const sumSpendingValue = coinList.reduce(
