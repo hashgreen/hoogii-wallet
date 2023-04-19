@@ -8,6 +8,7 @@ import {
 } from '@rigidity/bls-signatures'
 import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
+import { AxiosError } from 'axios'
 import { bech32m } from 'bech32'
 import zlib from 'react-zlib-js'
 
@@ -178,13 +179,23 @@ export default class Offer {
                     hardened: true,
                     index: 0,
                 })
-                const {
-                    data: { data },
-                } = await callGetBalance({
-                    puzzle_hash: Program.fromBytes(cat.hash()).toHex(),
-                })
-                if (BigInt(data) < BigInt(offerPayment.amount)) {
-                    throw new Error("You don't have enough coin to spend")
+
+                const balancePuzzleHash = Program.fromBytes(cat.hash()).toHex()
+                // check balance
+                try {
+                    const {
+                        data: { data },
+                    } = await callGetBalance({
+                        puzzle_hash: balancePuzzleHash,
+                    })
+                    if (BigInt(data) < BigInt(offerPayment.amount)) {
+                        throw new Error("You don't have enough coin to spend")
+                    }
+                } catch (error) {
+                    const resError = error as AxiosError
+                    throw new Error(
+                        `${resError?.response?.data?.msg}(puzzle_hash:${balancePuzzleHash} asset_id:assetId)`
+                    )
                 }
 
                 const CATCoinSpendList = await CAT.generateCATSpendList({
@@ -211,6 +222,16 @@ export default class Offer {
                     spendList.push(...feeSpendList)
                 }
             } else {
+                const {
+                    data: { data },
+                } = await callGetBalance({
+                    puzzle_hash: await getStorage<string>(
+                        StorageEnum.puzzleHash
+                    ),
+                })
+                if (BigInt(data) < BigInt(offerPayment.amount)) {
+                    throw new Error("You don't have enough xch coin to spend")
+                }
                 const checkFee = i === 0 && hasXCH ? BigInt(fee) : 0n
                 const XCHSpendList = await Wallet.generateXCHSpendList({
                     fee: checkFee, // add fee in first coin

@@ -5,7 +5,6 @@ import { useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { sendTx } from '~/api/api'
 import { ErrorPopup } from '~/components/Popup'
 import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
 import OfferInfo from '~/popup/components/offerInfo'
@@ -13,7 +12,6 @@ import SpendBundleInfo from '~/popup/components/spendBundleInfo'
 import TransferInfo from '~/popup/components/transferInfo'
 import rootStore from '~/store'
 import {
-    MempoolInclusionStatus,
     MethodEnum,
     OfferParams,
     RequestMethodEnum,
@@ -108,33 +106,6 @@ const Transaction = ({
             controller.returnData({
                 data: true,
             })
-            window.close()
-        }
-
-        if (request.data?.method === RequestMethodEnum.SEND_TRANSACTION) {
-            try {
-                const res = await sendTx({
-                    data: {
-                        spend_bundle: request.data?.params?.spendBundle,
-                    },
-                })
-
-                controller.returnData({
-                    data: {
-                        status: res?.data?.data,
-                    },
-                })
-            } catch (error) {
-                const resError = error as AxiosError
-
-                controller.returnData({
-                    data: {
-                        status: MempoolInclusionStatus.FAILED,
-                        error: true,
-                        message: resError?.response?.data?.msg,
-                    },
-                })
-            }
             window.close()
         }
         if (request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS) {

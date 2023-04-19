@@ -253,7 +253,11 @@ export class Wallet extends Program {
                 })) ?? []
             )
         } catch (error) {
-            throw new Error(getErrorMessage(error as AxiosError))
+            throw new Error(
+                `${getErrorMessage(
+                    error as AxiosError
+                )}(get coin list puzzle_hash:${puzzle_hash}_`
+            )
         }
     }
 
@@ -294,6 +298,10 @@ export class Wallet extends Program {
         const spendAmount = amount + fee
 
         const coinList = Wallet.selectCoins(spendableCoinList, spendAmount)
+
+        if (coinList.length === 0) {
+            throw new Error('Not enough balance(Coin) for this transaction')
+        }
 
         const sumSpendingValue = coinList.reduce((acc, cur) => {
             return acc + cur.amount
