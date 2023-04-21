@@ -115,35 +115,39 @@ export default class Offer {
         )
         // bind coinSpend
         const spendList: CoinSpend[] = []
-        requestAssets.forEach(({ assetId, amount, memo }) => {
-            const coin: Coin = {
-                parent_coin_info:
-                    '0x0000000000000000000000000000000000000000000000000000000000000000',
-                puzzle_hash: Offer.generateSettlement(assetId).hashHex(),
-                amount: 0n,
-            }
-            const nonce = this.getNonce()
-            const settlementSolution = Program.fromList([
-                Program.fromList([
-                    Program.fromHex(Program.fromBytes(nonce).toHex()),
+        requestAssets
+            .filter(({ amount }) => amount > 0)
+            .forEach(({ assetId, amount, memo }) => {
+                const coin: Coin = {
+                    parent_coin_info:
+                        '0x0000000000000000000000000000000000000000000000000000000000000000',
+                    puzzle_hash: Offer.generateSettlement(assetId).hashHex(),
+                    amount: 0n,
+                }
+                const nonce = this.getNonce()
+                const settlementSolution = Program.fromList([
                     Program.fromList([
-                        Program.fromHex(sanitizeHex(puzzleHash)),
-                        Program.fromBigInt(BigInt(amount)),
+                        Program.fromHex(Program.fromBytes(nonce).toHex()),
                         Program.fromList([
-                            ...(assetId ? [Program.fromHex(puzzleHash)] : []),
-                            ...(memo ? [Program.fromText(memo)] : []),
+                            Program.fromHex(sanitizeHex(puzzleHash)),
+                            Program.fromBigInt(BigInt(amount)),
+                            Program.fromList([
+                                ...(assetId
+                                    ? [Program.fromHex(puzzleHash)]
+                                    : []),
+                                ...(memo ? [Program.fromText(memo)] : []),
+                            ]),
                         ]),
                     ]),
-                ]),
-            ])
+                ])
 
-            const coinSpend = new CoinSpend(
-                coin,
-                this.generateSettlement(assetId).serializeHex(),
-                settlementSolution.serializeHex()
-            )
-            spendList.push(coinSpend)
-        })
+                const coinSpend = new CoinSpend(
+                    coin,
+                    this.generateSettlement(assetId).serializeHex(),
+                    settlementSolution.serializeHex()
+                )
+                spendList.push(coinSpend)
+            })
 
         const announcementAssertions = requestPaymentAnnouncements.map(
             (announcement) =>
