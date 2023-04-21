@@ -249,6 +249,11 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
     ) {
         request.isLocked = false
     }
+    // get chain id don't need unlocked and connected
+    if (request.data?.method === RequestMethodEnum.CHAIN_ID) {
+        request.isConnected = true
+        request.isLocked = false
+    }
 
     const response = await authHandler(request)
     if (!response) {
