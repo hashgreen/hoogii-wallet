@@ -229,6 +229,10 @@ const sendTransaction = async (params: SendTransactionParams) => {
 }
 
 const authHandler = async (request: IMessage<RequestArguments>) => {
+    if (permission.Skip[request.data?.method as RequestMethodEnum]) {
+        return true
+    }
+
     if (
         !request?.isConnected ||
         request?.isLocked ||
@@ -247,11 +251,6 @@ export const requestHandler = async (request: IMessage<RequestArguments>) => {
         request.data?.method === RequestMethodEnum.CONNECT &&
         request?.data?.params?.eager
     ) {
-        request.isLocked = false
-    }
-    // get chain id don't need unlocked and connected
-    if (request.data?.method === RequestMethodEnum.CHAIN_ID) {
-        request.isConnected = true
         request.isLocked = false
     }
 
