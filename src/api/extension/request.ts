@@ -229,6 +229,10 @@ const sendTransaction = async (params: SendTransactionParams) => {
 }
 
 const authHandler = async (request: IMessage<RequestArguments>) => {
+    if (permission.Skip[request.data?.method as RequestMethodEnum]) {
+        return true
+    }
+
     if (
         !request?.isConnected ||
         request?.isLocked ||
