@@ -139,6 +139,7 @@
     "tooltip-paste_hint": "You can paste your entire Backup Phrase into any field.",
     "transaction": "Transaction",
     "transaction-detail": "transaction ID",
+    "transaction-asset": "Assets",
     "transaction-farming-rewards": "Farming Rewards",
     "transaction-fee": "Fee: {{fee}} {{code}}",
     "transaction-from": "from",

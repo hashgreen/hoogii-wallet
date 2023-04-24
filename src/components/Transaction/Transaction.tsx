@@ -195,6 +195,7 @@ const Transaction = ({
                         {action === IType.Receive && t('transaction-from')}
                         {txType === ITxType.TX_TYPE_COINBASE &&
                             t('transaction-detail')}
+                        {action === IType.Offer && t('transaction-asset')}
                     </span>
                     <div>
                         <span>
@@ -205,6 +206,7 @@ const Transaction = ({
                         </span>
                     </div>
                 </div>
+
                 {txType !== ITxType.TX_TYPE_COINBASE && (
                     <>
                         {chain && (
@@ -249,6 +251,8 @@ const Transaction = ({
                                 memo={memo}
                             />
                         ))}
+
+                        {filteredMemo?.length === 0 && 'None'}
                     </div>
                 </div>
             </div>

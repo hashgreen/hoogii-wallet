@@ -139,6 +139,7 @@
     "tooltip-paste_hint": "您可以將整個備份短語貼到任何字段中。",
     "transaction": "交易",
     "transaction-detail": "交易 ID",
+    "transaction-asset": "資產",
     "transaction-farming-rewards": "挖礦獎勵",
     "transaction-fee": "手續費：{{fee}} {{code}}",
     "transaction-from": "發送地址",

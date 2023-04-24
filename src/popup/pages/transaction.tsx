@@ -60,6 +60,8 @@ const Transaction = ({
             fee
         )
 
+        console.log('secureBundle', secureBundle)
+
         return new Offer(secureBundle)
     }
 
@@ -96,7 +98,7 @@ const Transaction = ({
                     data: { error: true, message },
                 })
             }
-            window.close()
+            // window.close()
         }
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
             await transfer(
