@@ -247,10 +247,6 @@ const Transaction = ({
                     {shortenHash(txId)}
                     <CopyIcon className="w-3 h-3" />
                 </CopyTooltip>
-
-                {/* <div className="mt-1 text-tertiary" title={txId}>
-                    {shortenHash(txId)}
-                </div> */}
                 <div className="pt-3 text-caption">
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
