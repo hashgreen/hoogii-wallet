@@ -13,4 +13,7 @@ export const permission = {
         [RequestMethodEnum.SIGN_COIN_SPENDS]:
             RequestMethodEnum.SIGN_COIN_SPENDS,
     },
+    Skip: {
+        [RequestMethodEnum.CHAIN_ID]: RequestMethodEnum.CHAIN_ID,
+    },
 }
