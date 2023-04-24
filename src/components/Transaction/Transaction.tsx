@@ -231,15 +231,26 @@ const Transaction = ({
                                 <CopyIcon className="w-3 h-3" />
                             </CopyTooltip>
                         )}
-                        <div className="mt-4 capitalize text-caption">
-                            <span>{t('transaction-detail')}</span>
-                        </div>
                     </>
                 )}
 
-                <div className="mt-1 text-tertiary" title={txId}>
-                    {shortenHash(txId)}
+                <div className="mt-4 capitalize text-caption">
+                    <span>{t('transaction-detail')}</span>
                 </div>
+
+                <CopyTooltip
+                    dataTip={t('tooltip-copy_transaction_id')}
+                    copiedDataTip={t('tooltip-copied')}
+                    value={txId}
+                    className="gap-1 mt-1 select-none text-dark-scale-100 w-min flex-row-center after:whitespace-nowrap"
+                >
+                    {shortenHash(txId)}
+                    <CopyIcon className="w-3 h-3" />
+                </CopyTooltip>
+
+                {/* <div className="mt-1 text-tertiary" title={txId}>
+                    {shortenHash(txId)}
+                </div> */}
                 <div className="pt-3 text-caption">
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
