@@ -98,7 +98,7 @@ const Transaction = ({
                     data: { error: true, message },
                 })
             }
-            // window.close()
+            window.close()
         }
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
             await transfer(
