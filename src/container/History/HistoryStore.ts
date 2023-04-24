@@ -2,6 +2,7 @@ import { makeAutoObservable, onBecomeObserved, runInAction } from 'mobx'
 
 import { callGetTxByPuzzleHash } from '~/api/api'
 import {
+    IBalanceChanges,
     ITransaction,
     ITransactionPrase,
     ITxStatus,
@@ -10,6 +11,67 @@ import {
 import WalletStore from '~/store/WalletStore'
 import { add0x } from '~/utils/encryption'
 import { puzzleHashToAddress } from '~/utils/signature'
+
+const test: IBalanceChanges = {
+    '': {
+        asset_balance_change: {
+            '': {
+                amount: 185520,
+            },
+            '0x9b3f8b4a3b1832eaa886a2117cbff84eb653234f99b628a596ac1cc05601812c':
+                {
+                    amount: -185520,
+                },
+        },
+    },
+    '0x0d016fe60d9f78429aaa10b271000c08ecfb7c2bc11b8aa20c7c70d95e32eccd': {
+        asset_balance_change: {
+            '': {
+                amount: -1000000000000,
+            },
+            '0x73dd418ff67e6079f06c7cc8cee637c7adc314210dca26997d634692f6c16087':
+                {
+                    amount: -38771,
+                },
+            '0x9b3f8b4a3b1832eaa886a2117cbff84eb653234f99b628a596ac1cc05601812c':
+                {
+                    amount: 185520,
+                },
+        },
+    },
+    '0x3b82adf1903425c733223cf0c697399fce63e8b07d29cffdd3cf3fc36dfffe00': {
+        asset_balance_change: {
+            '': {
+                amount: 999999814480,
+            },
+            '0x73dd418ff67e6079f06c7cc8cee637c7adc314210dca26997d634692f6c16087':
+                {
+                    amount: 38771,
+                },
+        },
+    },
+    '0x899eb615ab3e6971119e5c666980803efdd9bc6f9b1c4b045a3e404a0c0aa784': {
+        asset_balance_change: {
+            '0x9b3f8b4a3b1832eaa886a2117cbff84eb653234f99b628a596ac1cc05601812c':
+                {},
+        },
+    },
+    '0xcfbfdeed5c4ca2de3d0bf520b9cb4bb7743a359bd2e6a188d19ce7dffc21d3e7': {
+        asset_balance_change: {
+            '': {},
+            '0x73dd418ff67e6079f06c7cc8cee637c7adc314210dca26997d634692f6c16087':
+                {},
+            '0x9b3f8b4a3b1832eaa886a2117cbff84eb653234f99b628a596ac1cc05601812c':
+                {},
+        },
+    },
+    '0xf625da338fd204f85947f1f8f1be51c2a72ca335739148d9fde0d80c474baf17': {
+        asset_balance_change: {
+            '': {},
+        },
+    },
+}
+console.log('test', test)
 
 class HistoryStore {
     walletStore: WalletStore

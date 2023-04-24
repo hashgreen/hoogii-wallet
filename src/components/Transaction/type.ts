@@ -40,11 +40,11 @@ export enum ITxType {
     TX_TYPE_UNKNOWN = 99,
 }
 
-interface IAssetBalanceChange {
-    [key: string | '']: { amount?: number }
+export interface IAssetBalanceChange {
+    [key: string]: { amount?: number }
 }
 
-interface IBalanceChanges {
+export interface IBalanceChanges {
     [key: string]: {
         asset_balance_change: IAssetBalanceChange
     }

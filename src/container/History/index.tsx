@@ -13,7 +13,7 @@ import rootStore from '~/store'
 import { LocaleEnum } from '~/types/i18n'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
 
-import MockData from './mockData.json'
+import MockData from './mockData'
 interface ILangItem {
     locale: keyof typeof LocaleEnum
     file: Locale
