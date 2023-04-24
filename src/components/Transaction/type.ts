@@ -4,7 +4,10 @@ export enum IType {
     Receive = 'receive',
     Coinbase = 'coinbase',
 }
-
+interface IAssetBalances {
+    assetId: string
+    amount?: number
+}
 export interface ITransaction {
     amount: number
     fee: number
@@ -20,6 +23,7 @@ export interface ITransaction {
     action: string
     status: ITxStatus
     memos: string[]
+    myAssetBalances?: IAssetBalances[]
 }
 export enum ITxStatus {
     TX_STATUS_UNSPECIFIED = 0,

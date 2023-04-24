@@ -29,6 +29,7 @@ const bgColorMap = {
 }
 const statusText = {
     [ITxType.TX_TYPE_COINBASE]: 'reward',
+    [ITxType.TX_TYPE_OFFER1_SWAP]: 'offer',
 }
 
 const Transaction = ({
@@ -132,20 +133,12 @@ const Transaction = ({
                     <div className="flex-col ml-4">
                         <div
                             className={`${classNames({
-                                'text-status-receive':
-                                    action === IType.Receive ||
-                                    txType === ITxType.TX_TYPE_COINBASE,
-                                'text-status-send': action === IType.Send,
-                                'text-status-offer':
-                                    txType === ITxType.TX_TYPE_OFFER1_SWAP,
+                                'text-status-receive': amount >= 0,
+                                'text-status-send': amount < 0,
                             })} text-body2`}
                         >
-                            {action === IType.Receive ||
-                            txType === ITxType.TX_TYPE_COINBASE
-                                ? '+'
-                                : '-'}
                             <span>
-                                {txType < 3
+                                {!assetId
                                     ? mojoToXch(
                                           amount?.toString() ?? '0'
                                       ).toFixed()
@@ -158,7 +151,7 @@ const Transaction = ({
                                     ? asset?.code ?? 'unknown token'
                                     : XCH.code)}
                         </div>
-                        {action === IType.Send && (
+                        {(action === IType.Send || action === IType.Offer) && (
                             <div className="mt-1 text-body3 text-primary-100">
                                 {t('transaction-fee', {
                                     fee: mojoToXch(
@@ -207,7 +200,8 @@ const Transaction = ({
                     </div>
                 </div>
 
-                {txType !== ITxType.TX_TYPE_COINBASE && (
+                {(txType === ITxType.TX_TYPE_STANDARD_TRANSFER ||
+                    txType === ITxType.TX_TYPE_CAT_TRANSFER) && (
                     <>
                         {chain && (
                             <CopyTooltip
