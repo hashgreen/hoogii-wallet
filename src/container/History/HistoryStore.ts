@@ -1,8 +1,14 @@
 import { makeAutoObservable, onBecomeObserved, runInAction } from 'mobx'
 
 import { callGetTxByPuzzleHash } from '~/api/api'
-import { ITransaction, ITxStatus, IType } from '~/components/Transaction/type'
+import {
+    ITransaction,
+    ITransactionPrase,
+    ITxStatus,
+    IType,
+} from '~/components/Transaction/type'
 import WalletStore from '~/store/WalletStore'
+import { add0x } from '~/utils/encryption'
 import { puzzleHashToAddress } from '~/utils/signature'
 
 class HistoryStore {
@@ -118,6 +124,52 @@ class HistoryStore {
         }
     }
 
+    formatHistoryNew = (history: ITransactionPrase[]) => {
+        return history?.map(
+            ({
+                fee,
+                created_at,
+                status,
+                type,
+                name,
+                balance_changes,
+                updated_at,
+                memos,
+            }): ITransaction => {
+                const myBalanceChanges =
+                    balance_changes[
+                        '0x0d016fe60d9f78429aaa10b271000c08ecfb7c2bc11b8aa20c7c70d95e32eccd' ||
+                            add0x(this.walletStore.puzzleHash)
+                    ]?.asset_balance_change
+
+                const myAssetBalanceChangeArray = Object.keys(myBalanceChanges)
+                    .map((key) => ({ assetId: key, ...myBalanceChanges[key] }))
+                    .sort((a, b) => {
+                        const aAmount = a?.amount || 0
+                        const bAmount = b?.amount || 0
+                        return aAmount - bAmount
+                    })
+                const myAssetBalanceChange = myAssetBalanceChangeArray?.[0]
+
+                return {
+                    assetId: myAssetBalanceChange.assetId,
+                    cname: '',
+                    txType: type,
+                    fee,
+                    receiver: '',
+                    sender: '',
+                    createdAt: new Date(created_at),
+                    updatedAt: new Date(updated_at),
+                    txId: name,
+                    amount: myAssetBalanceChange.amount || 0,
+                    memos,
+                    action: 'send',
+                    status,
+                }
+            }
+        )
+    }
+
     formatHistory = (history) =>
         history?.map(
             ({
@@ -135,24 +187,26 @@ class HistoryStore {
                     memos,
                 },
                 updated_at,
-            }): ITransaction => ({
-                assetId: asset_id,
-                status,
-                cname,
-                txType: type,
-                fee,
-                receiver: to_puzzle_hashes?.[0] ?? '',
-                sender: from_puzzle_hash,
-                createdAt: new Date(created_at),
-                updatedAt: new Date(updated_at),
-                txId: name,
-                amount,
-                memos,
-                action:
-                    ('0x' + this.walletStore.puzzleHash === from_puzzle_hash
-                        ? 'send'
-                        : 'receive') || '',
-            })
+            }): ITransaction => {
+                return {
+                    assetId: asset_id,
+                    status,
+                    cname,
+                    txType: type,
+                    fee,
+                    receiver: to_puzzle_hashes?.[0] ?? '',
+                    sender: from_puzzle_hash,
+                    createdAt: new Date(created_at),
+                    updatedAt: new Date(updated_at),
+                    txId: name,
+                    amount,
+                    memos,
+                    action:
+                        ('0x' + this.walletStore.puzzleHash === from_puzzle_hash
+                            ? 'send'
+                            : 'receive') || '',
+                }
+            }
         )
 
     reset = () => {

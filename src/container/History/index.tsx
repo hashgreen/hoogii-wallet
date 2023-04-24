@@ -13,6 +13,7 @@ import rootStore from '~/store'
 import { LocaleEnum } from '~/types/i18n'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
 
+import MockData from './mockData.json'
 interface ILangItem {
     locale: keyof typeof LocaleEnum
     file: Locale
@@ -49,6 +50,7 @@ const History = () => {
             hasMore,
             loadMore,
             completeHistory,
+            formatHistoryNew,
         },
         assetsStore: { availableAssets },
         walletStore: { puzzleHash, isAblyConnected },
@@ -84,8 +86,13 @@ const History = () => {
         })
     }
 
+    const newTxData = formatHistoryNew(MockData)
+    console.log('newTxData', newTxData)
     return (
         <div className="pb-5">
+            {newTxData.map((detail) => (
+                <Transaction key={detail.txId} {...detail} />
+            ))}
             {isFetching && <TransactionLoading />}
             {isAblyConnected && puzzleHash && (
                 <Ably

@@ -7,7 +7,6 @@ export enum IType {
 
 export interface ITransaction {
     amount: number
-    secondAmount?: number
     fee: number
     onClick?: () => void
     createdAt: Date
@@ -39,4 +38,30 @@ export enum ITxType {
     TX_TYPE_CAT_MELT = 5,
     TX_TYPE_OFFER1_SWAP = 6,
     TX_TYPE_UNKNOWN = 99,
+}
+
+interface IAssetBalanceChange {
+    [key: string | '']: { amount?: number }
+}
+
+interface IBalanceChanges {
+    [key: string]: {
+        asset_balance_change: IAssetBalanceChange
+    }
+}
+
+export interface ITransactionPrase {
+    name: string
+    type: ITxType
+    fee: number
+    cost: number
+    balance_changes: IBalanceChanges
+    memos: string[]
+    created_by: string
+    created_at: string
+    updated_at: string
+    inmempool_at: string
+    onchain_at: string
+    status: ITxStatus
+    tag?: string
 }
