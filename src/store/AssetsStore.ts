@@ -79,14 +79,18 @@ class AssetsStore {
 
     addDefaultAsset = async () => {
         // Show USDS by default on mainnet
-        rootStore.walletStore.db.assets.clear()
-        defaultCATs[this.walletStore.chain.name].forEach(async (assetInfo) => {
-            await rootStore.walletStore.db.assets.add({
-                ...assetInfo,
-            })
-        })
+        try {
+            rootStore.walletStore.db.assets.clear()
+            defaultCATs[this.walletStore.chain.name].forEach(
+                async (assetInfo) => {
+                    await rootStore.walletStore.db.assets.add({
+                        ...assetInfo,
+                    })
+                }
+            )
 
-        this.getAllBalances()
+            this.getAllBalances()
+        } catch (e) {}
     }
 
     retrieveExistedAssets = async () => {
