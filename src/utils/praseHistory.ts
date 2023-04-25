@@ -34,7 +34,7 @@ export const praseHistory = (
             // sort by assetId in descending order
             return b.assetId.localeCompare(a.assetId)
         })
-    console.log('myAssetBalances', myAssetBalances)
+
     // find first asset
     const myAssetBalanceChange = myAssetBalances?.[0]
     const assetId = myAssetBalanceChange?.assetId || ''
