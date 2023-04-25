@@ -147,12 +147,18 @@ class HistoryStore {
                     // find my asset and sort
                     const myAssetBalances = Object.entries(myBalanceChanges)
                         .map(([key, value]) => ({ assetId: key, ...value }))
-                        .filter((item) => item.amount ?? false)
                         .sort((a, b) => {
-                            const aAmount = a?.amount || 0
-                            const bAmount = b?.amount || 0
-                            return bAmount - aAmount
+                            const aAmount = a.amount ?? Number.NEGATIVE_INFINITY
+                            const bAmount = b.amount ?? Number.NEGATIVE_INFINITY
+
+                            if (bAmount !== aAmount) {
+                                // sort by amount in descending order
+                                return bAmount - aAmount
+                            }
+                            // sort by assetId in ascending order
+                            return b.assetId.localeCompare(a.assetId)
                         })
+                    console.log('myAssetBalances', myAssetBalances)
                     // find first asset
                     const myAssetBalanceChange = myAssetBalances?.[0]
                     const assetId = myAssetBalanceChange?.assetId || ''
