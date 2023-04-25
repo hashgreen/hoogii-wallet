@@ -171,7 +171,7 @@ const Transaction = ({
                                 description: '',
                             },
                             {
-                                fee: '0.0005',
+                                fee: '0.005',
                                 note: t('send-fee-fast'),
                                 description: '',
                             },
