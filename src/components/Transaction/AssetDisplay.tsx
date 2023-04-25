@@ -39,7 +39,9 @@ const AssetDisplay = ({
                                 assetId={assetId || 'XCH'}
                                 className="w-6 h-6 mr-1"
                             />
-                            {assetId ? finsAsset?.name || 'CAT ' : XCH.code}
+                            <span className="text-dark-scale-100 ">
+                                {assetId ? finsAsset?.name || 'CAT ' : XCH.code}
+                            </span>
 
                             {assetId && (
                                 <CopyTooltip
@@ -47,7 +49,7 @@ const AssetDisplay = ({
                                     dataTip={t('tooltip-copy_asset_id')}
                                     copiedDataTip={t('tooltip-copied')}
                                     value={assetId}
-                                    className="gap-1 ml-1 select-none text-dark-scale-100 w-min flex-row-center after:whitespace-nowrap "
+                                    className="gap-1 ml-1 select-none w-min flex-row-center after:whitespace-nowrap "
                                 >
                                     {shortenHash(assetId)}
                                     <CopyIcon className="w-3 h-3" />
