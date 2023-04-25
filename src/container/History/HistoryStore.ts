@@ -155,7 +155,7 @@ class HistoryStore {
                                 // sort by amount in descending order
                                 return bAmount - aAmount
                             }
-                            // sort by assetId in ascending order
+                            // sort by assetId in descending order
                             return b.assetId.localeCompare(a.assetId)
                         })
                     console.log('myAssetBalances', myAssetBalances)
