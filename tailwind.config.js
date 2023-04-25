@@ -10,8 +10,8 @@ function withOpacityValue(variable) {
 
 function createStyles(prefix, object) {
     let components = {}
-    Object.entries(object).forEach(([ key, value ]) => {
-        if ([ 'inherit', 'currentColor', 'transparent' ].includes(value)) return
+    Object.entries(object).forEach(([key, value]) => {
+        if (['inherit', 'currentColor', 'transparent'].includes(value)) return
         if (typeof value === 'object') {
             components = {
                 ...components,
@@ -26,18 +26,18 @@ function createStyles(prefix, object) {
         } else {
             const backgroundColor =
                 typeof value === 'function' ? value(1) : value
-            let darkScale = [ 'tertiary' ].includes(key) ? 900 : 100
+            let darkScale = ['tertiary'].includes(key) ? 900 : 100
             try {
                 if (
                     chroma.color(backgroundColor).textColor().equals('#ffffff')
                 ) {
                     darkScale = 100
                 } else darkScale = 900
-            } catch (error) { }
+            } catch (error) {}
             const color = `rgb(var(--color-dark-scale-${darkScale}))`
             let contrastColor = backgroundColor
             if (
-                [ 'primary', 'secondary', 'tertiary' ].find((item) =>
+                ['primary', 'secondary', 'tertiary'].find((item) =>
                     prefix(key).includes(item)
                 )
             ) {
@@ -45,7 +45,7 @@ function createStyles(prefix, object) {
             }
             components = {
                 ...components,
-                [ prefix(key) ]: {
+                [prefix(key)]: {
                     backgroundColor,
                     color,
                     '&.btn-outline': {
@@ -73,7 +73,7 @@ module.exports = {
     // important: [ '#root', '#popup' ],
     // important: true,
     darkMode: 'class',
-    content: [ './src/**/*.{js,jsx,ts,tsx}', './index.html' ],
+    content: ['./src/**/*.{js,jsx,ts,tsx}', './index.html'],
     theme: {
         extend: {
             screens: {
@@ -85,7 +85,7 @@ module.exports = {
                 },
             },
             fontFamily: {
-                sans: [ 'lato', ...defaultTheme.fontFamily.sans ],
+                sans: ['lato', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 primary: {
@@ -108,6 +108,7 @@ module.exports = {
                     contract: withOpacityValue('--color-status-contract'), // #716EFF
                     pending: 'rgba(var(--color-status-pending))', // #000000
                     cancel: withOpacityValue('--color-status-cancel'), // #45445A
+                    offer: withOpacityValue('--color-primary-500'), // #716EFF
                 },
                 'dark-scale': {
                     900: withOpacityValue('--color-dark-scale-900'), // #000000
@@ -139,9 +140,9 @@ module.exports = {
         plugin(function ({ addUtilities, theme, e }) {
             const utilities = textStyles.map(
                 ({ key, fontWeight, fontSize }) => ({
-                    [ `.${e(`text-${key}`)}` ]: {
+                    [`.${e(`text-${key}`)}`]: {
                         fontSize,
-                        fontWeight: theme('fontWeight')[ fontWeight ],
+                        fontWeight: theme('fontWeight')[fontWeight],
                         lineHeight: 1.2,
                     },
                 })
