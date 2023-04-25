@@ -52,7 +52,7 @@ const History = () => {
         assetsStore: { availableAssets },
         walletStore: { puzzleHash, isAblyConnected },
     } = rootStore
-    console.log('history', history)
+
     const groupedHistory = useMemo(() => {
         const option: IOptions = {
             addSuffix: true,
@@ -65,7 +65,7 @@ const History = () => {
             formatDistanceToNowStrict(item.updatedAt, option)
         )
     }, [history, i18n.language])
-    console.log('groupedHistory', groupedHistory)
+
     const isFetching = fetching || availableAssets.isFetching
 
     const handleLoadMore = () => {
