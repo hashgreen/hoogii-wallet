@@ -36,7 +36,7 @@ export type MethodType<T = any, R = T> = (
 
 export enum SenderEnum {
     BACKGROUND = 'BACKGROUND',
-    EXTENSION = 'hoogii-wallet',
+    EXTENSION = 'hoogii-wallet-hashgreen-swap',
     WEBPAGE = 'WEBPAGE',
 }
 
