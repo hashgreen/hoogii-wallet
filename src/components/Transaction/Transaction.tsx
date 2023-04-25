@@ -31,6 +31,7 @@ const bgColorMap = {
 const statusText = {
     [ITxType.TX_TYPE_COINBASE]: 'reward',
     [ITxType.TX_TYPE_OFFER1_SWAP]: 'offer',
+    [ITxType.TX_TYPE_UNKNOWN]: '-',
 }
 
 const Transaction = ({
@@ -143,7 +144,9 @@ const Transaction = ({
                             <span>
                                 {amount < 0 || action === IType.Send
                                     ? '-'
-                                    : '+'}{' '}
+                                    : '+'}
+                            </span>
+                            <span className="mr-1">
                                 {!assetId
                                     ? mojoToXch(
                                           Math.abs(amount ?? '0').toString()
