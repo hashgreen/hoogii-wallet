@@ -266,7 +266,8 @@ const Transaction = ({
                             />
                         ))}
 
-                        {filteredMemo?.length === 0 && 'None'}
+                        {(filteredMemo?.length === 0 || !filteredMemo) &&
+                            'None'}
                     </div>
                 </div>
             </div>
