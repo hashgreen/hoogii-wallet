@@ -12,8 +12,6 @@ import TransactionLoading from '~/components/Transaction/TransactionLoading'
 import rootStore from '~/store'
 import { LocaleEnum } from '~/types/i18n'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
-
-import MockData from './mockData'
 interface ILangItem {
     locale: keyof typeof LocaleEnum
     file: Locale
@@ -50,12 +48,11 @@ const History = () => {
             hasMore,
             loadMore,
             completeHistory,
-            formatHistoryNew,
         },
         assetsStore: { availableAssets },
         walletStore: { puzzleHash, isAblyConnected },
     } = rootStore
-
+    console.log('history', history)
     const groupedHistory = useMemo(() => {
         const option: IOptions = {
             addSuffix: true,
@@ -68,7 +65,7 @@ const History = () => {
             formatDistanceToNowStrict(item.updatedAt, option)
         )
     }, [history, i18n.language])
-
+    console.log('groupedHistory', groupedHistory)
     const isFetching = fetching || availableAssets.isFetching
 
     const handleLoadMore = () => {
@@ -85,14 +82,8 @@ const History = () => {
             ],
         })
     }
-
-    const newTxData = formatHistoryNew(MockData)
-    console.log('newTxData', newTxData)
     return (
         <div className="pb-5">
-            {newTxData.map((detail) => (
-                <Transaction key={detail.txId} {...detail} />
-            ))}
             {isFetching && <TransactionLoading />}
             {isAblyConnected && puzzleHash && (
                 <Ably

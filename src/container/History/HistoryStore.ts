@@ -125,80 +125,83 @@ class HistoryStore {
         }
     }
 
-    formatHistoryNew = (history: ITransactionPrase[]) => {
-        return history?.map(
-            ({
-                fee,
-                created_at,
-                status,
-                type,
-                name,
-                balance_changes,
-                updated_at,
-                memos,
-            }): ITransaction => {
-                const myPuzzleHash =
-                    '0x0d016fe60d9f78429aaa10b271000c08ecfb7c2bc11b8aa20c7c70d95e32eccd' ||
-                    add0x(this.walletStore.puzzleHash)
-
-                const myBalanceChanges =
-                    balance_changes[myPuzzleHash]?.asset_balance_change
-
-                // find my asset and sort
-                const myAssetBalances = Object.entries(myBalanceChanges)
-                    .map(([key, value]) => ({ assetId: key, ...value }))
-                    .filter((item) => item.amount ?? false)
-                    .sort((a, b) => {
-                        const aAmount = a?.amount || 0
-                        const bAmount = b?.amount || 0
-                        return bAmount - aAmount
-                    })
-                // find first asset
-                const myAssetBalanceChange = myAssetBalances?.[0]
-                const assetId = myAssetBalanceChange.assetId
-                const amount = myAssetBalanceChange?.amount || 0
-
-                // get action
-                let action = type === ITxType.TX_TYPE_OFFER1_SWAP ? 'offer' : ''
-                if (
-                    type === ITxType.TX_TYPE_CAT_TRANSFER ||
-                    type === ITxType.TX_TYPE_STANDARD_TRANSFER
-                ) {
-                    action = amount >= 0 ? 'receive' : 'send'
-                }
-
-                const anotherPuzzleHash =
-                    Object.entries(balance_changes).find(([key, value]) => {
-                        const assetBalanceChange = value.asset_balance_change
-                        return (
-                            key !== myPuzzleHash &&
-                            Object.keys(assetBalanceChange).some((key) => {
-                                return key === assetId
-                            })
-                        )
-                    })?.[0] || ''
-
-                return {
-                    assetId,
-                    cname: '',
-                    txType: type,
+    formatHistory = (history: ITransactionPrase[]) => {
+        return (
+            history?.map(
+                ({
                     fee,
-                    receiver: anotherPuzzleHash,
-                    sender: anotherPuzzleHash,
-                    createdAt: new Date(created_at),
-                    updatedAt: new Date(updated_at),
-                    txId: name,
-                    amount,
-                    memos,
-                    action,
+                    created_at,
                     status,
-                    myAssetBalances,
+                    type,
+                    name,
+                    balance_changes,
+                    updated_at,
+                    memos,
+                }): ITransaction => {
+                    const myPuzzleHash = add0x(this.walletStore.puzzleHash)
+
+                    const myBalanceChanges =
+                        balance_changes[myPuzzleHash]?.asset_balance_change ||
+                        {}
+
+                    // find my asset and sort
+                    const myAssetBalances = Object.entries(myBalanceChanges)
+                        .map(([key, value]) => ({ assetId: key, ...value }))
+                        .filter((item) => item.amount ?? false)
+                        .sort((a, b) => {
+                            const aAmount = a?.amount || 0
+                            const bAmount = b?.amount || 0
+                            return bAmount - aAmount
+                        })
+                    // find first asset
+                    const myAssetBalanceChange = myAssetBalances?.[0]
+                    const assetId = myAssetBalanceChange?.assetId || ''
+                    const amount = myAssetBalanceChange?.amount || 0
+
+                    // get action
+                    let action =
+                        type === ITxType.TX_TYPE_OFFER1_SWAP ? 'offer' : ''
+                    if (
+                        type === ITxType.TX_TYPE_CAT_TRANSFER ||
+                        type === ITxType.TX_TYPE_STANDARD_TRANSFER
+                    ) {
+                        action = amount >= 0 ? 'receive' : 'send'
+                    }
+
+                    const anotherPuzzleHash =
+                        Object.entries(balance_changes).find(([key, value]) => {
+                            const assetBalanceChange =
+                                value.asset_balance_change
+                            return (
+                                key !== myPuzzleHash &&
+                                Object.keys(assetBalanceChange).some((key) => {
+                                    return key === assetId
+                                })
+                            )
+                        })?.[0] || ''
+
+                    return {
+                        assetId,
+                        cname: '',
+                        txType: type,
+                        fee,
+                        receiver: anotherPuzzleHash,
+                        sender: anotherPuzzleHash,
+                        createdAt: new Date(created_at),
+                        updatedAt: new Date(updated_at),
+                        txId: name,
+                        amount,
+                        memos,
+                        action,
+                        status,
+                        myAssetBalances,
+                    }
                 }
-            }
+            ) || []
         )
     }
 
-    formatHistory = (history) =>
+    formatHistoryOld = (history) =>
         history?.map(
             ({
                 cname,

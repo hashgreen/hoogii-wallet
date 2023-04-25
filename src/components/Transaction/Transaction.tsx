@@ -18,6 +18,7 @@ import BottomIcon from '~icons/hoogii/bottom.jsx'
 import CopyIcon from '~icons/hoogii/copy.jsx'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
 
+import AssetDisplay from './AssetDisplay'
 import MemoDisplay from './MemoDisplay'
 import { Collapse } from './Transaction.style'
 import { ITransaction, ITxStatus, ITxType, IType } from './type'
@@ -44,6 +45,7 @@ const Transaction = ({
     action,
     txId,
     status,
+    myAssetBalances,
 }: ITransaction) => {
     const { t } = useTranslation()
     const [open, setOpen] = useState(false)
@@ -138,14 +140,15 @@ const Transaction = ({
                             })} text-body2`}
                         >
                             <span>
+                                {amount >= 0 ? '+' : '-'}{' '}
                                 {!assetId
                                     ? mojoToXch(
-                                          amount?.toString() ?? '0'
+                                          Math.abs(amount ?? '0').toString()
                                       ).toFixed()
                                     : mojoToCat(
-                                          amount?.toString() ?? '0'
+                                          Math.abs(amount ?? '0').toString()
                                       ).toFixed()}
-                            </span>{' '}
+                            </span>
                             {existAsset?.code ??
                                 (assetId
                                     ? asset?.code ?? 'unknown token'
@@ -199,6 +202,10 @@ const Transaction = ({
                         </span>
                     </div>
                 </div>
+
+                {txType === ITxType.TX_TYPE_OFFER1_SWAP && (
+                    <AssetDisplay assetBalances={myAssetBalances || []} />
+                )}
 
                 {(txType === ITxType.TX_TYPE_STANDARD_TRANSFER ||
                     txType === ITxType.TX_TYPE_CAT_TRANSFER) && (

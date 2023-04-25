@@ -136,6 +136,7 @@
     "tooltip-connected_sites": "Hoogii 不会自动连接初次造访的网站，您仍需在首次连接时授权。",
     "tooltip-copied": "已复制",
     "tooltip-copy_address": "复制地址",
+    "tooltip-copy_asset_id": "复制资产 ID",
     "tooltip-copy_transaction_id": "复制交易 ID",
     "tooltip-paste_hint": "您可以将整个备份短语粘贴到任何字段中。",
     "transaction": "交易",

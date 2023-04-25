@@ -4,7 +4,7 @@ export enum IType {
     Receive = 'receive',
     Coinbase = 'coinbase',
 }
-interface IAssetBalances {
+export interface IAssetBalances {
     assetId: string
     amount?: number
 }

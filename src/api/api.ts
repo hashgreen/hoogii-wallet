@@ -132,7 +132,7 @@ export const callGetTxByPuzzleHash = (params: {
     status?: number
 }) =>
     apiHandler({
-        url: '/addon/get_tx_by_puzzle_hash',
+        url: '/transactions',
         method: 'get',
         params,
     })
