@@ -166,14 +166,23 @@ class HistoryStore {
                         type === ITxType.TX_TYPE_STANDARD_TRANSFER
                     ) {
                         action = amount >= 0 ? 'receive' : 'send'
+                        // if send to myself, then action is send
+                        if (Object.values(balance_changes).length === 1) {
+                            action = 'send'
+                        }
                     }
-
                     const anotherPuzzleHash =
                         Object.entries(balance_changes).find(([key, value]) => {
+                            // for send to myself
+                            const checkAnotherPuzzleHash =
+                                Object.values(balance_changes).length === 1
+                                    ? true
+                                    : key !== myPuzzleHash
+
                             const assetBalanceChange =
                                 value.asset_balance_change
                             return (
-                                key !== myPuzzleHash &&
+                                checkAnotherPuzzleHash &&
                                 Object.keys(assetBalanceChange).some((key) => {
                                     return key === assetId
                                 })

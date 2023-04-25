@@ -136,11 +136,14 @@ const Transaction = ({
                         <div
                             className={`${classNames({
                                 'text-status-receive': amount >= 0,
-                                'text-status-send': amount < 0,
+                                'text-status-send':
+                                    amount < 0 || action === IType.Send,
                             })} text-body2`}
                         >
                             <span>
-                                {amount >= 0 ? '+' : '-'}{' '}
+                                {amount < 0 || action === IType.Send
+                                    ? '-'
+                                    : '+'}{' '}
                                 {!assetId
                                     ? mojoToXch(
                                           Math.abs(amount ?? '0').toString()
