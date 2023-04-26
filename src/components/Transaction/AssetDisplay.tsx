@@ -1,3 +1,4 @@
+import { sanitizeHex } from '@rigidity/chia'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
@@ -48,10 +49,10 @@ const AssetDisplay = ({
                                     gaCategory={'activity'}
                                     dataTip={t('tooltip-copy_asset_id')}
                                     copiedDataTip={t('tooltip-copied')}
-                                    value={assetId}
+                                    value={sanitizeHex(assetId)}
                                     className="gap-1 ml-1 select-none w-min flex-row-center after:whitespace-nowrap "
                                 >
-                                    {shortenHash(assetId)}
+                                    {shortenHash(sanitizeHex(assetId))}
                                     <CopyIcon className="w-3 h-3" />
                                 </CopyTooltip>
                             )}
