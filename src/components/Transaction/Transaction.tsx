@@ -9,6 +9,7 @@ import CopyTooltip from '~/components/CopyTooltip'
 import rootStore from '~/store'
 import { shortenHash } from '~/utils'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
+import { add0x } from '~/utils/encryption'
 import { puzzleHashToAddress } from '~/utils/signature'
 import ActivityCoinbase from '~icons/hoogii/activity-coinbase.jsx'
 import ActivityOffer from '~icons/hoogii/activity-offer.jsx'
@@ -55,13 +56,13 @@ const Transaction = ({
         assetsStore: { availableAssets, XCH, existedAssets },
     } = rootStore
     const existAsset = existedAssets.find(
-        (asset) => '0x' + asset.assetId === assetId
+        (asset) => add0x(asset.assetId) === assetId
     )
 
     const asset = useMemo(
         () =>
             availableAssets.data.find(
-                (asset) => '0x' + asset.asset_id === assetId
+                (asset) => add0x(asset.asset_id) === assetId
             ),
         [assetId, availableAssets.data]
     )
