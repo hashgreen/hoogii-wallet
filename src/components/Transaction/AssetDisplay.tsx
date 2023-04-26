@@ -1,3 +1,4 @@
+import { sanitizeHex } from '@rigidity/chia'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 
@@ -17,17 +18,24 @@ const AssetDisplay = ({
 }) => {
     const { t } = useTranslation()
     const {
-        assetsStore: { XCH, availableAssets },
+        assetsStore: { XCH, availableAssets, existedAssets },
     } = rootStore
 
     return (
         <>
             {assetBalances.map((assetBalance, index) => {
                 const { assetId, amount } = assetBalance
+                const existAsset = existedAssets.find(
+                    (asset) => add0x(asset.assetId) === assetId
+                )
+
                 const finsAsset = availableAssets?.data?.find(
                     (availableAsset) =>
                         add0x(availableAsset.asset_id) === assetId
                 )
+
+                const name = existAsset?.code || finsAsset?.name
+
                 return (
                     <div
                         className="flex justify-between items-center pt-1 select-none text-caption"
@@ -40,7 +48,7 @@ const AssetDisplay = ({
                                 className="w-6 h-6 mr-1"
                             />
                             <span className="text-dark-scale-100 ">
-                                {assetId ? finsAsset?.name || 'CAT ' : XCH.code}
+                                {assetId ? name || 'CAT ' : XCH.code}
                             </span>
 
                             {assetId && (
@@ -48,10 +56,10 @@ const AssetDisplay = ({
                                     gaCategory={'activity'}
                                     dataTip={t('tooltip-copy_asset_id')}
                                     copiedDataTip={t('tooltip-copied')}
-                                    value={assetId}
+                                    value={sanitizeHex(assetId)}
                                     className="gap-1 ml-1 select-none w-min flex-row-center after:whitespace-nowrap "
                                 >
-                                    {shortenHash(assetId)}
+                                    {shortenHash(sanitizeHex(assetId))}
                                     <CopyIcon className="w-3 h-3" />
                                 </CopyTooltip>
                             )}
