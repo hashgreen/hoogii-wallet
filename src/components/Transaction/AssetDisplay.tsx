@@ -40,7 +40,7 @@ const AssetDisplay = ({
                         className="flex justify-between items-center pt-1 select-none text-caption"
                         key={index}
                     >
-                        <div className="flex items-center">
+                        <div className="flex items-center  leading-0">
                             <AssetIcon
                                 src={finsAsset?.icon_url}
                                 assetId={assetId || 'XCH'}
