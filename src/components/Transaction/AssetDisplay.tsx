@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import AssetIcon from '~/components/AssetIcon'
 import CopyTooltip from '~/components/CopyTooltip'
 import rootStore from '~/store'
-import { shortenHash } from '~/utils'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
 import { add0x } from '~/utils/encryption'
 import CopyIcon from '~icons/hoogii/copy.jsx'
@@ -59,7 +58,6 @@ const AssetDisplay = ({
                                     value={sanitizeHex(assetId)}
                                     className="gap-1 ml-1 select-none w-min flex-row-center after:whitespace-nowrap "
                                 >
-                                    {shortenHash(sanitizeHex(assetId))}
                                     <CopyIcon className="w-3 h-3" />
                                 </CopyTooltip>
                             )}
