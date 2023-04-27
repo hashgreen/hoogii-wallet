@@ -92,7 +92,7 @@ class HistoryStore {
                 this.loading = true
             }
         })
-        const typeList = [1, 2, 4]
+        const typeList = [1, 2, 4, 6]
         const {
             data: {
                 data: { list: txHistory, total },
