@@ -12,7 +12,6 @@ import TransactionLoading from '~/components/Transaction/TransactionLoading'
 import rootStore from '~/store'
 import { LocaleEnum } from '~/types/i18n'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
-
 interface ILangItem {
     locale: keyof typeof LocaleEnum
     file: Locale
@@ -83,7 +82,6 @@ const History = () => {
             ],
         })
     }
-
     return (
         <div className="pb-5">
             {isFetching && <TransactionLoading />}

@@ -9,6 +9,7 @@ import CopyTooltip from '~/components/CopyTooltip'
 import rootStore from '~/store'
 import { shortenHash } from '~/utils'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
+import { add0x } from '~/utils/encryption'
 import { puzzleHashToAddress } from '~/utils/signature'
 import ActivityCoinbase from '~icons/hoogii/activity-coinbase.jsx'
 import ActivityOffer from '~icons/hoogii/activity-offer.jsx'
@@ -18,6 +19,7 @@ import BottomIcon from '~icons/hoogii/bottom.jsx'
 import CopyIcon from '~icons/hoogii/copy.jsx'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
 
+import AssetDisplay from './AssetDisplay'
 import MemoDisplay from './MemoDisplay'
 import { Collapse } from './Transaction.style'
 import { ITransaction, ITxStatus, ITxType, IType } from './type'
@@ -29,6 +31,8 @@ const bgColorMap = {
 }
 const statusText = {
     [ITxType.TX_TYPE_COINBASE]: 'reward',
+    [ITxType.TX_TYPE_OFFER1_SWAP]: 'offer',
+    [ITxType.TX_TYPE_UNKNOWN]: '-',
 }
 
 const Transaction = ({
@@ -43,6 +47,7 @@ const Transaction = ({
     action,
     txId,
     status,
+    myAssetBalances,
 }: ITransaction) => {
     const { t } = useTranslation()
     const [open, setOpen] = useState(false)
@@ -51,13 +56,13 @@ const Transaction = ({
         assetsStore: { availableAssets, XCH, existedAssets },
     } = rootStore
     const existAsset = existedAssets.find(
-        (asset) => '0x' + asset.assetId === assetId
+        (asset) => add0x(asset.assetId) === assetId
     )
 
     const asset = useMemo(
         () =>
             availableAssets.data.find(
-                (asset) => '0x' + asset.asset_id === assetId
+                (asset) => add0x(asset.asset_id) === assetId
             ),
         [assetId, availableAssets.data]
     )
@@ -132,33 +137,31 @@ const Transaction = ({
                     <div className="flex-col ml-4">
                         <div
                             className={`${classNames({
-                                'text-status-receive':
-                                    action === IType.Receive ||
-                                    txType === ITxType.TX_TYPE_COINBASE,
-                                'text-status-send': action === IType.Send,
-                                'text-status-offer':
-                                    txType === ITxType.TX_TYPE_OFFER1_SWAP,
+                                'text-status-receive': amount >= 0,
+                                'text-status-send':
+                                    amount < 0 || action === IType.Send,
                             })} text-body2`}
                         >
-                            {action === IType.Receive ||
-                            txType === ITxType.TX_TYPE_COINBASE
-                                ? '+'
-                                : '-'}
                             <span>
-                                {txType < 3
+                                {amount < 0 || action === IType.Send
+                                    ? '-'
+                                    : '+'}
+                            </span>
+                            <span className="mr-1">
+                                {!assetId
                                     ? mojoToXch(
-                                          amount?.toString() ?? '0'
+                                          Math.abs(amount ?? '0').toString()
                                       ).toFixed()
                                     : mojoToCat(
-                                          amount?.toString() ?? '0'
+                                          Math.abs(amount ?? '0').toString()
                                       ).toFixed()}
-                            </span>{' '}
+                            </span>
                             {existAsset?.code ??
                                 (assetId
                                     ? asset?.code ?? 'unknown token'
                                     : XCH.code)}
                         </div>
-                        {action === IType.Send && (
+                        {(action === IType.Send || action === IType.Offer) && (
                             <div className="mt-1 text-body3 text-primary-100">
                                 {t('transaction-fee', {
                                     fee: mojoToXch(
@@ -195,6 +198,7 @@ const Transaction = ({
                         {action === IType.Receive && t('transaction-from')}
                         {txType === ITxType.TX_TYPE_COINBASE &&
                             t('transaction-detail')}
+                        {action === IType.Offer && t('transaction-asset')}
                     </span>
                     <div>
                         <span>
@@ -205,7 +209,13 @@ const Transaction = ({
                         </span>
                     </div>
                 </div>
-                {txType !== ITxType.TX_TYPE_COINBASE && (
+
+                {txType === ITxType.TX_TYPE_OFFER1_SWAP && (
+                    <AssetDisplay assetBalances={myAssetBalances || []} />
+                )}
+
+                {(txType === ITxType.TX_TYPE_STANDARD_TRANSFER ||
+                    txType === ITxType.TX_TYPE_CAT_TRANSFER) && (
                     <>
                         {chain && (
                             <CopyTooltip
@@ -229,15 +239,22 @@ const Transaction = ({
                                 <CopyIcon className="w-3 h-3" />
                             </CopyTooltip>
                         )}
-                        <div className="mt-4 capitalize text-caption">
-                            <span>{t('transaction-detail')}</span>
-                        </div>
                     </>
                 )}
 
-                <div className="mt-1 text-tertiary" title={txId}>
-                    {shortenHash(txId)}
+                <div className="mt-4 capitalize text-caption">
+                    <span>{t('transaction-detail')}</span>
                 </div>
+
+                <CopyTooltip
+                    dataTip={t('tooltip-copy_transaction_id')}
+                    copiedDataTip={t('tooltip-copied')}
+                    value={txId}
+                    className="gap-1 mt-1 select-none text-dark-scale-100 w-min flex-row-center after:whitespace-nowrap"
+                >
+                    {shortenHash(txId)}
+                    <CopyIcon className="w-3 h-3" />
+                </CopyTooltip>
                 <div className="pt-3 text-caption">
                     <span className="capitalize">{t('transaction-memo')}</span>
                     <div className="mt-1 text-tertiary">
@@ -249,6 +266,9 @@ const Transaction = ({
                                 memo={memo}
                             />
                         ))}
+
+                        {(filteredMemo?.length === 0 || !filteredMemo) &&
+                            'None'}
                     </div>
                 </div>
             </div>

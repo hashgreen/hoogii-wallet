@@ -1,8 +1,15 @@
 import { makeAutoObservable, onBecomeObserved, runInAction } from 'mobx'
 
 import { callGetTxByPuzzleHash } from '~/api/api'
-import { ITransaction, ITxStatus, IType } from '~/components/Transaction/type'
+import {
+    ITransaction,
+    ITransactionPrase,
+    ITxStatus,
+    IType,
+} from '~/components/Transaction/type'
 import WalletStore from '~/store/WalletStore'
+import { add0x } from '~/utils/encryption'
+import praseHistory from '~/utils/praseHistory'
 import { puzzleHashToAddress } from '~/utils/signature'
 
 class HistoryStore {
@@ -85,7 +92,7 @@ class HistoryStore {
                 this.loading = true
             }
         })
-        const typeList = [1, 2, 4]
+        const typeList = [1, 2, 4, 6]
         const {
             data: {
                 data: { list: txHistory, total },
@@ -118,42 +125,13 @@ class HistoryStore {
         }
     }
 
-    formatHistory = (history) =>
-        history?.map(
-            ({
-                cname,
-                fee,
-                created_at,
-                status,
-                type,
-                name,
-                metadata: {
-                    amount,
-                    asset_id,
-                    to_puzzle_hashes,
-                    from_puzzle_hash,
-                    memos,
-                },
-                updated_at,
-            }): ITransaction => ({
-                assetId: asset_id,
-                status,
-                cname,
-                txType: type,
-                fee,
-                receiver: to_puzzle_hashes?.[0] ?? '',
-                sender: from_puzzle_hash,
-                createdAt: new Date(created_at),
-                updatedAt: new Date(updated_at),
-                txId: name,
-                amount,
-                memos,
-                action:
-                    ('0x' + this.walletStore.puzzleHash === from_puzzle_hash
-                        ? 'send'
-                        : 'receive') || '',
-            })
+    formatHistory = (history: ITransactionPrase[]) => {
+        return (
+            history?.map((ITransaction) =>
+                praseHistory(ITransaction, add0x(this.walletStore.puzzleHash))
+            ) || []
         )
+    }
 
     reset = () => {
         this.history = []

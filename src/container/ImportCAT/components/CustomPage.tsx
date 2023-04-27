@@ -1,4 +1,5 @@
 import { joiResolver } from '@hookform/resolvers/joi'
+import { sanitizeHex } from '@rigidity/chia'
 import classNames from 'classnames'
 import * as joi from 'joi'
 import { observer } from 'mobx-react-lite'
@@ -141,6 +142,15 @@ const CustomPage = () => {
                                     errors.assetId &&
                                     'input-error'
                             )}
+                            onChange={(e) =>
+                                setValue(
+                                    'assetId',
+                                    sanitizeHex(e.target.value),
+                                    {
+                                        shouldValidate: true,
+                                    }
+                                )
+                            }
                         />
                         {/* {possibleAsset && (
                             <div className="flex-row-center">
