@@ -6,7 +6,7 @@ import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
 
-console.log('Service worker reload!')
+console.debug('Service worker reload!')
 const controller = new BackgroundController()
 
 controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {

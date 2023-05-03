@@ -19,7 +19,7 @@ import pkg from '../../../package.json'
 class Messaging {
     static createProxyController = () => {
         // handle messages from extension
-        console.log('listen to messages from extension')
+        console.debug('listen to messages from extension')
         chrome.runtime.onMessage.addListener(async (response: IMessage) => {
             if (
                 response.sender !== SenderEnum.EXTENSION ||
@@ -29,7 +29,7 @@ class Messaging {
             }
 
             if (isDev) {
-                console.log(
+                console.debug(
                     '[content script]:from extension >> ' +
                         JSON.stringify(response)
                 )
@@ -52,7 +52,7 @@ class Messaging {
         })
 
         // handle messages from websites
-        console.log('listen to messages from websites')
+        console.debug('listen to messages from websites')
         window.addEventListener('message', async (e) => {
             const request = e.data as IMessage
             if (
@@ -63,7 +63,7 @@ class Messaging {
             }
 
             if (isDev) {
-                console.log(
+                console.debug(
                     '[content script]:from websites >> ' +
                         JSON.stringify(request)
                 )
@@ -111,7 +111,7 @@ class Messaging {
             })
 
             if (isDev) {
-                console.log(
+                console.debug(
                     '[content script]:from websites << ' +
                         JSON.stringify(response)
                 )
@@ -165,7 +165,7 @@ class Messaging {
                             return
                         }
                         if (isDev) {
-                            console.log(
+                            console.debug(
                                 'to content << ' + JSON.stringify(response)
                             )
                         }
@@ -181,7 +181,7 @@ class Messaging {
                 )
 
                 if (isDev) {
-                    console.log('to content >> ' + JSON.stringify(data))
+                    console.debug('to content >> ' + JSON.stringify(data))
                 }
 
                 const favicon = document.querySelector(
@@ -259,7 +259,7 @@ export class BackgroundController {
         chrome.runtime.onMessage.addListener(
             (request: IMessage, _, sendResponse: SendResponse) => {
                 if (isDev) {
-                    console.log(
+                    console.debug(
                         `background >> ${JSON.stringify(request)}`,
                         this.methods[request.method]
                     )

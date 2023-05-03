@@ -127,7 +127,7 @@ const Transaction = ({
             id="confirm-form"
             onSubmit={(e) =>
                 handleSubmit(onSubmit)(e).catch((error) => {
-                    console.log('error', error)
+                    console.error('error', error)
                     setSubmitError(error as Error)
                 })
             }
