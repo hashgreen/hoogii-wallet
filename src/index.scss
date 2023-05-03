@@ -180,7 +180,7 @@
     }
 
     .tooltip {
-        @apply z-50 after:hidden;
+        @apply after:hidden;
         &:hover {
             @apply hover:tooltip-open;
         }
