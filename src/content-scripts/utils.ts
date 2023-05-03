@@ -11,13 +11,13 @@ export const setup = ({ src, textContent }: IParams) => {
     } else if (textContent) script.textContent = textContent
     script.addEventListener('load', () => {
         script.remove()
-        console.log(`[hoogi@${__APP_VERSION__}]\tscript loaded`)
+        console.debug(`[hoogi@${__APP_VERSION__}]\tscript loaded`)
     })
     script.addEventListener('error', (err) => {
-        console.log(`[hoogi@${__APP_VERSION__}]\tscript error`)
+        console.debug(`[hoogi@${__APP_VERSION__}]\tscript error`)
         console.error(err)
     })
 
-    console.log(`[hoogi@${__APP_VERSION__}]\tstarting script`)
+    console.debug(`[hoogi@${__APP_VERSION__}]\tstarting script`)
     document.head.append(script)
 }

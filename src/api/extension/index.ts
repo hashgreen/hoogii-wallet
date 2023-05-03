@@ -9,7 +9,7 @@ const idlePeriod = 15 * 60
 chrome.idle.setDetectionInterval(idlePeriod)
 chrome.idle.onStateChanged.addListener(async (newState) => {
     if (newState === 'idle') {
-        console.log('idle detected, locking wallet')
+        console.debug('idle detected, locking wallet')
         rootStore.walletStore.lock()
     }
 })
@@ -35,7 +35,7 @@ export const switchChainToEventListener = async (chainId: string) => {
             if (tab?.id && tab?.url) {
                 const url = new URL(tab?.url)
                 if (connectedSites.some((site) => site.url === url.origin)) {
-                    console.log('send event url.origin', url.origin)
+                    console.debug('send event url.origin', url.origin)
                     chrome.tabs.sendMessage(tab.id, {
                         data: chainId,
                         target: SenderEnum.WEBPAGE,
