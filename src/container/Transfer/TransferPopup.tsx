@@ -1,4 +1,3 @@
-import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -6,11 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import AssetIcon from '~/components/AssetIcon'
+import FeesRadio, { createFeeOptions } from '~/components/FeesRadio'
 import Popup, { ErrorPopup } from '~/components/Popup'
 import rootStore from '~/store'
 import { shortenHash } from '~/utils'
 import { catToMojo, xchToMojo } from '~/utils/CoinConverter'
-import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IForm as IBaseForm } from './Transfer'
 
@@ -29,11 +28,16 @@ const TransferPopup = ({
     memo,
     close,
 }: IProps & IBaseForm) => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const navigate = useNavigate()
     const [submitError, setSubmitError] = useState<Error>()
     const {
-        transactionStore: { sendXCHTx, sendCATTx },
+        transactionStore: {
+            createTransferSpendBundle,
+            getFees,
+            sendXCHTx,
+            sendCATTx,
+        },
         assetsStore: { XCH },
     } = rootStore
     const {
@@ -49,8 +53,26 @@ const TransferPopup = ({
     })
     const fee = watch('fee')
 
+    // * Dynamic Fees
+    const [fees, setFees] = useState(createFeeOptions([], { t, i18n }))
+    const updateFees = async () => {
+        try {
+            const spendBundle = await createTransferSpendBundle({
+                targetAddress: address.address,
+                amount,
+                memos: [memo],
+            })
+            if (!spendBundle) return
+            const fees = await getFees(spendBundle)
+            fees && setFees(createFeeOptions(fees, { t, i18n }))
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     useEffect(() => {
         setFocus('fee')
+        updateFees()
     }, [])
 
     const onSubmit = async (data: IForm) => {
@@ -134,52 +156,13 @@ const TransferPopup = ({
                             <div className="mb-3 text-center text-caption text-primary-100">
                                 {t('send-fee-description')}
                             </div>
-                            <div className="flex-wrap gap-2 flex-row-center">
-                                {[
-                                    {
-                                        fee: '0',
-                                        note: t('send-fee-slow'),
-                                        description: '',
-                                    },
-                                    {
-                                        fee: '0.00005',
-                                        note: t('send-fee-medium'),
-                                        description: '',
-                                    },
-                                    {
-                                        fee: '0.0005',
-                                        note: t('send-fee-fast'),
-                                        description: '',
-                                    },
-                                ].map((item) => (
-                                    <label
-                                        key={item.note}
-                                        htmlFor={item.note}
-                                        className={classNames(
-                                            'flex flex-col gap-1 px-3 py-4 ring-1 rounded-lg bg-white/5 hover:ring-primary shrink cursor-pointer text-subtitle1',
-                                            fee === item.fee
-                                                ? 'ring-primary'
-                                                : 'ring-primary/30'
-                                        )}
-                                    >
-                                        <span className="font-semibold whitespace-nowrap">
-                                            {item.fee} {XCH.code}
-                                        </span>
-                                        <span className="capitalize text-body3 text-primary-100">
-                                            {item.note}
-                                        </span>
-                                        <InfoIcon className="w-3 h-3 text-active" />
-                                        <input
-                                            type="radio"
-                                            id={item.note}
-                                            value={item.fee}
-                                            checked={fee === item.fee}
-                                            className="sr-only"
-                                            {...register('fee')}
-                                        />
-                                    </label>
-                                ))}
-                            </div>
+                            <FeesRadio
+                                XCH={XCH}
+                                fee={fee}
+                                fees={fees}
+                                register={register}
+                                name="fee"
+                            />
                         </div>
                     </form>
                 )}

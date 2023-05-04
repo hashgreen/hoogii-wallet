@@ -103,6 +103,8 @@
     "send-fee-fast": "fast",
     "send-fee-medium": "medium",
     "send-fee-slow": "slow",
+    "send-fee-option_description": "Estimated to complete in {{time}}.",
+    "send-fee-option_description_slow": "The completion time cannot be determined. It may take a (long) while.",
     "send-popup-title": "Confirm Transaction",
     "send-popup-to": "to",
     "send-title": "send",

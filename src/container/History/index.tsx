@@ -1,5 +1,4 @@
 import { formatDistanceToNowStrict, Locale } from 'date-fns'
-import { enUS, zhCN, zhTW } from 'date-fns/locale'
 import { groupBy } from 'lodash-es'
 import { observer } from 'mobx-react-lite'
 import { useMemo } from 'react'
@@ -10,27 +9,8 @@ import Ably from '~/components/Ably'
 import Transaction from '~/components/Transaction/Transaction'
 import TransactionLoading from '~/components/Transaction/TransactionLoading'
 import rootStore from '~/store'
-import { LocaleEnum } from '~/types/i18n'
+import { getDateFnsLocale } from '~/utils/i18n'
 import ProcessingIcon from '~icons/hoogii/processing.jsx'
-interface ILangItem {
-    locale: keyof typeof LocaleEnum
-    file: Locale
-}
-
-const langItems: ILangItem[] = [
-    {
-        locale: 'en',
-        file: enUS,
-    },
-    {
-        locale: 'zh-tw',
-        file: zhTW,
-    },
-    {
-        locale: 'zh-ch',
-        file: zhCN,
-    },
-]
 
 interface IOptions {
     addSuffix: boolean
@@ -56,9 +36,7 @@ const History = () => {
     const groupedHistory = useMemo(() => {
         const option: IOptions = {
             addSuffix: true,
-            locale: langItems.filter(
-                (item) => item.locale === i18n.language
-            )?.[0]?.file,
+            locale: getDateFnsLocale(i18n.language),
         }
 
         return groupBy(history, (item) =>
