@@ -13,10 +13,10 @@ interface IReactHookFormProps<T extends FieldValues> {
 }
 
 export interface IFeeOption {
-    key: 'fast' | `medium-${number}` | 'slow'
+    key: 'fast' | `medium-${number}` | 'medium' | 'slow'
     fee: string
     note: string
-    description: string
+    description?: string
 }
 
 interface IProps {
@@ -24,6 +24,29 @@ interface IProps {
     fee: string
     fees: IFeeOption[]
 }
+
+export const createDefaultFeeOptions = ({
+    t,
+}: Pick<
+    ReturnType<typeof useTranslation<'translation', undefined>>,
+    't'
+>): IFeeOption[] => [
+    {
+        key: 'fast',
+        fee: '0',
+        note: t('send-fee-slow'),
+    },
+    {
+        key: 'medium',
+        fee: '0.00005',
+        note: t('send-fee-medium'),
+    },
+    {
+        key: 'fast',
+        fee: '0.005',
+        note: t('send-fee-fast'),
+    },
+]
 
 export const createFeeOptions = (
     _fees: { time: number; fee: number }[],

@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import AssetIcon from '~/components/AssetIcon'
-import FeesRadio, { createFeeOptions } from '~/components/FeesRadio'
+import FeesRadio, {
+    createDefaultFeeOptions,
+    createFeeOptions,
+} from '~/components/FeesRadio'
 import Popup, { ErrorPopup } from '~/components/Popup'
 import rootStore from '~/store'
 import { shortenHash } from '~/utils'
@@ -66,7 +69,7 @@ const TransferPopup = ({
             const fees = await getFees(spendBundle)
             fees && setFees(createFeeOptions(fees, { t, i18n }))
         } catch (error) {
-            console.error(error)
+            setFees(createDefaultFeeOptions({ t }))
         }
     }
 
