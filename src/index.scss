@@ -231,4 +231,14 @@
         -webkit-line-clamp: 9;
         -webkit-box-orient: vertical;
     }
+
+    .fee-option {
+        @apply flex flex-col gap-1 p-3 ring-1 rounded-lg bg-white/5 cursor-pointer text-subtitle1 ring-primary/30;
+        &:not(.fee-option-disabled):hover {
+            @apply ring-primary;
+        }
+    }
+    .fee-option-active:not(.fee-option-disabled) {
+        @apply ring-primary;
+    }
 }

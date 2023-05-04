@@ -34,8 +34,9 @@ const FeesRadio = <T extends FieldValues>({
                     key={item.note}
                     htmlFor={item.note}
                     className={classNames(
-                        'flex flex-col gap-1 p-3 ring-1 rounded-lg bg-white/5 hover:ring-primary cursor-pointer text-subtitle1',
-                        fee === item.fee ? 'ring-primary' : 'ring-primary/30'
+                        'fee-option',
+                        fee === item.fee && 'fee-option-active',
+                        isLoading && 'fee-option-disabled animate-pulse'
                     )}
                 >
                     {!isLoading ? (
@@ -72,6 +73,7 @@ const FeesRadio = <T extends FieldValues>({
                         checked={fee === item.fee}
                         className="sr-only"
                         {...register(name)}
+                        disabled={isLoading}
                     />
                 </label>
             ))}
