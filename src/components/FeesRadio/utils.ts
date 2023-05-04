@@ -17,7 +17,7 @@ export const createDefaultFeeOptions = ({
     't'
 >): IFeeOption[] => [
     {
-        key: 'fast',
+        key: 'slow',
         fee: '0',
         note: t('send-fee-slow'),
     },

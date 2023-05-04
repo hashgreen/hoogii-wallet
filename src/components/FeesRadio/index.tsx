@@ -35,7 +35,7 @@ const FeesRadio = <T extends FieldValues>({
                     htmlFor={item.note}
                     className={classNames(
                         'fee-option',
-                        fee === item.fee && 'fee-option-active',
+                        fee === item.key && 'fee-option-active',
                         isLoading && 'fee-option-disabled animate-pulse'
                     )}
                 >
@@ -69,8 +69,8 @@ const FeesRadio = <T extends FieldValues>({
                     <input
                         type="radio"
                         id={item.note}
-                        value={item.fee}
-                        checked={fee === item.fee}
+                        value={item.key}
+                        checked={fee === item.key}
                         className="sr-only"
                         {...register(name)}
                         disabled={isLoading}

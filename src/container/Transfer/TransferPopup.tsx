@@ -22,7 +22,7 @@ interface IProps {
 }
 
 interface IForm {
-    fee: string
+    fee: 'fast' | `medium-${number}` | 'medium' | 'slow'
 }
 
 const TransferPopup = ({
@@ -52,7 +52,7 @@ const TransferPopup = ({
         formState: { isSubmitting },
     } = useForm<IForm>({
         defaultValues: {
-            fee: '0',
+            fee: 'fast',
         },
     })
     const fee = watch('fee')
@@ -75,10 +75,11 @@ const TransferPopup = ({
 
     useEffect(() => {
         setFocus('fee')
-    }, [])
+    }, [isLoading])
 
     const onSubmit = async (data: IForm) => {
-        const { fee } = data
+        const fee =
+            feeOptions.find((option) => option.key === data?.fee)?.fee ?? 0
         const memos: string[] = []
         if (memo) {
             memos.push(memo)
