@@ -32,6 +32,15 @@ class SpendBundle {
         }
     }
 
+    toJSON() {
+        return {
+            coin_spends: this.coin_spends.map((coinSpend) =>
+                coinSpend.toJSON()
+            ),
+            aggregated_signature: this.aggregated_signature.toHex(),
+        }
+    }
+
     getTXID(): string {
         return Program.fromBytes(
             hash256(
