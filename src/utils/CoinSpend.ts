@@ -33,5 +33,15 @@ class _CoinSpend {
         })
         return additionList
     }
+
+    toJSON() {
+        return {
+            ...this,
+            coin: {
+                ...this.coin,
+                amount: Number(this.coin.amount.toString()),
+            },
+        }
+    }
 }
 export default _CoinSpend
