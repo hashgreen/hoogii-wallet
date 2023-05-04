@@ -63,13 +63,8 @@ const Transaction = ({
         let spendBundle
         switch (request.data?.method) {
             case RequestMethodEnum.CREATE_OFFER: {
-                const { requestAssets, offerAssets }: OfferParams =
-                    request.data.params
-                // TODO: bytes object is expected to start with 0x error
-                spendBundle = await Offer.generateSecureBundle(
-                    requestAssets,
-                    offerAssets
-                )
+                const { offerAssets }: OfferParams = request.data.params
+                spendBundle = await Offer.generateSecureBundle([], offerAssets)
                 break
             }
             case RequestMethodEnum.TRANSFER: {
@@ -89,7 +84,20 @@ const Transaction = ({
         if (!spendBundle) return
         try {
             const fees = await getFees(spendBundle)
-            fees && setFees(createFeeOptions(fees, { t, i18n }))
+            setFees(
+                createFeeOptions(
+                    fees.map(({ time, fee }) => ({
+                        time,
+                        fee:
+                            fee *
+                            (request.data?.method ===
+                            RequestMethodEnum.CREATE_OFFER
+                                ? 2
+                                : 1),
+                    })),
+                    { t, i18n }
+                )
+            )
         } catch (error) {
             setFees(createDefaultFeeOptions({ t }))
         }
