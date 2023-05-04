@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import FeesRadio, {
     createDefaultFeeOptions,
     createFeeOptions,
+    useDynamicFeeOptions,
 } from '~/components/FeesRadio'
 import { ErrorPopup } from '~/components/Popup'
 import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
@@ -57,35 +58,38 @@ const Transaction = ({
         },
     })
     const fee = watch('fee')
-    // * Dynamic Fees
-    const [fees, setFees] = useState(createFeeOptions([], { t, i18n }))
-    const updateFees = async () => {
-        let spendBundle
-        switch (request.data?.method) {
-            case RequestMethodEnum.CREATE_OFFER: {
-                const { offerAssets }: OfferParams = request.data.params
-                spendBundle = await Offer.generateSecureBundle([], offerAssets)
-                break
+
+    const { feeOptions, isLoading } = useDynamicFeeOptions(
+        createDefaultFeeOptions({ t }),
+        async () => {
+            let spendBundle
+            switch (request.data?.method) {
+                case RequestMethodEnum.CREATE_OFFER: {
+                    const { offerAssets }: OfferParams = request.data.params
+                    spendBundle = await Offer.generateSecureBundle(
+                        [],
+                        offerAssets
+                    )
+                    break
+                }
+                case RequestMethodEnum.TRANSFER: {
+                    const { to, assetId, amount, memos }: TransferParams =
+                        request.data.params
+                    spendBundle = await createTransferSpendBundle({
+                        targetAddress: to,
+                        asset: assetId,
+                        amount,
+                        memos,
+                    })
+                    break
+                }
+                default:
+                    break
             }
-            case RequestMethodEnum.TRANSFER: {
-                const { to, assetId, amount, memos }: TransferParams =
-                    request.data.params
-                spendBundle = await createTransferSpendBundle({
-                    targetAddress: to,
-                    asset: assetId,
-                    amount,
-                    memos,
-                })
-                break
-            }
-            default:
-                break
-        }
-        if (!spendBundle) return
-        try {
-            const fees = await getFees(spendBundle)
-            setFees(
-                createFeeOptions(
+            if (!spendBundle) return
+            try {
+                const fees = await getFees(spendBundle)
+                return createFeeOptions(
                     fees.map(({ time, fee }) => ({
                         time,
                         fee:
@@ -97,15 +101,12 @@ const Transaction = ({
                     })),
                     { t, i18n }
                 )
-            )
-        } catch (error) {
-            setFees(createDefaultFeeOptions({ t }))
+            } catch (error) {}
         }
-    }
+    )
 
     useEffect(() => {
         setFocus('fee')
-        updateFees()
     }, [])
 
     const createOffer = async (
@@ -222,9 +223,10 @@ const Transaction = ({
                     <FeesRadio
                         XCH={XCH}
                         fee={fee}
-                        fees={fees}
+                        fees={feeOptions}
                         register={register}
                         name="fee"
+                        isLoading={isLoading}
                     />
                 </div>
             )}
