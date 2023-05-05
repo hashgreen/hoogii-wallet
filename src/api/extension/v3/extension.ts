@@ -9,7 +9,10 @@ import {
     updateTab,
 } from '.'
 
-export const createPopup = async (popup: PopupEnum, newTab: boolean = true) => {
+export const createPopup = async (
+    popup: PopupEnum,
+    newTab: boolean = false
+) => {
     const url = getUrl(`/${popup}.html`) as `/${string}`
     if (newTab) {
         const { tab } = await createWindow(url, 'popup', {
