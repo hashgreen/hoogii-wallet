@@ -2,8 +2,8 @@ import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 
-import { createPopup } from '~/api/extension/extension'
 import Messaging from '~/api/extension/messaging'
+import { createPopup } from '~/api/extension/v3/extension'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { ChainEnum } from '~/types/chia'
 import {
@@ -238,7 +238,14 @@ const authHandler = async (request: IMessage<RequestArguments>) => {
         request?.isLocked ||
         permission.Confirm[request.data?.method as RequestMethodEnum]
     ) {
-        const tab = await createPopup(PopupEnum.INTERNAL)
+        const tab = await createPopup(
+            PopupEnum.INTERNAL,
+            request.data?.method
+                ? Object.values(permission.Confirm).includes(
+                      request.data?.method
+                  )
+                : false
+        )
         const res = await Messaging.toInternal<MethodEnum.REQUEST>(tab, request)
         return res.data
     }

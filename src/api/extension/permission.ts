@@ -1,5 +1,6 @@
 import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 export const permission = {
+    // !deprecated
     Authenticate: {
         [MethodEnum.LOCK]: MethodEnum.LOCK,
         [MethodEnum.UNLOCK]: MethodEnum.UNLOCK,

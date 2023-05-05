@@ -1,7 +1,8 @@
 import * as Errors from '~/api/extension/errors'
-import { createPopup, createTab } from '~/api/extension/extension'
+import { createTab } from '~/api/extension/extension'
 import Messaging, { BackgroundController } from '~/api/extension/messaging'
 import { requestHandler } from '~/api/extension/request'
+import { createPopup } from '~/api/extension/v3/extension'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { MethodEnum, PopupEnum, SenderEnum } from '~/types/extension'
 import { getStorage } from '~/utils/extension/storage'
@@ -26,6 +27,7 @@ controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
         })
     }
 })
+// !deprecated
 controller.add(MethodEnum.ENABLE, async (request, sendResponse) => {
     if (await connectedSitesStore.isConnectedSite(request.origin)) {
         sendResponse({
@@ -51,7 +53,7 @@ controller.add(MethodEnum.ENABLE, async (request, sendResponse) => {
         })
     }
 })
-
+// !broken
 controller.add(MethodEnum.LOCK, async (request, sendResponse) => {
     await chrome.storage.session.set({ password: '' })
 
@@ -62,10 +64,10 @@ controller.add(MethodEnum.LOCK, async (request, sendResponse) => {
         target: SenderEnum.WEBPAGE,
     })
 })
-
+// !broken
 controller.add(MethodEnum.UNLOCK, async (request, sendResponse) => {
     try {
-        const tab = await createPopup(PopupEnum.INTERNAL)
+        const tab = await createPopup(PopupEnum.INTERNAL, false)
         await Messaging.toInternal<MethodEnum.UNLOCK>(tab, request)
 
         sendResponse({
@@ -95,7 +97,7 @@ controller.add(MethodEnum.IS_CONNECTED, async (request, sendResponse) => {
 })
 controller.add(MethodEnum.REFUSE, async (request, sendResponse) => {
     try {
-        const tab = await createPopup(PopupEnum.INTERNAL)
+        const tab = await createPopup(PopupEnum.INTERNAL, false)
         await Messaging.toInternal<MethodEnum.REFUSE>(tab, request)
     } catch (error) {
         console.warn(error)
