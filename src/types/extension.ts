@@ -80,17 +80,37 @@ export enum EventEnum {
     CHAIN_CHANGED = 'chainChanged',
 }
 
-export interface RequestArguments {
+export type RequestMethodParams<T extends RequestMethodEnum> = {
+    [RequestMethodEnum.ACCOUNTS]: undefined
+    [RequestMethodEnum.CHAIN_ID]: undefined
+    [RequestMethodEnum.CONNECT]: undefined
+    [RequestMethodEnum.CREATE_OFFER]: {}
+    [RequestMethodEnum.FILTER_UNLOCK_COINS]: undefined
+    [RequestMethodEnum.GET_ASSET_BALANCE]: undefined
+    [RequestMethodEnum.GET_ASSET_COINS]: undefined
+    [RequestMethodEnum.GET_PUBLIC_KEYS]: undefined
+    [RequestMethodEnum.SEND_TRANSACTION]: undefined
+    [RequestMethodEnum.SIGN_COIN_SPENDS]: undefined
+    [RequestMethodEnum.SIGN_MESSAGE]: undefined
+    [RequestMethodEnum.TAKE_OFFER]: undefined
+    [RequestMethodEnum.TRANSFER]: undefined
+    [RequestMethodEnum.WALLET_SWITCH_CHAIN]: undefined
+}[T]
+
+export interface RequestArguments<T extends RequestMethodEnum> {
     method: RequestMethodEnum
-    params?: any
+    params?: RequestMethodParams<T>
 }
 
-export type MethodDataType<T extends MethodEnum> = {
+export type MethodDataType<
+    T extends MethodEnum,
+    S extends RequestMethodEnum | undefined = undefined
+> = {
     ENABLE: {
         title: string
         iconUrl: string
     }
-    REQUEST: RequestArguments
+    REQUEST: RequestArguments<S extends RequestMethodEnum ? S : any>
     EVENT: { method: EventEnum }
     LOCK: undefined
     UNLOCK: undefined
@@ -172,6 +192,7 @@ export interface OfferAsset {
 export interface OfferParams {
     requestAssets: OfferAsset[]
     offerAssets: OfferAsset[]
+    fee?: string
 }
 export interface TransferParams {
     to: string
