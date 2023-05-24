@@ -65,11 +65,12 @@ const Transaction = ({
             let spendBundle
             switch (request.data?.method) {
                 case RequestMethodEnum.CREATE_OFFER: {
-                    const { offerAssets }: OfferParams = request.data.params
-                    spendBundle = await Offer.generateSecureBundle(
-                        [],
-                        offerAssets
-                    )
+                    // TODO: disable dynamic fees on CREATE_OFFER
+                    // const { offerAssets }: OfferParams = request.data.params
+                    // spendBundle = await Offer.generateSecureBundle(
+                    //     [],
+                    //     offerAssets
+                    // )
                     break
                 }
                 case RequestMethodEnum.TRANSFER: {
