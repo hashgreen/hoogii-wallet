@@ -37,6 +37,10 @@ package: build ## dist folder
 	@zip -r -X "release_$(PKG_VERSION).zip" dist/*
 	@echo 'New extension build ready for upload!'
 
-.PHONY: patch
-patch: ## npm run patch
-	@npm run patch
+.PHONY: prerelease
+prerelease:
+	@npm run pre-release
+
+.PHONY: release
+release: ## npm run patch
+	@npm run release
