@@ -4,7 +4,10 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import FeesRadio, { createFeeOptions } from '~/components/FeesRadio'
+import FeesRadio, {
+    createDefaultFeeOptions,
+    createFeeOptions,
+} from '~/components/FeesRadio'
 import { ErrorPopup } from '~/components/Popup'
 import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
 import OfferInfo from '~/popup/components/offerInfo'
@@ -83,13 +86,12 @@ const Transaction = ({
             default:
                 break
         }
-        console.warn(spendBundle)
         if (!spendBundle) return
         try {
             const fees = await getFees(spendBundle)
             fees && setFees(createFeeOptions(fees, { t, i18n }))
         } catch (error) {
-            console.error(error)
+            setFees(createDefaultFeeOptions({ t }))
         }
     }
 
@@ -205,7 +207,7 @@ const Transaction = ({
             )}
 
             {!withoutFee.some((method) => request.data?.method === method) && (
-                <div className="w-max">
+                <div>
                     <div className="mb-3 text-left text-caption text-primary-100">
                         {t('send-fee-description')}
                     </div>
