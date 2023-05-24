@@ -1,28 +1,13 @@
-import classNames from 'classnames'
-import { FieldValues, Path, UseFormRegister } from 'react-hook-form'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Tooltip } from 'react-tooltip'
 
-import { IAsset } from '~/db'
 import { formatDuration } from '~/utils/i18n'
-import InfoIcon from '~icons/hoogii/info.jsx'
-
-interface IReactHookFormProps<T extends FieldValues> {
-    register: UseFormRegister<T>
-    name: Path<T>
-}
 
 export interface IFeeOption {
     key: 'fast' | `medium-${number}` | 'medium' | 'slow'
     fee: string
     note: string
     description?: string
-}
-
-interface IProps {
-    XCH: IAsset
-    fee: string
-    fees: IFeeOption[]
 }
 
 export const createDefaultFeeOptions = ({
@@ -115,59 +100,25 @@ export const createFeeOptions = (
     return feeOptions
 }
 
-const FeesRadio = <T extends FieldValues>({
-    XCH,
-    fee,
-    fees,
-    register,
-    name,
-}: IProps & IReactHookFormProps<T>) => {
-    return (
-        <div className="gap-2 flex flex-col">
-            {fees.map((item) => (
-                <label
-                    key={item.note}
-                    htmlFor={item.note}
-                    className={classNames(
-                        'flex flex-col gap-1 p-3 ring-1 rounded-lg bg-white/5 hover:ring-primary shrink cursor-pointer text-subtitle1',
-                        fee === item.fee ? 'ring-primary' : 'ring-primary/30'
-                    )}
-                >
-                    <span className="font-semibold whitespace-nowrap">
-                        {item.fee} {XCH.code}
-                    </span>
-                    <div className="flex-row-center gap-1">
-                        <span className="capitalize text-body3 text-primary-100">
-                            {item.note}
-                        </span>
-                        {item.description && (
-                            <>
-                                <a
-                                    data-tooltip-id={`fee-option-${item.key}`}
-                                    data-data-tooltip-place="top"
-                                    data-tooltip-content={item.description}
-                                >
-                                    <InfoIcon className="w-3 h-3 text-active" />
-                                </a>
-                                <Tooltip
-                                    id={`fee-option-${item.key}`}
-                                    className="custom-tooltips"
-                                />
-                            </>
-                        )}
-                    </div>
-                    <input
-                        type="radio"
-                        id={item.note}
-                        value={item.fee}
-                        checked={fee === item.fee}
-                        className="sr-only"
-                        {...register(name)}
-                    />
-                </label>
-            ))}
-        </div>
-    )
-}
+export const useDynamicFeeOptions = (
+    defaultFeeOptions: IFeeOption[],
+    update: () => Promise<IFeeOption[] | undefined>
+) => {
+    const [feeOptions, setFeeOptions] = useState(defaultFeeOptions)
+    const [isLoading, setIsLoading] = useState(false)
+    const updateFees = async () => {
+        setIsLoading(true)
+        const options = await update()
+        options && setFeeOptions(options)
+        setIsLoading(false)
+    }
 
-export default FeesRadio
+    useEffect(() => {
+        updateFees()
+    }, [])
+
+    return {
+        feeOptions,
+        isLoading,
+    }
+}

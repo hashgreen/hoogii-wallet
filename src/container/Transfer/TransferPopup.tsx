@@ -8,6 +8,7 @@ import AssetIcon from '~/components/AssetIcon'
 import FeesRadio, {
     createDefaultFeeOptions,
     createFeeOptions,
+    useDynamicFeeOptions,
 } from '~/components/FeesRadio'
 import Popup, { ErrorPopup } from '~/components/Popup'
 import rootStore from '~/store'
@@ -56,26 +57,24 @@ const TransferPopup = ({
     })
     const fee = watch('fee')
 
-    // * Dynamic Fees
-    const [fees, setFees] = useState(createFeeOptions([], { t, i18n }))
-    const updateFees = async () => {
-        try {
-            const spendBundle = await createTransferSpendBundle({
-                targetAddress: address.address,
-                amount,
-                memos: [memo],
-            })
-            if (!spendBundle) return
-            const fees = await getFees(spendBundle)
-            fees && setFees(createFeeOptions(fees, { t, i18n }))
-        } catch (error) {
-            setFees(createDefaultFeeOptions({ t }))
+    const { feeOptions, isLoading } = useDynamicFeeOptions(
+        createDefaultFeeOptions({ t }),
+        async () => {
+            try {
+                const spendBundle = await createTransferSpendBundle({
+                    targetAddress: address.address,
+                    amount,
+                    memos: [memo],
+                })
+                if (!spendBundle) return
+                const fees = await getFees(spendBundle)
+                return createFeeOptions(fees, { t, i18n })
+            } catch (error) {}
         }
-    }
+    )
 
     useEffect(() => {
         setFocus('fee')
-        updateFees()
     }, [])
 
     const onSubmit = async (data: IForm) => {
@@ -162,9 +161,10 @@ const TransferPopup = ({
                             <FeesRadio
                                 XCH={XCH}
                                 fee={fee}
-                                fees={fees}
+                                fees={feeOptions}
                                 register={register}
                                 name="fee"
+                                isLoading={isLoading}
                             />
                         </div>
                     </form>
