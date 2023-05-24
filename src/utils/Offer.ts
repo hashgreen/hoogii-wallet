@@ -27,6 +27,7 @@ import type { Coin } from '~/utils/Wallet/types'
 import { Wallet } from '~/utils/Wallet/Wallet'
 
 import { chains } from './constants'
+import { add0x } from './encryption'
 
 const initDict = [
     puzzles.wallet.serializeHex() + puzzles.catOld.serializeHex(),
@@ -121,7 +122,9 @@ export default class Offer {
                 const coin: Coin = {
                     parent_coin_info:
                         '0x0000000000000000000000000000000000000000000000000000000000000000',
-                    puzzle_hash: Offer.generateSettlement(assetId).hashHex(),
+                    puzzle_hash: add0x(
+                        Offer.generateSettlement(assetId).hashHex()
+                    ),
                     amount: 0n,
                 }
                 const nonce = this.getNonce()
