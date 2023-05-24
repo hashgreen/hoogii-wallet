@@ -52,9 +52,9 @@ const Transaction = ({
         watch,
         setFocus,
         formState: { isSubmitting },
-    } = useForm({
+    } = useForm<{ fee: 'fast' | `medium-${number}` | 'medium' | 'slow' }>({
         defaultValues: {
-            fee: '0',
+            fee: 'fast',
         },
     })
     const fee = watch('fee')
@@ -108,7 +108,7 @@ const Transaction = ({
 
     useEffect(() => {
         setFocus('fee')
-    }, [])
+    }, [isLoading])
 
     const createOffer = async (
         params: OfferParams,
@@ -141,11 +141,13 @@ const Transaction = ({
     }
 
     const onSubmit = async (data: any) => {
+        const fee =
+            feeOptions.find((option) => option.key === data?.fee)?.fee ?? 0
         if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
             try {
                 const offer = await createOffer(
                     request.data?.params,
-                    xchToMojo(data?.fee).toString()
+                    xchToMojo(fee).toString()
                 )
                 controller.returnData({
                     data: { id: offer.getId(), offer: offer.encode(5) },
@@ -164,7 +166,7 @@ const Transaction = ({
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
             await transfer(
                 request.data?.params,
-                xchToMojo(data?.fee).toFixed().toString()
+                xchToMojo(fee).toFixed().toString()
             )
             controller.returnData({
                 data: true,
