@@ -140,17 +140,21 @@ const FeesRadio = <T extends FieldValues>({
                         <span className="capitalize text-body3 text-primary-100">
                             {item.note}
                         </span>
-                        <a
-                            data-tooltip-id={`fee-option-${item.key}`}
-                            data-data-tooltip-place="top"
-                            data-tooltip-content={item.description}
-                        >
-                            <InfoIcon className="w-3 h-3 text-active" />
-                        </a>
-                        <Tooltip
-                            id={`fee-option-${item.key}`}
-                            className="custom-tooltips"
-                        />
+                        {item.description && (
+                            <>
+                                <a
+                                    data-tooltip-id={`fee-option-${item.key}`}
+                                    data-data-tooltip-place="top"
+                                    data-tooltip-content={item.description}
+                                >
+                                    <InfoIcon className="w-3 h-3 text-active" />
+                                </a>
+                                <Tooltip
+                                    id={`fee-option-${item.key}`}
+                                    className="custom-tooltips"
+                                />
+                            </>
+                        )}
                     </div>
                     <input
                         type="radio"
