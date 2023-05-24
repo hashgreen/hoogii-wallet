@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import AssetIcon from '~/components/AssetIcon'
 import FeesRadio, {
     createDefaultFeeOptions,
     createFeeOptions,
@@ -21,7 +22,7 @@ import {
     RequestMethodEnum,
     TransferParams,
 } from '~/types/extension'
-import { xchToMojo } from '~/utils/CoinConverter'
+import { mojoToXch, xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
 
 import { IPopupPageProps } from '../types'
@@ -141,14 +142,15 @@ const Transaction = ({
     }
 
     const onSubmit = async (data: any) => {
-        const fee =
-            feeOptions.find((option) => option.key === data?.fee)?.fee ?? 0
+        const fee = (
+            request?.data?.params.fee ??
+            xchToMojo(
+                feeOptions.find((option) => option.key === data?.fee)?.fee ?? 0
+            )
+        ).toString()
         if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
             try {
-                const offer = await createOffer(
-                    request.data?.params,
-                    xchToMojo(fee).toString()
-                )
+                const offer = await createOffer(request.data?.params, fee)
                 controller.returnData({
                     data: { id: offer.getId(), offer: offer.encode(5) },
                 })
@@ -164,10 +166,7 @@ const Transaction = ({
             window.close()
         }
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
-            await transfer(
-                request.data?.params,
-                xchToMojo(fee).toFixed().toString()
-            )
+            await transfer(request.data?.params, fee)
             controller.returnData({
                 data: true,
             })
@@ -221,16 +220,37 @@ const Transaction = ({
             {!withoutFee.some((method) => request.data?.method === method) && (
                 <div>
                     <div className="mb-3 text-left text-caption text-primary-100">
-                        {t('send-fee-description')}
+                        {request?.data?.params.fee
+                            ? t('fee')
+                            : t('send-fee-description')}
                     </div>
-                    <FeesRadio
-                        XCH={XCH}
-                        fee={fee}
-                        fees={feeOptions}
-                        register={register}
-                        name="fee"
-                        isLoading={isLoading}
-                    />
+                    {request?.data?.params.fee ? (
+                        <div className="info-box">
+                            <span className="flex">
+                                <AssetIcon
+                                    src={XCH.iconUrl}
+                                    assetId={XCH.assetId}
+                                    className="w-6 h-6 mr-1"
+                                />
+                                {XCH.code}
+                            </span>
+                            <span className="text-status-send">
+                                -
+                                {mojoToXch(
+                                    request?.data?.params.fee
+                                ).toString()}
+                            </span>
+                        </div>
+                    ) : (
+                        <FeesRadio
+                            XCH={XCH}
+                            fee={fee}
+                            fees={feeOptions}
+                            register={register}
+                            name="fee"
+                            isLoading={isLoading}
+                        />
+                    )}
                 </div>
             )}
 
