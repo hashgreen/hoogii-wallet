@@ -1,10 +1,10 @@
 import { AxiosError } from 'axios'
-import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
-import { useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import FeesRadio, { createFeeOptions } from '~/components/FeesRadio'
 import { ErrorPopup } from '~/components/Popup'
 import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
 import OfferInfo from '~/popup/components/offerInfo'
@@ -19,7 +19,6 @@ import {
 } from '~/types/extension'
 import { xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
-import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
 const withoutFee = [
@@ -31,17 +30,23 @@ const Transaction = ({
     controller,
     request,
 }: IPopupPageProps<MethodEnum.REQUEST>) => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const [submitError, setSubmitError] = useState<Error>()
     const {
         assetsStore: { XCH },
-        transactionStore: { sendXCHTx, sendCATTx },
+        transactionStore: {
+            createTransferSpendBundle,
+            getFees,
+            sendXCHTx,
+            sendCATTx,
+        },
     } = rootStore
 
     const {
         register,
         handleSubmit,
         watch,
+        setFocus,
         formState: { isSubmitting },
     } = useForm({
         defaultValues: {
@@ -49,6 +54,50 @@ const Transaction = ({
         },
     })
     const fee = watch('fee')
+    // * Dynamic Fees
+    const [fees, setFees] = useState(createFeeOptions([], { t, i18n }))
+    const updateFees = async () => {
+        let spendBundle
+        switch (request.data?.method) {
+            case RequestMethodEnum.CREATE_OFFER: {
+                const { requestAssets, offerAssets }: OfferParams =
+                    request.data.params
+                // TODO: bytes object is expected to start with 0x error
+                spendBundle = await Offer.generateSecureBundle(
+                    requestAssets,
+                    offerAssets
+                )
+                break
+            }
+            case RequestMethodEnum.TRANSFER: {
+                const { to, assetId, amount, memos }: TransferParams =
+                    request.data.params
+                spendBundle = await createTransferSpendBundle({
+                    targetAddress: to,
+                    asset: assetId,
+                    amount,
+                    memos,
+                })
+                break
+            }
+            default:
+                break
+        }
+        console.warn(spendBundle)
+        if (!spendBundle) return
+        try {
+            const fees = await getFees(spendBundle)
+            fees && setFees(createFeeOptions(fees, { t, i18n }))
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(() => {
+        setFocus('fee')
+        updateFees()
+    }, [])
+
     const createOffer = async (
         params: OfferParams,
         fee?: string
@@ -160,52 +209,13 @@ const Transaction = ({
                     <div className="mb-3 text-left text-caption text-primary-100">
                         {t('send-fee-description')}
                     </div>
-                    <div className="flex-wrap gap-2 flex-row-center ">
-                        {[
-                            {
-                                fee: '0',
-                                note: t('send-fee-slow'),
-                                description: '',
-                            },
-                            {
-                                fee: '0.00005',
-                                note: t('send-fee-medium'),
-                                description: '',
-                            },
-                            {
-                                fee: '0.005',
-                                note: t('send-fee-fast'),
-                                description: '',
-                            },
-                        ].map((item) => (
-                            <label
-                                key={item.note}
-                                htmlFor={item.note}
-                                className={classNames(
-                                    'flex flex-col gap-1 px-3 py-4 ring-1 rounded-lg bg-white/5 hover:ring-primary shrink cursor-pointer text-subtitle1',
-                                    fee === item.fee
-                                        ? 'ring-primary'
-                                        : 'ring-primary/30'
-                                )}
-                            >
-                                <span className="font-semibold whitespace-nowrap">
-                                    {item.fee} {XCH.code}
-                                </span>
-                                <span className="capitalize text-body3 text-primary-100">
-                                    {item.note}
-                                </span>
-                                <InfoIcon className="w-3 h-3 text-active" />
-                                <input
-                                    type="radio"
-                                    id={item.note}
-                                    value={item.fee}
-                                    checked={fee === item.fee}
-                                    className="sr-only"
-                                    {...register('fee')}
-                                />
-                            </label>
-                        ))}
-                    </div>
+                    <FeesRadio
+                        XCH={XCH}
+                        fee={fee}
+                        fees={fees}
+                        register={register}
+                        name="fee"
+                    />
                 </div>
             )}
 
