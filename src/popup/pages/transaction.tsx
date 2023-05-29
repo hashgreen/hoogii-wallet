@@ -1,10 +1,15 @@
 import { AxiosError } from 'axios'
-import classNames from 'classnames'
 import { observer } from 'mobx-react-lite'
-import { useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import AssetIcon from '~/components/AssetIcon'
+import FeesRadio, {
+    createDefaultFeeOptions,
+    createFeeOptions,
+    useDynamicFeeOptions,
+} from '~/components/FeesRadio'
 import { ErrorPopup } from '~/components/Popup'
 import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
 import OfferInfo from '~/popup/components/offerInfo'
@@ -17,9 +22,8 @@ import {
     RequestMethodEnum,
     TransferParams,
 } from '~/types/extension'
-import { xchToMojo } from '~/utils/CoinConverter'
+import { mojoToXch, xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
-import InfoIcon from '~icons/hoogii/info.jsx'
 
 import { IPopupPageProps } from '../types'
 const withoutFee = [
@@ -31,24 +35,82 @@ const Transaction = ({
     controller,
     request,
 }: IPopupPageProps<MethodEnum.REQUEST>) => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
     const [submitError, setSubmitError] = useState<Error>()
     const {
         assetsStore: { XCH },
-        transactionStore: { sendXCHTx, sendCATTx },
+        transactionStore: {
+            createTransferSpendBundle,
+            getFees,
+            sendXCHTx,
+            sendCATTx,
+        },
     } = rootStore
 
     const {
         register,
         handleSubmit,
         watch,
+        setFocus,
         formState: { isSubmitting },
-    } = useForm({
+    } = useForm<{ fee: 'fast' | `medium-${number}` | 'medium' | 'slow' }>({
         defaultValues: {
-            fee: '0',
+            fee: 'fast',
         },
     })
     const fee = watch('fee')
+
+    const { feeOptions, isLoading } = useDynamicFeeOptions(
+        createDefaultFeeOptions({ t }),
+        async () => {
+            let spendBundle
+            switch (request.data?.method) {
+                case RequestMethodEnum.CREATE_OFFER: {
+                    // TODO: disable dynamic fees on CREATE_OFFER
+                    // const { offerAssets }: OfferParams = request.data.params
+                    // spendBundle = await Offer.generateSecureBundle(
+                    //     [],
+                    //     offerAssets
+                    // )
+                    break
+                }
+                case RequestMethodEnum.TRANSFER: {
+                    const { to, assetId, amount, memos }: TransferParams =
+                        request.data.params
+                    spendBundle = await createTransferSpendBundle({
+                        targetAddress: to,
+                        asset: assetId,
+                        amount,
+                        memos,
+                    })
+                    break
+                }
+                default:
+                    break
+            }
+            if (!spendBundle) return
+            try {
+                const fees = await getFees(spendBundle)
+                return createFeeOptions(
+                    fees.map(({ time, fee }) => ({
+                        time,
+                        fee:
+                            fee *
+                            (request.data?.method ===
+                            RequestMethodEnum.CREATE_OFFER
+                                ? 2
+                                : 1),
+                    })),
+                    { t, i18n }
+                )
+            } catch (error) {}
+        }
+    )
+
+    useEffect(() => {
+        setFocus('fee')
+    }, [isLoading])
+
     const createOffer = async (
         params: OfferParams,
         fee?: string
@@ -80,12 +142,15 @@ const Transaction = ({
     }
 
     const onSubmit = async (data: any) => {
+        const fee = (
+            request?.data?.params.fee ??
+            xchToMojo(
+                feeOptions.find((option) => option.key === data?.fee)?.fee ?? 0
+            )
+        ).toString()
         if (request.data?.method === RequestMethodEnum.CREATE_OFFER) {
             try {
-                const offer = await createOffer(
-                    request.data?.params,
-                    xchToMojo(data?.fee).toString()
-                )
+                const offer = await createOffer(request.data?.params, fee)
                 controller.returnData({
                     data: { id: offer.getId(), offer: offer.encode(5) },
                 })
@@ -101,10 +166,7 @@ const Transaction = ({
             window.close()
         }
         if (request.data?.method === RequestMethodEnum.TRANSFER) {
-            await transfer(
-                request.data?.params,
-                xchToMojo(data?.fee).toFixed().toString()
-            )
+            await transfer(request.data?.params, fee)
             controller.returnData({
                 data: true,
             })
@@ -156,56 +218,39 @@ const Transaction = ({
             )}
 
             {!withoutFee.some((method) => request.data?.method === method) && (
-                <div className="w-max">
+                <div>
                     <div className="mb-3 text-left text-caption text-primary-100">
-                        {t('send-fee-description')}
+                        {request?.data?.params.fee
+                            ? t('fee')
+                            : t('send-fee-description')}
                     </div>
-                    <div className="flex-wrap gap-2 flex-row-center ">
-                        {[
-                            {
-                                fee: '0',
-                                note: t('send-fee-slow'),
-                                description: '',
-                            },
-                            {
-                                fee: '0.00005',
-                                note: t('send-fee-medium'),
-                                description: '',
-                            },
-                            {
-                                fee: '0.005',
-                                note: t('send-fee-fast'),
-                                description: '',
-                            },
-                        ].map((item) => (
-                            <label
-                                key={item.note}
-                                htmlFor={item.note}
-                                className={classNames(
-                                    'flex flex-col gap-1 px-3 py-4 ring-1 rounded-lg bg-white/5 hover:ring-primary shrink cursor-pointer text-subtitle1',
-                                    fee === item.fee
-                                        ? 'ring-primary'
-                                        : 'ring-primary/30'
-                                )}
-                            >
-                                <span className="font-semibold whitespace-nowrap">
-                                    {item.fee} {XCH.code}
-                                </span>
-                                <span className="capitalize text-body3 text-primary-100">
-                                    {item.note}
-                                </span>
-                                <InfoIcon className="w-3 h-3 text-active" />
-                                <input
-                                    type="radio"
-                                    id={item.note}
-                                    value={item.fee}
-                                    checked={fee === item.fee}
-                                    className="sr-only"
-                                    {...register('fee')}
+                    {request?.data?.params.fee ? (
+                        <div className="info-box">
+                            <span className="flex">
+                                <AssetIcon
+                                    src={XCH.iconUrl}
+                                    assetId={XCH.assetId}
+                                    className="w-6 h-6 mr-1"
                                 />
-                            </label>
-                        ))}
-                    </div>
+                                {XCH.code}
+                            </span>
+                            <span className="text-status-send">
+                                -
+                                {mojoToXch(
+                                    request?.data?.params.fee
+                                ).toString()}
+                            </span>
+                        </div>
+                    ) : (
+                        <FeesRadio
+                            XCH={XCH}
+                            fee={fee}
+                            fees={feeOptions}
+                            register={register}
+                            name="fee"
+                            isLoading={isLoading}
+                        />
+                    )}
                 </div>
             )}
 

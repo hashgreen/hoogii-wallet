@@ -4,8 +4,10 @@ import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
-import { callGetBalance, sendTx } from '~/api/api'
+import { callGetBalance, getFeesEstimate, sendTx } from '~/api/api'
 import { CAT } from '~/utils/CAT'
+import { createSpendBundle, ICreateSpendBundleParams } from '~/utils/chia'
+import { mojoToXch } from '~/utils/CoinConverter'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
@@ -22,6 +24,49 @@ class TransactionStore {
 
     get isTradable() {
         return !!this.walletStore.seed
+    }
+
+    createTransferSpendBundle = async ({
+        asset,
+        amount,
+        memos,
+        fee,
+        targetAddress,
+    }: Omit<ICreateSpendBundleParams, 'seed'>) => {
+        const { seed, chain } = this.walletStore
+        const { agg_sig_me_additional_data } = chain
+        if (!seed) return
+        const spendBundle = await createSpendBundle(
+            { seed, asset, amount, memos, targetAddress, fee },
+            agg_sig_me_additional_data
+        )
+        return spendBundle
+    }
+
+    getFees = async (
+        spendBundle: SpendBundle,
+        targetTimes: number[] = import.meta.env.VITE_FEES_TARGET_TIMES.split(
+            ' '
+        ).map(Number)
+    ) => {
+        try {
+            const data = await getFeesEstimate({
+                data: {
+                    spend_bundle: spendBundle.getObj(),
+                    target_times: targetTimes,
+                },
+            })
+            return targetTimes.map((time) => ({
+                time,
+                fee: mojoToXch(
+                    data.data.estimates[data.data.target_times.indexOf(time)]
+                )
+                    .toDecimalPlaces(12)
+                    .toNumber(),
+            }))
+        } catch (error) {
+            throw new Error(getErrorMessage(error as AxiosError))
+        }
     }
 
     sendXCHTx = async (

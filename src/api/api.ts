@@ -13,6 +13,7 @@ import { ChainEnum } from '~/types/chia'
 import { apiEndpointSets } from '~/utils/constants'
 import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
 import { getStorage } from '~/utils/extension/storage'
+
 /** -------------------------- Full Node API -------------------------- */
 registerMessageHandler({ adapter: fetchAdapter })
 
@@ -65,6 +66,23 @@ export const getPuzzleAndSolution = (params: AxiosRequestConfig) =>
         method: 'post',
         ...params,
     })
+export const getFeesEstimate = (
+    params: AxiosRequestConfig<{
+        spend_bundle: object
+        target_times: number[]
+    }>
+) => {
+    return apiHandler<{
+        estimates: number[]
+        success: boolean
+        target_times: number[]
+        [key: string]: any
+    }>({
+        url: '/rpc/get_fee_estimate',
+        method: 'POST',
+        ...params,
+    })
+}
 
 /** -------------------------- Full Node API  END-------------------------- */
 /** -----------------------
