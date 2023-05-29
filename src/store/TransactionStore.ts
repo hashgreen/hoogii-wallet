@@ -56,7 +56,6 @@ class TransactionStore {
                     target_times: targetTimes,
                 },
             })
-            console.log(data)
             return targetTimes.map((time) => ({
                 time,
                 fee: mojoToXch(
