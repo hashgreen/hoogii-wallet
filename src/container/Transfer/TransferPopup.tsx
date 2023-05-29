@@ -63,13 +63,15 @@ const TransferPopup = ({
             try {
                 const spendBundle = await createTransferSpendBundle({
                     targetAddress: address.address,
-                    amount,
+                    amount: xchToMojo(amount).toString(),
                     memos: [memo],
                 })
                 if (!spendBundle) return
                 const fees = await getFees(spendBundle)
                 return createFeeOptions(fees, { t, i18n })
-            } catch (error) {}
+            } catch (error) {
+                console.error(error)
+            }
         }
     )
 
