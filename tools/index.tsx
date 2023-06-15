@@ -14,7 +14,9 @@ import App from '~/App'
 window.global = window
 window.Buffer = Buffer
 
-const url = '/'
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+
+const url = '/tools/index.html'
 const tabs = await getTabs(url)
 let tab
 if (tabs.length) {
@@ -26,5 +28,3 @@ if (tabs.length) {
 }
 
 console.log('wallet opened in tab: ', tab.id)
-
-ReactDOM.createRoot(document.getElementById('root')).render(<App />)

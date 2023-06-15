@@ -77,7 +77,7 @@ const manifest = (mode) =>
         },
         action: {
             default_popup:
-                mode === ModeEnum.production ? 'index.html' : 'dev.html',
+                mode === ModeEnum.production ? 'index.html' : 'index-dev.html',
         },
     })
 
@@ -141,7 +141,8 @@ export default defineConfig(({ mode }) => ({
                 extension: resolve(__dirname, 'index.html'),
                 popup: resolve(__dirname, 'popup.html'),
                 tabs: resolve(__dirname, 'tabs.html'),
-                dev: resolve(__dirname, 'dev.html'),
+                dev: resolve(__dirname, 'index-dev.html'),
+                'dev-tools': resolve(__dirname, 'tools/index.html'),
             },
             output: {
                 manualChunks: {
