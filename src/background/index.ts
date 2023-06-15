@@ -10,6 +10,10 @@ import { getStorage } from '~/utils/extension/storage'
 console.debug('Service worker reload!')
 const controller = new BackgroundController()
 
+chrome.runtime.onInstalled.addListener(async () => {
+    await chrome.storage.sync.clear()
+})
+
 controller.add(MethodEnum.IS_VALID_WALLET, async (request, sendResponse) => {
     const keyring = await getStorage<string>('keyring')
     if (!keyring) {
