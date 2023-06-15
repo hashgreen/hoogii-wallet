@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from 'mobx'
 
 import { lockFromBackground, savePassword } from '~/api/extension'
 import { WalletDexie } from '~/db'
+import rootStore from '~/store'
 import { ChainEnum } from '~/types/chia'
 import {
     ConnectionName,
@@ -10,6 +11,7 @@ import {
     InternalReturnType,
     MethodEnum,
     PopupEnum,
+    RequestMethodEnum,
     ReturnDataProps,
 } from '~/types/extension'
 import { StorageEnum } from '~/types/storage'
@@ -57,6 +59,22 @@ export class InternalControllerStore {
         }
     }
 
+    init = async (method: RequestMethodEnum) => {
+        switch (method) {
+            case RequestMethodEnum.CREATE_OFFER:
+            case RequestMethodEnum.TRANSFER:
+            case RequestMethodEnum.SIGN_COIN_SPENDS:
+                await rootStore.walletStore.init()
+                if (!rootStore.walletStore.locked) {
+                    await rootStore.assetsStore.tailDatabaseImagePatch()
+                    await rootStore.assetsStore.retrieveExistedAssets()
+                }
+                break
+            default:
+                break
+        }
+    }
+
     requestData = async () => {
         const tabId = await new Promise<number>((resolve) =>
             chrome.tabs.getCurrent((tab) => tab?.id && resolve(tab.id))
@@ -71,6 +89,7 @@ export class InternalControllerStore {
                 this.request = response
                 this.locked = Boolean(response?.isLocked)
                 this.connected = Boolean(response?.isConnected)
+                this.init(response?.data.method)
             })
         }
         this.port.onMessage.addListener(messageHandler)

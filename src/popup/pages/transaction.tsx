@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { observer } from 'mobx-react-lite'
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -180,10 +180,6 @@ const Transaction = ({
         }
     }
 
-    useLayoutEffect(() => {
-        rootStore.walletStore.init()
-    }, [])
-
     return (
         <form
             id="confirm-form"
@@ -226,7 +222,7 @@ const Transaction = ({
                     </div>
                     {request?.data?.params.fee ? (
                         <div className="info-box">
-                            <span className="flex">
+                            <span className="flex-row-center">
                                 <AssetIcon
                                     src={XCH.iconUrl}
                                     assetId={XCH.assetId}

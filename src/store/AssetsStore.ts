@@ -77,6 +77,35 @@ class AssetsStore {
         return [this.XCH, ...this.existedAssets]
     }
 
+    getAssetByAssetId = (
+        assetId: string,
+        sources: ('existed' | 'available')[] = ['existed', 'available']
+    ) => {
+        if (assetId === this.XCH.assetId) return this.XCH
+        const getAssetFromSource = (source: 'existed' | 'available') => {
+            if (source === 'existed') {
+                return this.existedAssets.find(
+                    (asset) => asset.assetId === assetId
+                )
+            }
+            const asset = this.availableAssets.data.find(
+                (asset) => asset.asset_id === assetId
+            )
+            return asset
+                ? {
+                      assetId: asset.asset_id,
+                      code: asset.code,
+                      iconUrl: asset.icon_url,
+                  }
+                : asset
+        }
+        const asset = sources.reduce((acc, source) => {
+            if (acc) return acc
+            return getAssetFromSource(source)
+        }, undefined as IAsset | undefined)
+        return asset
+    }
+
     addDefaultAsset = async () => {
         // Show USDS by default on mainnet
         try {
