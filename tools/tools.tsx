@@ -10,12 +10,20 @@ import ReactDOM from 'react-dom/client'
 // import Components from '~/container/Components'
 import App from '~/App'
 
+import { createMockOffer } from './utils'
+
 window.global = window
 window.Buffer = Buffer
 
 const DevTools = () => {
     return (
-        <div className="flex-center full">
+        <div className="flex-center full flex-col gap-10">
+            <button
+                className="btn btn-primary btn-large"
+                onClick={createMockOffer}
+            >
+                Create Offer
+            </button>
             <div className="h-[600px] w-[400px]">
                 <App />
             </div>
