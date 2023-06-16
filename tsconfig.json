@@ -38,7 +38,8 @@
     },
     "include": [
         "src",
-        "global.d.ts"
+        "global.d.ts",
+        "tools"
     ],
     "types": [
         "src/**/*.d.ts",

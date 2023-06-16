@@ -23,7 +23,7 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     const { t } = useTranslation()
 
     const {
-        assetsStore: { XCH, availableAssets },
+        assetsStore: { XCH, getAssetByAssetId },
         walletStore: { address },
     } = rootStore
 
@@ -70,9 +70,8 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                             asset.amount.toString(),
                             asset.assetId
                         )
-                        const finsAsset = availableAssets?.data?.find(
-                            (availableAsset) =>
-                                availableAsset.asset_id === asset.assetId
+                        const foundAsset = getAssetByAssetId(
+                            asset.assetId ?? XCH.assetId
                         )
 
                         return (
@@ -82,14 +81,12 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                             >
                                 <div className="flex">
                                     <AssetIcon
-                                        src={finsAsset?.icon_url}
+                                        src={foundAsset?.iconUrl}
                                         assetId={asset.assetId || 'XCH'}
                                         className="w-6 h-6 mr-1"
                                     />
-                                    {asset.assetId
-                                        ? finsAsset?.name ||
-                                          `CAT ${shortenHash(asset.assetId)}`
-                                        : XCH.code}
+                                    {foundAsset?.code ||
+                                        `CAT ${shortenHash(asset.assetId)}`}
                                 </div>
                                 <div
                                     className={`${

@@ -64,21 +64,21 @@ const manifest = (mode) =>
         ..._manifest,
         name: `${_manifest.name}${mode === ModeEnum.production ? '' : '(Dev)'}`,
         version: pkg.version.split('-')[0],
-        ...(mode === ModeEnum.extension || mode === ModeEnum.production
-            ? {
-                  content_scripts: [
-                      {
-                          js: ['src/content-scripts/index.ts'],
-                          matches: ['*://*/*'],
-                          run_at: 'document_start',
-                      },
-                  ],
-                  background: {
-                      service_worker: 'src/background/index.ts',
-                      type: 'module',
-                  },
-              }
-            : {}),
+        content_scripts: [
+            {
+                js: ['src/content-scripts/index.ts'],
+                matches: ['*://*/*'],
+                run_at: 'document_start',
+            },
+        ],
+        background: {
+            service_worker: 'src/background/index.ts',
+            type: 'module',
+        },
+        action: {
+            default_popup:
+                mode === ModeEnum.production ? 'index.html' : 'index-dev.html',
+        },
     })
 
 // https://vitejs.dev/config/
@@ -109,14 +109,12 @@ export default defineConfig(({ mode }) => ({
             externals: ['path', 'fs'],
         }),
         react(),
-        (mode === ModeEnum.extension || mode === ModeEnum.production) &&
-            crx({ manifest: manifest(mode) }),
+        crx({ manifest: manifest(mode) }),
         mode === ModeEnum.report &&
             (visualizer({
                 filename: `reports/stats-${new Date().toISOString()}.html`,
             }) as Plugin),
-        // polyfillNode(),
-        mode === ModeEnum.extension &&
+        mode === ModeEnum.development &&
             inject({
                 Buffer: ['buffer', 'Buffer'],
             }),
@@ -143,6 +141,12 @@ export default defineConfig(({ mode }) => ({
                 extension: resolve(__dirname, 'index.html'),
                 popup: resolve(__dirname, 'popup.html'),
                 tabs: resolve(__dirname, 'tabs.html'),
+                ...(mode === ModeEnum.production
+                    ? {}
+                    : {
+                          dev: resolve(__dirname, 'index-dev.html'),
+                          'dev-tools': resolve(__dirname, 'tools/index.html'),
+                      }),
             },
             output: {
                 manualChunks: {
