@@ -141,8 +141,12 @@ export default defineConfig(({ mode }) => ({
                 extension: resolve(__dirname, 'index.html'),
                 popup: resolve(__dirname, 'popup.html'),
                 tabs: resolve(__dirname, 'tabs.html'),
-                dev: resolve(__dirname, 'index-dev.html'),
-                'dev-tools': resolve(__dirname, 'tools/index.html'),
+                ...(mode === ModeEnum.production
+                    ? {}
+                    : {
+                          dev: resolve(__dirname, 'index-dev.html'),
+                          'dev-tools': resolve(__dirname, 'tools/index.html'),
+                      }),
             },
             output: {
                 manualChunks: {
