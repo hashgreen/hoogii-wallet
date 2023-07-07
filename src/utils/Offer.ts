@@ -166,6 +166,7 @@ export default class Offer {
         const hasXCH = offerPaymentList.some(
             (offerPayment) => !offerPayment.assetId
         )
+        let isFeePaid = false
 
         for (let i = 0; i < offerPaymentList.length; i++) {
             const offerPayment = offerPaymentList[i]
@@ -200,6 +201,7 @@ export default class Offer {
                     }
                 } catch (error) {
                     const resError = error as AxiosError
+                    console.log(error)
                     throw new Error(
                         `${resError?.response?.data?.msg}(puzzle_hash:${balancePuzzleHash} asset_id:assetId)`
                     )
@@ -216,9 +218,7 @@ export default class Offer {
                 })
 
                 spendList.push(...CATCoinSpendList)
-                // if offer cat and add fee in first coin
-                if (BigInt(fee) > 0n && i === 0 && !hasXCH) {
-                    console.log('if offer cat and add fee in first coin')
+                if (BigInt(fee) > 0n && !isFeePaid && !hasXCH) {
                     const feeSpendList = await Wallet.generateXCHSpendList({
                         fee: BigInt(fee),
                         amount: 0n,
@@ -227,6 +227,7 @@ export default class Offer {
                         spendableCoinList: await Wallet.getCoinList(puzzleHash),
                     })
                     spendList.push(...feeSpendList)
+                    isFeePaid = true
                 }
             } else {
                 const {
@@ -239,9 +240,9 @@ export default class Offer {
                 if (BigInt(data) < BigInt(offerPayment.amount)) {
                     throw new Error("You don't have enough xch coin to spend")
                 }
-                const checkFee = i === 0 && hasXCH ? BigInt(fee) : 0n
+                const checkFee = !isFeePaid ? BigInt(fee) : 0n
                 const XCHSpendList = await Wallet.generateXCHSpendList({
-                    fee: checkFee, // add fee in first coin
+                    fee: checkFee,
                     amount: BigInt(offerPayment.amount),
                     targetPuzzleHash: settlement.hashHex(),
                     puzzle,
