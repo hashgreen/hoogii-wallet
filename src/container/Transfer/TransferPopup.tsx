@@ -86,7 +86,7 @@ const TransferPopup = ({
         if (memo) {
             memos.push(memo)
         }
-        if (asset?.assetId === 'XCH') {
+        if (asset?.assetId === XCH.assetId) {
             await sendXCHTx?.(
                 address.address,
                 xchToMojo(amount).toString(),

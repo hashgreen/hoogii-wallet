@@ -15,6 +15,7 @@ const Info = ({ query }: { query: string }) => {
     const {
         walletStore: { puzzleHash },
         assetsStore: {
+            XCH,
             assets,
             assetIdToPuzzleHash,
             balancesData,
@@ -58,7 +59,7 @@ const Info = ({ query }: { query: string }) => {
                       <LoadingAssetItem key={`LoadingAssetItem${index}`} />
                   ))
                 : filteredAssets.map(({ assetId, code, iconUrl }) => {
-                      const isXCH = assetId === 'XCH'
+                      const isXCH = assetId === XCH.assetId
                       return (
                           <AssetItem
                               onClick={() => handleOnClick(assetId)}

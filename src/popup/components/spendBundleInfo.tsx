@@ -92,7 +92,9 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                                 <div className="flex">
                                     <AssetIcon
                                         src={finsAsset?.icon_url}
-                                        assetId={metadata?.asset_id || 'XCH'}
+                                        assetId={
+                                            metadata?.asset_id || XCH.assetId
+                                        }
                                         className="w-6 h-6 mr-1"
                                     />
 
@@ -136,7 +138,7 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                             <div className="flex flex-row justify-between">
                                 <div className="flex">
                                     <AssetIcon
-                                        assetId={'XCH'}
+                                        assetId={''}
                                         className="w-6 h-6 mr-1"
                                     />
 
