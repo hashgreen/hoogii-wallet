@@ -10,7 +10,7 @@ import ReactDOM from 'react-dom/client'
 // import Components from '~/container/Components'
 import App from '~/App'
 
-import { createMockOffer } from './utils'
+import { createMockOffer, createMockTransfer } from './utils'
 
 window.global = window
 window.Buffer = Buffer
@@ -23,6 +23,12 @@ const DevTools = () => {
                 onClick={createMockOffer}
             >
                 Create Offer
+            </button>
+            <button
+                className="btn btn-primary btn-large"
+                onClick={createMockTransfer}
+            >
+                Transfer
             </button>
             <div className="h-[600px] w-[400px]">
                 <App />

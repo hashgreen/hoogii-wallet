@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { formatDuration } from '~/utils/i18n'
@@ -106,16 +106,16 @@ export const useDynamicFeeOptions = (
 ) => {
     const [feeOptions, setFeeOptions] = useState(defaultFeeOptions)
     const [isLoading, setIsLoading] = useState(false)
-    const updateFees = async () => {
+    const updateFees = useCallback(async () => {
         setIsLoading(true)
         const options = await update()
         options && setFeeOptions(options)
         setIsLoading(false)
-    }
+    }, [update])
 
     useEffect(() => {
         updateFees()
-    }, [])
+    }, [updateFees])
 
     return {
         feeOptions,
