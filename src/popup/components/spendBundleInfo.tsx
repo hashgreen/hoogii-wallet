@@ -88,8 +88,8 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                             <div className="text-left text-caption text-primary-100">
                                 {t('send-title')}
                             </div>
-                            <div className="flex flex-row justify-between mb-1">
-                                <div className="flex">
+                            <div className="flex-row-center justify-between mb-1">
+                                <div className="flex-row-center">
                                     <AssetIcon
                                         src={finsAsset?.icon_url}
                                         assetId={

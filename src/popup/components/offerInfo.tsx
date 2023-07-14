@@ -76,10 +76,10 @@ function offerInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
 
                         return (
                             <div
-                                className="flex flex-row justify-between mb-1"
+                                className="flex-row-center justify-between mb-1"
                                 key={asset.assetId}
                             >
-                                <div className="flex">
+                                <div className="flex-row-center">
                                     <AssetIcon
                                         src={foundAsset?.iconUrl}
                                         assetId={asset.assetId || XCH.assetId}
