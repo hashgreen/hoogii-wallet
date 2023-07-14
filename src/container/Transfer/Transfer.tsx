@@ -194,7 +194,7 @@ const Transfer = () => {
                                 autoComplete="off"
                                 className={`input ${
                                     !amountVaildation.isValid && 'input-error'
-                                }`}
+                                } ${!asset && 'pointer-events-none'}`}
                                 disabled={!asset}
                                 placeholder={t('input-send-amount-placeholder')}
                                 {...register('amount', {

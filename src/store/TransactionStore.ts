@@ -23,7 +23,7 @@ class TransactionStore {
     }
 
     get isTradable() {
-        return !!this.walletStore.seed
+        return !!this.walletStore.seed.length
     }
 
     createTransferSpendBundle = async ({
@@ -35,7 +35,7 @@ class TransactionStore {
     }: Omit<ICreateSpendBundleParams, 'seed'>) => {
         const { seed, chain } = this.walletStore
         const { agg_sig_me_additional_data } = chain
-        if (!seed) return
+        if (!seed.length) return
         const spendBundle = await createSpendBundle(
             { seed, asset, amount, memos, targetAddress, fee },
             agg_sig_me_additional_data

@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -37,6 +37,7 @@ const TransferPopup = ({
     const [submitError, setSubmitError] = useState<Error>()
     const {
         transactionStore: {
+            isTradable,
             createTransferSpendBundle,
             getFees,
             sendXCHTx,
@@ -57,22 +58,24 @@ const TransferPopup = ({
     })
     const fee = watch('fee')
 
+    const updateFeeOptions = useCallback(async () => {
+        try {
+            const spendBundle = await createTransferSpendBundle({
+                targetAddress: address.address,
+                amount: xchToMojo(amount).toString(),
+                memos: [memo],
+            })
+            if (!spendBundle) return
+            const fees = await getFees(spendBundle)
+            return createFeeOptions(fees, { t, i18n })
+        } catch (error) {
+            console.error(error)
+        }
+    }, [isTradable, address.address, amount, memo])
+
     const { feeOptions, isLoading } = useDynamicFeeOptions(
         createDefaultFeeOptions({ t }),
-        async () => {
-            try {
-                const spendBundle = await createTransferSpendBundle({
-                    targetAddress: address.address,
-                    amount: xchToMojo(amount).toString(),
-                    memos: [memo],
-                })
-                if (!spendBundle) return
-                const fees = await getFees(spendBundle)
-                return createFeeOptions(fees, { t, i18n })
-            } catch (error) {
-                console.error(error)
-            }
-        }
+        updateFeeOptions
     )
 
     useEffect(() => {
@@ -86,7 +89,7 @@ const TransferPopup = ({
         if (memo) {
             memos.push(memo)
         }
-        if (asset?.assetId === 'XCH') {
+        if (asset?.assetId === XCH.assetId) {
             await sendXCHTx?.(
                 address.address,
                 xchToMojo(amount).toString(),

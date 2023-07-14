@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { observer } from 'mobx-react-lite'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -40,6 +40,7 @@ const Transaction = ({
     const {
         assetsStore: { XCH },
         transactionStore: {
+            isTradable,
             createTransferSpendBundle,
             getFees,
             sendXCHTx,
@@ -60,51 +61,51 @@ const Transaction = ({
     })
     const fee = watch('fee')
 
+    const updateFeeOptions = useCallback(async () => {
+        let spendBundle
+        switch (request.data?.method) {
+            case RequestMethodEnum.CREATE_OFFER: {
+                // TODO: disable dynamic fees on CREATE_OFFER
+                // const { offerAssets }: OfferParams = request.data.params
+                // spendBundle = await Offer.generateSecureBundle(
+                //     [],
+                //     offerAssets
+                // )
+                break
+            }
+            case RequestMethodEnum.TRANSFER: {
+                const { to, assetId, amount, memos }: TransferParams =
+                    request.data.params
+                spendBundle = await createTransferSpendBundle({
+                    targetAddress: to,
+                    asset: assetId,
+                    amount,
+                    memos,
+                })
+                break
+            }
+            default:
+                break
+        }
+        if (!spendBundle) return
+        try {
+            const fees = await getFees(spendBundle)
+            return createFeeOptions(
+                fees.map(({ time, fee }) => ({
+                    time,
+                    fee:
+                        fee *
+                        (request.data?.method === RequestMethodEnum.CREATE_OFFER
+                            ? 2
+                            : 1),
+                })),
+                { t, i18n }
+            )
+        } catch (error) {}
+    }, [isTradable, request.data?.method, request.data?.params])
     const { feeOptions, isLoading } = useDynamicFeeOptions(
         createDefaultFeeOptions({ t }),
-        async () => {
-            let spendBundle
-            switch (request.data?.method) {
-                case RequestMethodEnum.CREATE_OFFER: {
-                    // TODO: disable dynamic fees on CREATE_OFFER
-                    // const { offerAssets }: OfferParams = request.data.params
-                    // spendBundle = await Offer.generateSecureBundle(
-                    //     [],
-                    //     offerAssets
-                    // )
-                    break
-                }
-                case RequestMethodEnum.TRANSFER: {
-                    const { to, assetId, amount, memos }: TransferParams =
-                        request.data.params
-                    spendBundle = await createTransferSpendBundle({
-                        targetAddress: to,
-                        asset: assetId,
-                        amount,
-                        memos,
-                    })
-                    break
-                }
-                default:
-                    break
-            }
-            if (!spendBundle) return
-            try {
-                const fees = await getFees(spendBundle)
-                return createFeeOptions(
-                    fees.map(({ time, fee }) => ({
-                        time,
-                        fee:
-                            fee *
-                            (request.data?.method ===
-                            RequestMethodEnum.CREATE_OFFER
-                                ? 2
-                                : 1),
-                    })),
-                    { t, i18n }
-                )
-            } catch (error) {}
-        }
+        updateFeeOptions
     )
 
     useEffect(() => {

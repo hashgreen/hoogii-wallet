@@ -43,7 +43,7 @@ const AssetDisplay = ({
                         <div className="flex items-center  leading-0">
                             <AssetIcon
                                 src={finsAsset?.icon_url}
-                                assetId={assetId || 'XCH'}
+                                assetId={assetId}
                                 className="w-6 h-6 mr-1"
                             />
                             <span className="text-dark-scale-100 ">
