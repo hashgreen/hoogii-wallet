@@ -67,7 +67,7 @@ class AssetsStore {
 
     get XCH() {
         return {
-            assetId: 'XCH',
+            assetId: '',
             code: chains[this.walletStore.chain.id].prefix.toUpperCase(),
             iconUrl: '/chia.png',
         }
@@ -190,7 +190,7 @@ class AssetsStore {
     }
 
     getCovertedBalanceByAsset = (assetId: string, puzzleHash: string) => {
-        const isXCH = assetId === 'XCH'
+        const isXCH = assetId === this.XCH.assetId
 
         if (isXCH) {
             const balance = parseFloat(

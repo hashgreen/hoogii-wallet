@@ -12,6 +12,7 @@ import { IPopupPageProps } from '../types'
 function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     const {
         assetsStore: { XCH, availableAssets },
+        walletStore: { address },
     } = rootStore
 
     const finsAsset = availableAssets?.data?.find(
@@ -25,7 +26,7 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                     {t('address')}
                 </div>
                 <div className="flex flex-col gap-1 px-2 py-2 rounded-sm cursor-pointer bg-box shrink ">
-                    {shortenHash(request?.data?.params.to)}
+                    {shortenHash(address)}
                 </div>
             </div>
             <div>
@@ -36,11 +37,13 @@ function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                     <div className="text-left text-caption text-primary-100">
                         {t('send-title')}
                     </div>
-                    <div className="flex flex-row justify-between mb-1">
-                        <div className="flex">
+                    <div className="flex-row-center justify-between mb-1">
+                        <div className="flex-row-center">
                             <AssetIcon
                                 src={finsAsset?.icon_url}
-                                assetId={request?.data?.params.assetId || 'XCH'}
+                                assetId={
+                                    request?.data?.params.assetId || XCH.assetId
+                                }
                                 className="w-6 h-6 mr-1"
                             />
 

@@ -5,7 +5,6 @@ import { forwardRef, HTMLProps, useRef } from 'react'
 import AssetIcon from '~/components/AssetIcon'
 import { IAsset } from '~/db'
 import BottomIcon from '~icons/hoogii/bottom.jsx'
-import UpIcon from '~icons/hoogii/up.jsx'
 
 interface IProps {
     value?: IAsset
@@ -41,7 +40,7 @@ const AssetCombobox = forwardRef<
                         <Combobox.Input<'input', IAsset>
                             ref={ref}
                             className="sr-only"
-                            onChange={(e) => {}}
+                            onChange={() => {}}
                             onFocus={(e) => {
                                 if (
                                     !innerRef.current?.contains(e.relatedTarget)
@@ -52,12 +51,17 @@ const AssetCombobox = forwardRef<
                             {...rest}
                         />
                         {value ? (
-                            <span className="gap-2 flex-row-center">
+                            <span
+                                className="gap-2 flex-row-center"
+                                title={value.code}
+                            >
                                 <AssetIcon
                                     assetId={value.assetId}
                                     src={value.iconUrl}
                                 />
-                                {value.code}
+                                <span className=" overflow-hidden text-ellipsis whitespace-nowrap">
+                                    {value.code}
+                                </span>
                             </span>
                         ) : (
                             <span className="capitalize">{placeholder}</span>

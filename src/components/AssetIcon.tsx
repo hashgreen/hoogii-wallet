@@ -12,7 +12,7 @@ const AssetIcon = ({
     ...rest
 }: IProps & Omit<HTMLProps<HTMLImageElement>, 'crossOrigin'>) => (
     <img
-        src={assetId === 'XCH' ? '/chia.png' : src || '/images/token.svg'}
+        src={assetId === '' ? '/chia.png' : src || '/images/token.svg'}
         {...rest}
         className={classNames('rounded-full', className)}
         onError={({ currentTarget }) => {

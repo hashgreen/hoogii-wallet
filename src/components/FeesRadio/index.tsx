@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import { FieldValues, Path, UseFormRegister } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Tooltip } from 'react-tooltip'
 
 import { IAsset } from '~/db'
@@ -27,6 +28,7 @@ const FeesRadio = <T extends FieldValues>({
     name,
     isLoading = false,
 }: IProps & IReactHookFormProps<T>) => {
+    const { i18n } = useTranslation()
     return (
         <div className="gap-2 flex flex-col">
             {fees.map((item) => (
@@ -41,7 +43,10 @@ const FeesRadio = <T extends FieldValues>({
                 >
                     {!isLoading ? (
                         <span className="font-semibold whitespace-nowrap">
-                            {item.fee} {XCH.code}
+                            {item.fee.toLocaleString(i18n.language, {
+                                maximumFractionDigits: 12,
+                            })}{' '}
+                            {XCH.code}
                         </span>
                     ) : (
                         <div className="h-3 w-[100px] skeleton my-[3.5px]"></div>
