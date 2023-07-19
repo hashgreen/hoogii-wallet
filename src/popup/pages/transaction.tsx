@@ -62,33 +62,33 @@ const Transaction = ({
     const fee = watch('fee')
 
     const updateFeeOptions = useCallback(async () => {
-        let spendBundle
-        switch (request.data?.method) {
-            case RequestMethodEnum.CREATE_OFFER: {
-                // TODO: disable dynamic fees on CREATE_OFFER
-                // const { offerAssets }: OfferParams = request.data.params
-                // spendBundle = await Offer.generateSecureBundle(
-                //     [],
-                //     offerAssets
-                // )
-                break
-            }
-            case RequestMethodEnum.TRANSFER: {
-                const { to, assetId, amount, memos }: TransferParams =
-                    request.data.params
-                spendBundle = await createTransferSpendBundle({
-                    targetAddress: to,
-                    asset: assetId,
-                    amount,
-                    memos,
-                })
-                break
-            }
-            default:
-                break
-        }
-        if (!spendBundle) return
         try {
+            let spendBundle
+            switch (request.data?.method) {
+                case RequestMethodEnum.CREATE_OFFER: {
+                    // TODO: disable dynamic fees on CREATE_OFFER
+                    // const { offerAssets }: OfferParams = request.data.params
+                    // spendBundle = await Offer.generateSecureBundle(
+                    //     [],
+                    //     offerAssets
+                    // )
+                    break
+                }
+                case RequestMethodEnum.TRANSFER: {
+                    const { to, assetId, amount, memos }: TransferParams =
+                        request.data.params
+                    spendBundle = await createTransferSpendBundle({
+                        targetAddress: to,
+                        asset: assetId,
+                        amount,
+                        memos,
+                    })
+                    break
+                }
+                default:
+                    break
+            }
+            if (!spendBundle) return
             const fees = await getFees(spendBundle)
             return createFeeOptions(
                 fees.map(({ time, fee }) => ({
