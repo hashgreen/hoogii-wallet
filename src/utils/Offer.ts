@@ -76,7 +76,7 @@ export default class Offer {
     }
 
     static getNonce = () => {
-        const nonceArr = new Uint8Array(256 / 8)
+        const nonceArr = crypto.getRandomValues(new Uint8Array(256 / 8))
 
         return nonceArr
     }
