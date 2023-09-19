@@ -54,27 +54,6 @@ export default class Offer {
         )
     }
 
-    static toMsg = ({
-        payment: { amount, memo, assetId },
-        puzzle_hash,
-    }: {
-        payment: OfferAsset
-        puzzle_hash: string
-    }): Program => {
-        const nonce = this.getNonce()
-        return Program.fromList([
-            Program.fromHex(Program.fromBytes(nonce).toHex()),
-            Program.fromList([
-                Program.fromHex(sanitizeHex(puzzle_hash)),
-                Program.fromBigInt(BigInt(amount)),
-                Program.fromList([
-                    ...(assetId ? [Program.fromHex(puzzle_hash)] : []),
-                    ...(memo ? [Program.fromText(memo)] : []),
-                ]),
-            ]),
-        ])
-    }
-
     static getNonce = () => {
         const nonceArr = crypto.getRandomValues(new Uint8Array(256 / 8))
 
@@ -103,46 +82,37 @@ export default class Offer {
         const puzzle = await Secure.getPuzzle()
         const puzzleHash = puzzle.hashHex()
 
-        const requestPaymentAnnouncements: Announcement[] = requestAssets.map(
-            (payment) => {
-                const message = Offer.toMsg({
-                    payment,
-                    puzzle_hash: puzzleHash,
-                })
+        const requestPaymentAnnouncements: Announcement[] = []
 
-                const settlement = Offer.generateSettlement(payment.assetId)
-                return new Announcement(settlement.hashHex(), message)
-            }
-        )
         // bind coinSpend
         const spendList: CoinSpend[] = []
         requestAssets
             .filter(({ amount }) => amount > 0)
             .forEach(({ assetId, amount, memo }) => {
+                const settlement = Offer.generateSettlement(assetId).hashHex()
                 const coin: Coin = {
                     parent_coin_info:
                         '0x0000000000000000000000000000000000000000000000000000000000000000',
-                    puzzle_hash: add0x(
-                        Offer.generateSettlement(assetId).hashHex()
-                    ),
+                    puzzle_hash: add0x(settlement),
                     amount: 0n,
                 }
                 const nonce = this.getNonce()
-                const settlementSolution = Program.fromList([
+                const settlementMessage = Program.fromList([
+                    Program.fromHex(Program.fromBytes(nonce).toHex()),
                     Program.fromList([
-                        Program.fromHex(Program.fromBytes(nonce).toHex()),
+                        Program.fromHex(sanitizeHex(puzzleHash)),
+                        Program.fromBigInt(BigInt(amount)),
                         Program.fromList([
-                            Program.fromHex(sanitizeHex(puzzleHash)),
-                            Program.fromBigInt(BigInt(amount)),
-                            Program.fromList([
-                                ...(assetId
-                                    ? [Program.fromHex(puzzleHash)]
-                                    : []),
-                                ...(memo ? [Program.fromText(memo)] : []),
-                            ]),
+                            ...(assetId ? [Program.fromHex(puzzleHash)] : []),
+                            ...(memo ? [Program.fromText(memo)] : []),
                         ]),
                     ]),
                 ])
+                const settlementSolution = Program.fromList([settlementMessage])
+                const requestPaymentAnnouncement = new Announcement(
+                    settlement,
+                    settlementMessage
+                )
 
                 const coinSpend = new CoinSpend(
                     coin,
@@ -150,6 +120,7 @@ export default class Offer {
                     settlementSolution.serializeHex()
                 )
                 spendList.push(coinSpend)
+                requestPaymentAnnouncements.push(requestPaymentAnnouncement)
             })
 
         const announcementAssertions = requestPaymentAnnouncements.map(
