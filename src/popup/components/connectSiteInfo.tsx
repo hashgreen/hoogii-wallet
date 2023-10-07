@@ -6,9 +6,12 @@ const connectSiteInfo = ({
     request,
 }: IPopupPageProps<MethodEnum.REQUEST | MethodEnum.ENABLE>) => {
     return (
-        <div className="min-w-[164px] h-[44px] border-solid border-primary-100 border rounded-lg flex justify-center items-center m-1 p-1">
-            <img src={request.iconUrl} alt="icon" className="w-7 h-7 mr-1" />
-            <div className="text-body3 text-primary-100 break-all overflow-hidden text-ellipsis ">
+        <div
+            title={request.origin}
+            className="flex max-w-full gap-2 px-4 py-2 text-button2 text-primary-100 items-center border-primary-100/20 border rounded-lg"
+        >
+            <img src={request.iconUrl} alt="icon" className="w-7 h-7" />
+            <div className="whitespace-nowrap text-ellipsis overflow-hidden">
                 {request.origin}
             </div>
         </div>
