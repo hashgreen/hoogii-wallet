@@ -123,8 +123,6 @@ const Transaction = ({
             fee
         )
 
-        console.log('secureBundle', secureBundle)
-
         return new Offer(secureBundle)
     }
 
