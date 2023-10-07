@@ -33,7 +33,9 @@ function createStyles(prefix, object) {
                 ) {
                     darkScale = 100
                 } else darkScale = 900
-            } catch (error) {}
+            } catch (error) {
+                //
+            }
             const color = `rgb(var(--color-dark-scale-${darkScale}))`
             let contrastColor = backgroundColor
             if (
@@ -119,6 +121,7 @@ module.exports = {
             backgroundImage: {
                 main: 'url("/images/bg/main.svg")',
                 landing: 'url("/images/bg/landing.png")',
+                internal: 'url("/images/bg/popup.png")',
                 welcome: 'url("/images/bg/welcome.png")',
                 close: 'url("/images/icons/close.svg")',
                 checked: `url("${svgToMiniDataURI(`<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
