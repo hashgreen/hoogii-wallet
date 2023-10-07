@@ -61,7 +61,7 @@ export class InternalControllerStore {
 
     init = async (method: RequestMethodEnum) => {
         switch (method) {
-            case RequestMethodEnum.WALLET_SWITCH_CHAIN:
+            case RequestMethodEnum.CONNECT:
             case RequestMethodEnum.CREATE_OFFER:
             case RequestMethodEnum.TRANSFER:
             case RequestMethodEnum.SIGN_COIN_SPENDS:
@@ -90,7 +90,11 @@ export class InternalControllerStore {
                 this.request = response
                 this.locked = Boolean(response?.isLocked)
                 this.connected = Boolean(response?.isConnected)
-                this.init(response?.data.method)
+                this.init(
+                    this.connected
+                        ? response?.data.method
+                        : RequestMethodEnum.CONNECT
+                )
             })
         }
         this.port.onMessage.addListener(messageHandler)

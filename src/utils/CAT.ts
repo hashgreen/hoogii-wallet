@@ -141,7 +141,7 @@ export class CAT extends Program {
                     additionalMemoList.push(Program.fromText(memo))
                 })
             }
-            console.log('additionalMemoList', additionalMemoList)
+
             return Program.fromList([
                 Program.fromHex(sanitizeHex(ConditionOpcode.CREATE_COIN)),
                 Program.fromHex(primary.puzzlehash),

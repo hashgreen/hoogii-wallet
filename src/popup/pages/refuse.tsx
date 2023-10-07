@@ -22,8 +22,6 @@ const Refuse = ({
     } = rootStore
     const shortenAddress = shortenHash(address)
 
-    console.log(address, shortenAddress)
-
     const cancel = () => {
         if (request.method === MethodEnum.REQUEST) {
             controller.returnData({
