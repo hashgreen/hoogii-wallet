@@ -144,7 +144,12 @@ export const ConnectedSiteItem = ({
             />
             {name}
         </span>
-        <button onClick={action}>
+        <button
+            onClick={(e) => {
+                e.preventDefault()
+                action?.()
+            }}
+        >
             {rest.disabled ? (
                 <OpenPageIcon className="w-3 h-3 text-active" />
             ) : (
