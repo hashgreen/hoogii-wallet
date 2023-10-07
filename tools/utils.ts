@@ -1,7 +1,11 @@
 import Messaging from '~/api/extension/messaging'
 import { MethodEnum, RequestMethodEnum, SenderEnum } from '~/types/extension'
 
-export const createMockRequest = (method: RequestMethodEnum, params: any) => {
+export const createMockRequest = (
+    method: RequestMethodEnum,
+    params: any,
+    isConnected: boolean = true
+) => {
     const favicon = document.querySelector(
         'link[rel~="icon"]'
     ) as HTMLLinkElement
@@ -17,7 +21,7 @@ export const createMockRequest = (method: RequestMethodEnum, params: any) => {
         origin,
         iconUrl,
         isLocked: false,
-        isConnected: true,
+        isConnected,
     })
 }
 export const createMockTransfer = () =>
