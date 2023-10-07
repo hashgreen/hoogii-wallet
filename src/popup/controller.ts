@@ -61,6 +61,7 @@ export class InternalControllerStore {
 
     init = async (method: RequestMethodEnum) => {
         switch (method) {
+            case RequestMethodEnum.WALLET_SWITCH_CHAIN:
             case RequestMethodEnum.CREATE_OFFER:
             case RequestMethodEnum.TRANSFER:
             case RequestMethodEnum.SIGN_COIN_SPENDS:

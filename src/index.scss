@@ -244,6 +244,6 @@
     }
 
     .info-box {
-        @apply px-3 py-2 flex items-center child:leading-none justify-between bg-box border border-primary/30 rounded-lg;
+        @apply px-3 py-2 flex items-center text-body1 text-dark-scale-100 child:leading-none justify-between bg-box border border-primary/30 rounded-lg;
     }
 }
