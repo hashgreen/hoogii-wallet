@@ -48,6 +48,10 @@
         width: 100vw;
         height: 100vh;
     }
+    #root, #tools {
+        min-height: 600px;
+        min-width: 400px;
+    }
     #tabs {
         @apply w-screen min-h-screen text-dark-scale-100 text-body1 bg-main bg-cover;
     }
