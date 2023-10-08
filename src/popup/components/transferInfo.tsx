@@ -1,71 +1,29 @@
 import { t } from 'i18next'
-import { observer } from 'mobx-react-lite'
+import { ComponentProps, useMemo } from 'react'
 
-import AssetIcon from '~/components/AssetIcon'
-import rootStore from '~/store'
-import { MethodEnum } from '~/types/extension'
-import { shortenHash } from '~/utils'
-import { mojoToBalance } from '~/utils/CoinConverter'
+import { TransactionInfo } from '~/popup/components'
+import { MethodEnum, TransferParams } from '~/types/extension'
 
 import { IPopupPageProps } from '../types'
 
 function transferInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
-    const {
-        assetsStore: { XCH, availableAssets },
-        walletStore: { address },
-    } = rootStore
+    const assets = useMemo<
+        ComponentProps<typeof TransactionInfo>['assets']
+    >(() => {
+        if (!request.data?.params) {
+            return []
+        }
+        const params = request.data.params as TransferParams
 
-    const finsAsset = availableAssets?.data?.find(
-        (availableAsset) =>
-            request?.data?.params.assetId === availableAsset.asset_id
-    )
-    return (
-        <>
-            <div>
-                <div className="mb-3 text-left text-caption text-primary-100">
-                    {t('address')}
-                </div>
-                <div className="flex flex-col gap-1 px-2 py-2 rounded-sm cursor-pointer bg-box shrink ">
-                    {shortenHash(address)}
-                </div>
-            </div>
-            <div>
-                <div className="mb-3 text-left text-caption text-primary-100">
-                    {t('transaction')}
-                </div>
-                <div className="flex flex-col gap-1 px-2 py-3 rounded-sm cursor-pointer bg-box shrink ">
-                    <div className="text-left text-caption text-primary-100">
-                        {t('send-title')}
-                    </div>
-                    <div className="flex-row-center justify-between mb-1">
-                        <div className="flex-row-center">
-                            <AssetIcon
-                                src={finsAsset?.icon_url}
-                                assetId={
-                                    request?.data?.params.assetId || XCH.assetId
-                                }
-                                className="w-6 h-6 mr-1"
-                            />
+        return [
+            {
+                assetId: params.assetId,
+                amount: -params.amount,
+            },
+        ]
+    }, [])
 
-                            {request?.data?.params.assetId
-                                ? finsAsset?.name ||
-                                  `CAT ${shortenHash(
-                                      request?.data?.params.assetId
-                                  )}`
-                                : XCH.code}
-                        </div>
-                        <div className={'text-status-send'}>
-                            -
-                            {mojoToBalance(
-                                request?.data?.params.amount,
-                                request?.data?.params.assetId
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
-    )
+    return <TransactionInfo title={t('send-title')} assets={assets} />
 }
 
-export default observer(transferInfo)
+export default transferInfo

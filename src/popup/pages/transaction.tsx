@@ -4,14 +4,13 @@ import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import AssetIcon from '~/components/AssetIcon'
 import FeesRadio, {
     createDefaultFeeOptions,
     createFeeOptions,
     useDynamicFeeOptions,
 } from '~/components/FeesRadio'
 import { ErrorPopup } from '~/components/Popup'
-import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
+import PopupLayout from '~/layouts/Popup'
 import OfferInfo from '~/popup/components/offerInfo'
 import SpendBundleInfo from '~/popup/components/spendBundleInfo'
 import TransferInfo from '~/popup/components/transferInfo'
@@ -22,9 +21,10 @@ import {
     RequestMethodEnum,
     TransferParams,
 } from '~/types/extension'
-import { mojoToXch, xchToMojo } from '~/utils/CoinConverter'
+import { xchToMojo } from '~/utils/CoinConverter'
 import Offer from '~/utils/Offer'
 
+import { AddressInfo, FeeInfo } from '../components'
 import { IPopupPageProps } from '../types'
 const withoutFee = [
     RequestMethodEnum.SEND_TRANSACTION,
@@ -179,114 +179,109 @@ const Transaction = ({
         }
     }
 
+    const cancel = () => {
+        controller.returnData({
+            data: false,
+        })
+        window.close()
+    }
+
     return (
-        <form
-            id="confirm-form"
-            onSubmit={(e) =>
-                handleSubmit(onSubmit)(e).catch((error) => {
-                    console.error('error', error)
-                    setSubmitError(error as Error)
-                })
-            }
-            className="container flex flex-col justify-between w-full h-full py-12"
+        <PopupLayout
+            title={t('offier-request-signature-for')}
+            request={request}
+            controller={controller}
+            actions={[
+                {
+                    children: t('btn-cancel'),
+                    onClick: cancel,
+                    disabled: isSubmitting,
+                },
+                {
+                    children: t('btn-sign'),
+                    type: 'submit',
+                },
+            ]}
+            className="overflow-hidden"
         >
-            <div className="flex flex-col items-center gap-2">
-                <ConnectSiteInfo request={request} controller={controller} />
-                <div className="flex gap-2 text-xl text-center">
-                    {t('offier-request-signature-for')}
-                </div>
-            </div>
-            {request.data?.method === RequestMethodEnum.CREATE_OFFER && (
-                <OfferInfo request={request} controller={controller} />
-            )}
+            <form
+                id="confirm-form"
+                onSubmit={(e) =>
+                    handleSubmit(onSubmit)(e).catch((error) => {
+                        setSubmitError(error as Error)
+                    })
+                }
+                className="flex flex-col gap-4 pt-8 pb-10 h-full"
+            >
+                <AddressInfo />
+                <div className="flex flex-col gap-2 overflow-hidden">
+                    {request.data?.method ===
+                        RequestMethodEnum.CREATE_OFFER && (
+                        <OfferInfo request={request} controller={controller} />
+                    )}
 
-            {request.data?.method === RequestMethodEnum.TRANSFER && (
-                <TransferInfo request={request} controller={controller} />
-            )}
-
-            {request.data?.method === RequestMethodEnum.SEND_TRANSACTION && (
-                <SpendBundleInfo request={request} controller={controller} />
-            )}
-
-            {request.data?.method === RequestMethodEnum.SIGN_COIN_SPENDS && (
-                <SpendBundleInfo request={request} controller={controller} />
-            )}
-
-            {!withoutFee.some((method) => request.data?.method === method) && (
-                <div>
-                    <div className="mb-3 text-left text-caption text-primary-100">
-                        {request?.data?.params.fee
-                            ? t('fee')
-                            : t('send-fee-description')}
-                    </div>
-                    {request?.data?.params.fee ? (
-                        <div className="info-box">
-                            <span className="flex-row-center">
-                                <AssetIcon
-                                    src={XCH.iconUrl}
-                                    assetId={XCH.assetId}
-                                    className="w-6 h-6 mr-1"
-                                />
-                                {XCH.code}
-                            </span>
-                            <span className="text-status-send">
-                                -
-                                {mojoToXch(
-                                    request?.data?.params.fee
-                                ).toString()}
-                            </span>
-                        </div>
-                    ) : (
-                        <FeesRadio
-                            XCH={XCH}
-                            fee={fee}
-                            fees={feeOptions}
-                            register={register}
-                            name="fee"
-                            isLoading={isLoading}
+                    {request.data?.method === RequestMethodEnum.TRANSFER && (
+                        <TransferInfo
+                            request={request}
+                            controller={controller}
                         />
                     )}
-                </div>
-            )}
 
-            <div className="flex flex-col w-full">
-                <div className="flex justify-between">
-                    <button
-                        className="btn btn-CTA_landing btn-outline  w-[160px] h-[40px] btn-large"
-                        onClick={() => {
-                            controller.returnData({
-                                data: false,
-                            })
-                            window.close()
+                    {request.data?.method ===
+                        RequestMethodEnum.SEND_TRANSACTION && (
+                        <SpendBundleInfo
+                            request={request}
+                            controller={controller}
+                        />
+                    )}
+
+                    {request.data?.method ===
+                        RequestMethodEnum.SIGN_COIN_SPENDS && (
+                        <SpendBundleInfo
+                            request={request}
+                            controller={controller}
+                        />
+                    )}
+
+                    {!withoutFee.some(
+                        (method) => request.data?.method === method
+                    ) && (
+                        <div className="flex flex-col gap-2 text-body2 text-primary-100 overflow-hidden">
+                            {request?.data?.params.fee
+                                ? t('fee')
+                                : t('send-fee-description')}
+                            {request?.data?.params.fee &&
+                            request.data.params.fee > 0 ? (
+                                <FeeInfo fee={request.data.params.fee} />
+                            ) : (
+                                <FeesRadio
+                                    XCH={XCH}
+                                    fee={fee}
+                                    fees={feeOptions}
+                                    register={register}
+                                    name="fee"
+                                    isLoading={isLoading}
+                                />
+                            )}
+                        </div>
+                    )}
+                </div>
+                {isSubmitting && (
+                    <div className="z-50 fixed-full flex-center bg-overlay">
+                        <div className="w-[60px] h-[60px] loading"></div>
+                    </div>
+                )}
+                {submitError && (
+                    <ErrorPopup
+                        title={t('send-error-title')}
+                        description={submitError.message}
+                        close={() => {
+                            setSubmitError(undefined)
                         }}
-                        disabled={isSubmitting}
-                    >
-                        {t('btn-cancel')}
-                    </button>
-                    <button
-                        className="btn btn-CTA_landing  w-[160px] h-[40px] btn-large"
-                        type="submit"
-                        disabled={isSubmitting}
-                    >
-                        {t('btn-sign')}
-                    </button>
-                </div>
-            </div>
-            {isSubmitting && (
-                <div className="z-50 fixed-full flex-center bg-overlay">
-                    <div className="w-[60px] h-[60px] loading"></div>
-                </div>
-            )}
-            {submitError && (
-                <ErrorPopup
-                    title={t('send-error-title')}
-                    description={submitError.message}
-                    close={() => {
-                        setSubmitError(undefined)
-                    }}
-                />
-            )}
-        </form>
+                    />
+                )}
+            </form>
+        </PopupLayout>
     )
 }
 

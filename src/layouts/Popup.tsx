@@ -6,7 +6,9 @@ import { IPopupPageProps } from '~/popup/types'
 import { MethodEnum } from '~/types/extension'
 
 interface IAction
-    extends PropsWithChildren<Omit<HTMLProps<HTMLButtonElement>, 'type'>> {}
+    extends PropsWithChildren<Omit<HTMLProps<HTMLButtonElement>, 'type'>> {
+    type?: 'submit'
+}
 
 interface IProps {
     title: ReactNode
@@ -24,13 +26,13 @@ const PopupLayout = ({
     actions = [],
     className,
 }: PropsWithChildren<
-    IProps & IPopupPageProps<MethodEnum.REQUEST | MethodEnum.ENABLE>
+    IProps & Partial<IPopupPageProps<MethodEnum.REQUEST | MethodEnum.ENABLE>>
 >) => {
     return (
-        <div className="container flex flex-col w-full h-full pt-8 pb-10">
+        <div className="container flex flex-col w-full h-full pt-8 pb-10 mx-auto">
             {/* // * popup title */}
             <div className="flex flex-col items-center gap-5 text-dark-scale-100">
-                {request && (
+                {request && controller && (
                     <ConnectSiteInfo
                         request={request}
                         controller={controller}
