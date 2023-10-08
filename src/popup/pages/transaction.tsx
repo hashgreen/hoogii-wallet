@@ -188,6 +188,13 @@ const Transaction = ({
 
     return (
         <PopupLayout
+            as="form"
+            id="confirm-form"
+            onSubmit={(e) =>
+                handleSubmit(onSubmit)(e).catch((error) => {
+                    setSubmitError(error as Error)
+                })
+            }
             title={t('offier-request-signature-for')}
             request={request}
             controller={controller}
@@ -202,85 +209,71 @@ const Transaction = ({
                     type: 'submit',
                 },
             ]}
-            className="overflow-hidden"
+            className="overflow-hidden gap-4 pt-8 pb-10"
         >
-            <form
-                id="confirm-form"
-                onSubmit={(e) =>
-                    handleSubmit(onSubmit)(e).catch((error) => {
-                        setSubmitError(error as Error)
-                    })
-                }
-                className="flex flex-col gap-4 pt-8 pb-10 h-full"
-            >
-                <AddressInfo />
-                <div className="flex flex-col gap-2 overflow-hidden">
-                    {request.data?.method ===
-                        RequestMethodEnum.CREATE_OFFER && (
-                        <OfferInfo request={request} controller={controller} />
-                    )}
-
-                    {request.data?.method === RequestMethodEnum.TRANSFER && (
-                        <TransferInfo
-                            request={request}
-                            controller={controller}
-                        />
-                    )}
-
-                    {request.data?.method ===
-                        RequestMethodEnum.SEND_TRANSACTION && (
-                        <SpendBundleInfo
-                            request={request}
-                            controller={controller}
-                        />
-                    )}
-
-                    {request.data?.method ===
-                        RequestMethodEnum.SIGN_COIN_SPENDS && (
-                        <SpendBundleInfo
-                            request={request}
-                            controller={controller}
-                        />
-                    )}
-
-                    {!withoutFee.some(
-                        (method) => request.data?.method === method
-                    ) && (
-                        <div className="flex flex-col gap-2 text-body2 text-primary-100 overflow-hidden">
-                            {request?.data?.params.fee
-                                ? t('fee')
-                                : t('send-fee-description')}
-                            {request?.data?.params.fee &&
-                            request.data.params.fee > 0 ? (
-                                <FeeInfo fee={request.data.params.fee} />
-                            ) : (
-                                <FeesRadio
-                                    XCH={XCH}
-                                    fee={fee}
-                                    fees={feeOptions}
-                                    register={register}
-                                    name="fee"
-                                    isLoading={isLoading}
-                                />
-                            )}
-                        </div>
-                    )}
-                </div>
-                {isSubmitting && (
-                    <div className="z-50 fixed-full flex-center bg-overlay">
-                        <div className="w-[60px] h-[60px] loading"></div>
-                    </div>
+            <AddressInfo />
+            <div className="flex flex-col gap-2 overflow-hidden">
+                {request.data?.method === RequestMethodEnum.CREATE_OFFER && (
+                    <OfferInfo request={request} controller={controller} />
                 )}
-                {submitError && (
-                    <ErrorPopup
-                        title={t('send-error-title')}
-                        description={submitError.message}
-                        close={() => {
-                            setSubmitError(undefined)
-                        }}
+
+                {request.data?.method === RequestMethodEnum.TRANSFER && (
+                    <TransferInfo request={request} controller={controller} />
+                )}
+
+                {request.data?.method ===
+                    RequestMethodEnum.SEND_TRANSACTION && (
+                    <SpendBundleInfo
+                        request={request}
+                        controller={controller}
                     />
                 )}
-            </form>
+
+                {request.data?.method ===
+                    RequestMethodEnum.SIGN_COIN_SPENDS && (
+                    <SpendBundleInfo
+                        request={request}
+                        controller={controller}
+                    />
+                )}
+
+                {!withoutFee.some(
+                    (method) => request.data?.method === method
+                ) && (
+                    <div className="flex flex-col gap-2 text-body2 text-primary-100 overflow-hidden">
+                        {request?.data?.params.fee
+                            ? t('fee')
+                            : t('send-fee-description')}
+                        {request?.data?.params.fee &&
+                        request.data.params.fee > 0 ? (
+                            <FeeInfo fee={request.data.params.fee} />
+                        ) : (
+                            <FeesRadio
+                                XCH={XCH}
+                                fee={fee}
+                                fees={feeOptions}
+                                register={register}
+                                name="fee"
+                                isLoading={isLoading}
+                            />
+                        )}
+                    </div>
+                )}
+            </div>
+            {isSubmitting && (
+                <div className="z-50 fixed-full flex-center bg-overlay">
+                    <div className="w-[60px] h-[60px] loading"></div>
+                </div>
+            )}
+            {submitError && (
+                <ErrorPopup
+                    title={t('send-error-title')}
+                    description={submitError.message}
+                    close={() => {
+                        setSubmitError(undefined)
+                    }}
+                />
+            )}
         </PopupLayout>
     )
 }

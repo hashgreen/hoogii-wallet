@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { HTMLProps, PropsWithChildren, ReactNode } from 'react'
+import { createElement, HTMLProps, PropsWithChildren, ReactNode } from 'react'
 
 import ConnectSiteInfo from '~/popup/components/connectSiteInfo'
 import { IPopupPageProps } from '~/popup/types'
@@ -15,9 +15,10 @@ interface IProps {
     description?: ReactNode
     actions?: IAction[]
     className?: string
+    as?: keyof JSX.IntrinsicElements
 }
 
-const PopupLayout = ({
+const PopupLayout = <TTag extends keyof JSX.IntrinsicElements>({
     title,
     description,
     request,
@@ -25,11 +26,21 @@ const PopupLayout = ({
     children,
     actions = [],
     className,
+    as = 'div',
+    ...rest
 }: PropsWithChildren<
-    IProps & Partial<IPopupPageProps<MethodEnum.REQUEST | MethodEnum.ENABLE>>
+    IProps &
+        Partial<IPopupPageProps<MethodEnum.REQUEST | MethodEnum.ENABLE>> &
+        JSX.IntrinsicElements[TTag]
 >) => {
-    return (
-        <div className="container flex flex-col w-full h-full pt-8 pb-10 mx-auto">
+    return createElement(
+        as,
+        {
+            className:
+                'container flex flex-col w-full h-full pt-8 pb-10 mx-auto',
+            ...rest,
+        },
+        <>
             {/* // * popup title */}
             <div className="flex flex-col items-center gap-5 text-dark-scale-100">
                 {request && controller && (
@@ -57,7 +68,7 @@ const PopupLayout = ({
                     </button>
                 ))}
             </div>
-        </div>
+        </>
     )
 }
 
