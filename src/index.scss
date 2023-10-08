@@ -124,6 +124,20 @@
     .bg-status-coinbase {
         background: linear-gradient(204.58deg, #ffda7c 0%, #ff4d00 84.31%);
     }
+
+    .animate-border {
+        @apply h-0.5;
+        background: 
+            linear-gradient(90deg, #fff 50%, transparent 0) repeat-x;
+        background-size: 12px 2px, 12px 2px, 2px 12px, 2px 12px;
+        background-position: 0 0, 0 100%, 0 0, 100% 0;
+        animation: linearGradientMove .3s infinite linear;
+    }
+    @keyframes linearGradientMove {
+        100% {
+            background-position: 12px 0, -12px 100%, 0 -12px, 100% 12px;
+        }
+    }
 }
 
 @layer components {

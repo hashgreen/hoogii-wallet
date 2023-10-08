@@ -46,11 +46,11 @@ const PopupLayout = ({
                 {children}
             </div>
             {/* // * popup actions */}
-            <div className="flex gap-4">
+            <div className="flex gap-4 justify-center">
                 {actions.map(({ children, ...rest }, index) => (
                     <button
                         key={index}
-                        className="btn btn-CTA_landing btn-large odd:btn-outline flex-1"
+                        className="btn btn-CTA_landing btn-large odd:btn-outline flex-1 max-w-[50%]"
                         {...rest}
                     >
                         {children}

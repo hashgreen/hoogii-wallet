@@ -35,11 +35,7 @@ const DevTools = () => {
             <button
                 className="btn btn-primary btn-large"
                 onClick={() =>
-                    createMockRequest(
-                        RequestMethodEnum.WALLET_SWITCH_CHAIN,
-                        {},
-                        false
-                    )
+                    createMockRequest(RequestMethodEnum.CONNECT, {}, false)
                 }
             >
                 Connect to
