@@ -136,19 +136,22 @@ export const ConnectedSiteItem = ({
     ...rest
 }: IConnectedSiteItemProps & ComponentProps<typeof Item<'a'>>) => (
     <Item as="a" key={name} {...rest} className="!cursor-pointer">
-        <span className="gap-2 flex-row-center">
+        <div className="gap-2 flex-row-center max-w-full overflow-hidden">
             <img
                 src={iconUrl}
                 alt={`${name} icon`}
                 className="w-6 h-6 rounded-full"
             />
-            {name}
-        </span>
+            <div className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                {name}
+            </div>
+        </div>
         <button
             onClick={(e) => {
                 e.preventDefault()
                 action?.()
             }}
+            className="shrink-0"
         >
             {rest.disabled ? (
                 <OpenPageIcon className="w-3 h-3 text-active" />

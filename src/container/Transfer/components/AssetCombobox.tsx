@@ -59,7 +59,7 @@ const AssetCombobox = forwardRef<
                                     assetId={value.assetId}
                                     src={value.iconUrl}
                                 />
-                                <span className=" overflow-hidden text-ellipsis whitespace-nowrap">
+                                <span className="overflow-hidden text-ellipsis whitespace-nowrap">
                                     {value.code}
                                 </span>
                             </span>
