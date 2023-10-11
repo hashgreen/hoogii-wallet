@@ -7,7 +7,7 @@ import { APIError, MethodEnum } from '~/types/extension'
 import { IPopupPageProps } from '../types'
 
 const roundStyle =
-    'flex-center p-2.5 bg-dark-scale-100 rounded-full w-20 h-20 child:full'
+    'flex-center p-2.5 bg-dark-scale-100 rounded-full w-20 h-20 child:full overflow-hidden'
 
 const Connecting = ({
     controller,

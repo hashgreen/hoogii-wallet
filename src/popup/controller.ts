@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from 'mobx'
+import { makeAutoObservable, reaction, runInAction } from 'mobx'
 
 import { lockFromBackground, savePassword } from '~/api/extension'
 import { WalletDexie } from '~/db'
@@ -30,11 +30,22 @@ export class InternalControllerStore {
             name: ConnectionName[PopupEnum.INTERNAL],
         })
 
+        reaction(
+            () => this.locked,
+            () =>
+                this.init(
+                    this.connected
+                        ? this.request?.data.method
+                        : RequestMethodEnum.CONNECT
+                )
+        )
+
         this.requestData()
     }
 
     lock = async () => {
         await lockFromBackground()
+        await rootStore.walletStore.lock()
         runInAction(() => {
             this.locked = true
         })
@@ -42,6 +53,7 @@ export class InternalControllerStore {
 
     unlock = async (password: string) => {
         await savePassword(password)
+        await rootStore.walletStore.unlock(password)
         runInAction(() => {
             this.locked = false
         })
