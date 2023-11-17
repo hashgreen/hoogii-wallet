@@ -150,7 +150,7 @@ export const POPUP_WINDOW = {
     top: 50,
     left: 100,
     width: 400,
-    height: 600,
+    height: 700,
 } as const
 
 export const ConnectionName = {
