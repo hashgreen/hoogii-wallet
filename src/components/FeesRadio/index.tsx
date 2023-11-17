@@ -30,7 +30,7 @@ const FeesRadio = <T extends FieldValues>({
 }: IProps & IReactHookFormProps<T>) => {
     const { i18n } = useTranslation()
     return (
-        <div className="gap-2 flex flex-col">
+        <div className="gap-2 flex flex-col overflow-auto p-px">
             {fees.map((item) => (
                 <label
                     key={item.note}

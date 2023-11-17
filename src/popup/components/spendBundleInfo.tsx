@@ -11,7 +11,6 @@ import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
 import { mojoToBalance } from '~/utils/CoinConverter'
 import { add0x } from '~/utils/encryption'
-import { puzzleHashToAddress } from '~/utils/signature'
 
 import { IPopupPageProps } from '../types'
 function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
@@ -68,18 +67,6 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
         <div>
             {parseBundle ? (
                 <>
-                    <div>
-                        <div className="mb-3 text-left text-caption text-primary-100">
-                            {t('address')}
-                        </div>
-                        <div className="flex flex-col gap-1 px-2 py-2 rounded-sm cursor-pointer bg-box shrink ">
-                            {shortenHash(
-                                puzzleHashToAddress(
-                                    metadata?.to_puzzle_hashes?.[0]
-                                )
-                            )}
-                        </div>
-                    </div>
                     <div>
                         <div className="mt-2 mb-1 text-left text-caption text-primary-100">
                             {t('transaction')}
