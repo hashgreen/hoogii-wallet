@@ -20,6 +20,8 @@ interface IForm {
     assetId: string
 }
 
+const MAX_CAT_NAME_LENGTH = Number(import.meta.env.VITE_MAX_CAT_NAME_LENGTH)
+
 const CustomPage = () => {
     const { t } = useTranslation()
     const [checked, setChecked] = useState(false)
@@ -30,7 +32,15 @@ const CustomPage = () => {
 
     const schema = joi
         .object({
-            code: joi.string().empty('').max(12).message('error-code-invalid'),
+            code: joi
+                .string()
+                .empty('')
+                .max(MAX_CAT_NAME_LENGTH)
+                .message(
+                    t('error-code-invalid', {
+                        max: MAX_CAT_NAME_LENGTH,
+                    })
+                ),
             assetId: joi
                 .string()
                 .empty('')

@@ -43,7 +43,7 @@
     "error-address_already_existed": "此地址已存在。",
     "error-assetId-duplicated": "此代幣 ID 已添加到您的錢包中。",
     "error-assetId-invalid": "該代幣 ID 無效。",
-    "error-code-invalid": "代幣名稱長度必須介於 1 到 12 個字符之間。",
+    "error-code-invalid": "代幣名稱長度必須介於 1 到 {{max}} 個字符之間。",
     "error-invalid": "{{field}} 無效。",
     "error-mnemonic-invalid": "*助記詞不正確。",
     "error-over-max-length": "{{field}} 長度必須小於限制。",
