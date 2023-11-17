@@ -43,7 +43,7 @@
     "error-address_already_existed": "该地址已存在。",
     "error-assetId-duplicated": "此资产 ID 已添加到您的钱包中。",
     "error-assetId-invalid": "此资产 ID 无效。",
-    "error-code-invalid": "代码长度必须介于 1 到 12 之间",
+    "error-code-invalid": "代码长度必须介于 1 到 {{max}} 之间",
     "error-invalid": "{{field}} 无效。",
     "error-mnemonic-invalid": "备份短语不正确。",
     "error-over-max-length": "{{field}} 的长度必须小于指定长度。",

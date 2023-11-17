@@ -44,7 +44,7 @@
     "error-address_already_existed": "This address already exists.",
     "error-assetId-duplicated": "This Asset ID is already added to your wallet.",
     "error-assetId-invalid": "This Asset ID is invalid.",
-    "error-code-invalid": "Code length must between 1 and 12",
+    "error-code-invalid": "Code length must between 1 and {{max}}",
     "error-invalid": "{{field}} is invalid.",
     "error-mnemonic-invalid": "*Backup Phrases are incorrect.",
     "error-over-max-length": "{{field}} length must be less.",
