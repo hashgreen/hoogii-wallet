@@ -4,14 +4,16 @@ import { registerMessageHandler } from 'axios-chrome-messaging-adapter'
 import { toast } from 'react-toastify'
 
 import {
+    IAsset,
     IMarket,
     IResponseData,
     ITransaction,
     RequestConfig,
 } from '~/types/api'
 import { ChainEnum } from '~/types/chia'
+import { Asset } from '~/types/entities'
 import { apiEndpointSets } from '~/utils/constants'
-import { getErrorMessage, ToastOption } from '~/utils/errorMessage'
+import { getErrorMessage, toastOption } from '~/utils/errorMessage'
 import { getStorage } from '~/utils/extension/storage'
 
 /** -------------------------- Full Node API -------------------------- */
@@ -38,7 +40,7 @@ export async function apiHandler<T = any>(
         if (config.isShowToast) {
             const message = getErrorMessage(resError)
             toast.error(message, {
-                ...ToastOption,
+                ...toastOption,
                 toastId: resError?.response?.data?.code?.toString() ?? 'none',
             })
         }
@@ -87,6 +89,13 @@ export const getFeesEstimate = (
 /** -------------------------- Full Node API  END-------------------------- */
 /** -----------------------
  * --- Jarvan addon API -------------------------- */
+
+export const callGetCATs = async () => {
+    const res = await apiHandler<IResponseData<IAsset[]>>({
+        url: '/cats?catType=2?size=0',
+    })
+    return res.data.data?.map((item) => new Asset(item))
+}
 
 export const sendTx = (
     params: AxiosRequestConfig,

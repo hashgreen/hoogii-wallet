@@ -13,6 +13,13 @@ interface IBase {
     updated_at: string
 }
 
+export interface IAsset {
+    code: string
+    name: string
+    icon: string
+    asset_id: string
+}
+
 export interface ICryptocurrency extends IBase {
     id: string
     asset_id: string

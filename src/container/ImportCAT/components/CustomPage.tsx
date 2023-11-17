@@ -12,7 +12,7 @@ import { sendMeasurement } from '~/api/ga'
 // import AssetIcon from '~/components/AssetIcon'
 import ErrorMessage from '~/components/ErrorMessage'
 import rootStore from '~/store'
-import { ICryptocurrency } from '~/types/api'
+import { Asset } from '~/types/entities'
 import { fuseOptions, search } from '~/utils/fuse'
 
 interface IForm {
@@ -94,10 +94,10 @@ const CustomPage = () => {
 
     const searchResults = useMemo(() => {
         if (!errors.assetId && searchField) {
-            const result = search<ICryptocurrency>(
+            const result = search<Asset>(
                 searchField,
                 availableAssets.data,
-                fuseOptions(['asset_id'])
+                fuseOptions(['assetId'])
             )
 
             return result?.[0]
@@ -206,7 +206,7 @@ const CustomPage = () => {
                             <div className="flex h-8 w-fit justify-center rounded py-[11px] px-2 flex-row cursor-pointer gap-2 text-body3 bg-white bg-opacity-5  items-center">
                                 <img
                                     className="w-6 h-6 "
-                                    src={searchResults.icon_url}
+                                    src={searchResults.icon}
                                 />
                                 <span>{searchResults.code}</span>
 
