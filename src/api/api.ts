@@ -92,7 +92,9 @@ export const getFeesEstimate = (
 
 export const callGetCATs = async () => {
     const res = await apiHandler<IResponseData<IAsset[]>>({
-        url: '/cats?catType=2?size=0',
+        url:
+            apiEndpointSets[await getStorage<string>('chainId')]?.newJarvan +
+            '/cats?catType=2&size=0',
     })
     return res.data.data?.map((item) => new Asset(item))
 }
