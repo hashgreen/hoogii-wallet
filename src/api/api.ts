@@ -3,13 +3,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { registerMessageHandler } from 'axios-chrome-messaging-adapter'
 import { toast } from 'react-toastify'
 
-import {
-    IAsset,
-    IMarket,
-    IResponseData,
-    ITransaction,
-    RequestConfig,
-} from '~/types/api'
+import { IAsset, IResponseData, ITransaction, RequestConfig } from '~/types/api'
 import { ChainEnum } from '~/types/chia'
 import { Asset } from '~/types/entities'
 import { apiEndpointSets } from '~/utils/constants'
@@ -176,17 +170,6 @@ export const callGetAblyAccessToken = (formData) =>
         data: formData,
     })
 /** -------------------------- Jarvan addon API END -------------------------- */
-/** -------------------------- Zed API -------------------------- */
-export const callGetMarkets = async () =>
-    apiHandler<AxiosResponse<IMarket[]>>({
-        url:
-            apiEndpointSets[await getStorage<string>('chainId')]?.zed +
-            '/markets',
-
-        method: 'get',
-    })
-
-/** -------------------------- Zed API END -------------------------- */
 
 /** -------------------------- Spacescan API -------------------------- */
 export const callGetExchangeRate = (assetId: string) =>
