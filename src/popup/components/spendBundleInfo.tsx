@@ -35,7 +35,7 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     } = rootStore
 
     const finsAsset = availableAssets?.data?.find(
-        (availableAsset) => metadata?.asset_id === availableAsset.asset_id
+        (availableAsset) => metadata?.asset_id === availableAsset.assetId
     )
     const onGetParseSpendBundle = async (spendBundle) => {
         try {
@@ -78,7 +78,7 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                             <div className="flex-row-center justify-between mb-1">
                                 <div className="flex-row-center">
                                     <AssetIcon
-                                        src={finsAsset?.icon_url}
+                                        src={finsAsset?.icon}
                                         assetId={
                                             metadata?.asset_id || XCH.assetId
                                         }

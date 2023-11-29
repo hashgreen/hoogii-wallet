@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import { format } from 'date-fns'
+import { toJS } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -56,16 +57,17 @@ const Transaction = ({
         assetsStore: { availableAssets, XCH, existedAssets },
     } = rootStore
     const existAsset = existedAssets.find(
-        (asset) => add0x(asset.assetId) === assetId
+        (asset) => add0x(asset.assetId) === add0x(assetId)
     )
 
     const asset = useMemo(
         () =>
             availableAssets.data.find(
-                (asset) => add0x(asset.asset_id) === assetId
+                (asset) => add0x(asset.assetId) === add0x(assetId)
             ),
         [assetId, availableAssets.data]
     )
+    console.log('assetId', assetId, toJS(existAsset), toJS(asset))
 
     const isTransfer =
         txType === ITxType.TX_TYPE_CAT_TRANSFER ||
