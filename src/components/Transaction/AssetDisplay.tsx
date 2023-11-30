@@ -30,7 +30,7 @@ const AssetDisplay = ({
 
                 const finsAsset = availableAssets?.data?.find(
                     (availableAsset) =>
-                        add0x(availableAsset.asset_id) === assetId
+                        add0x(availableAsset.assetId) === assetId
                 )
 
                 const name = existAsset?.code || finsAsset?.name
@@ -42,7 +42,7 @@ const AssetDisplay = ({
                     >
                         <div className="flex items-center  leading-0">
                             <AssetIcon
-                                src={finsAsset?.icon_url}
+                                src={finsAsset?.icon || existAsset?.iconUrl}
                                 assetId={assetId}
                                 className="w-6 h-6 mr-1"
                             />

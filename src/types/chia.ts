@@ -15,6 +15,7 @@ export interface IChainSet {
 }
 
 export interface IApiEndpointSet {
+    newJarvan: string
     jarvan: string
     zed: string
 }

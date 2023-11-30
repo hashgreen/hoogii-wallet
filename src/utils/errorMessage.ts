@@ -21,7 +21,7 @@ export const getErrorMessage = (error: AxiosError) => {
 
     return API_TIME_OUT
 }
-export const ToastOption: ToastOptions = {
+export const toastOption: ToastOptions = {
     autoClose: 2500,
     hideProgressBar: true,
     closeOnClick: true,

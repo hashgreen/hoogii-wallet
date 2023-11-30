@@ -10,12 +10,13 @@ import {
 import {
     callGetBalance,
     callGetBalanceByPuzzleHashes,
+    callGetCATs,
     callGetExchangeRate,
-    callGetMarkets,
 } from '~/api/api'
 import { IAsset } from '~/db'
 import rootStore from '~/store'
-import { ICryptocurrency, IExchangeRate, IFetchData } from '~/types/api'
+import { IExchangeRate, IFetchData } from '~/types/api'
+import { Asset } from '~/types/entities'
 import { CAT } from '~/utils/CAT'
 import { mojoToCat, mojoToXch } from '~/utils/CoinConverter'
 import { chains } from '~/utils/constants'
@@ -29,7 +30,7 @@ class AssetsStore {
 
     existedAssets: IAsset[] = []
 
-    availableAssets: IFetchData<ICryptocurrency[]> = {
+    availableAssets: IFetchData<Asset[]> = {
         isFetching: true,
         data: [],
     }
@@ -52,13 +53,9 @@ class AssetsStore {
         onBecomeUnobserved(this, 'existedAssets', this.unsubscribeExistedAssets)
         onBecomeObserved(this, 'availableAssets', async () => {
             try {
-                const res = await callGetMarkets()
-                const markets = res.data.data
-                const assets = markets.map(
-                    (market) => market[market.info_ccy_name] as ICryptocurrency
-                )
+                const assets = await callGetCATs()
                 runInAction(() => {
-                    this.availableAssets.data = assets
+                    this.availableAssets.data = assets || []
                     this.availableAssets.isFetching = false
                 })
             } catch (error) {}
@@ -89,13 +86,13 @@ class AssetsStore {
                 )
             }
             const asset = this.availableAssets.data.find(
-                (asset) => asset.asset_id === assetId
+                (asset) => asset.assetId === assetId
             )
             return asset
                 ? {
-                      assetId: asset.asset_id,
+                      assetId: asset.assetId,
                       code: asset.code,
-                      iconUrl: asset.icon_url,
+                      iconUrl: asset.icon,
                   }
                 : asset
         }

@@ -10,7 +10,7 @@ import SearchBar from '~/components/SearchBar'
 import BackLink from '~/layouts/BackLink'
 import { useClosablePage } from '~/layouts/ClosablePage'
 import rootStore from '~/store'
-import { ICryptocurrency } from '~/types/api'
+import { Asset } from '~/types/entities'
 import { fuseOptions, search } from '~/utils/fuse'
 import BottomIcon from '~icons/hoogii/bottom.jsx'
 
@@ -23,7 +23,7 @@ function ImportCAT() {
     const {
         assetsStore: { existedAssets, availableAssets },
     } = rootStore
-    const [selected, setSelected] = useState<ICryptocurrency[]>([])
+    const [selected, setSelected] = useState<Asset[]>([])
 
     const [toggleSelectedList, setToggleSelectedList] = useState(false)
 
@@ -34,16 +34,16 @@ function ImportCAT() {
 
     const filteredAssets = useMemo(
         () =>
-            search<ICryptocurrency>(
+            search<Asset>(
                 keyword,
                 availableAssets.data,
-                fuseOptions(['asset_id', 'code', 'name'])
+                fuseOptions(['assetId', 'code', 'name'])
             ),
         [keyword, availableAssets.data]
     )
 
     const handleRemoveSelected = (id: string) => {
-        const newSelected = selected.filter((item) => item.asset_id !== id)
+        const newSelected = selected.filter((item) => item.assetId !== id)
 
         setSelected(newSelected)
 
@@ -72,11 +72,11 @@ function ImportCAT() {
                 ],
             })
 
-            selected.forEach(({ asset_id, code, icon_url }) =>
+            selected.forEach(({ assetId, code, icon }) =>
                 rootStore.walletStore.db.assets.add({
-                    assetId: asset_id,
+                    assetId,
                     code,
-                    iconUrl: icon_url,
+                    iconUrl: icon,
                 })
             )
         }
@@ -142,32 +142,32 @@ function ImportCAT() {
                                 <div className="flex flex-col gap-2 overflow-auto">
                                     {filteredAssets.map((item, index) => (
                                         <AssetItem
-                                            key={`${item.asset_id}_${index}`}
+                                            key={`${item.assetId}_${index}`}
                                             asset={{
-                                                assetId: item.asset_id,
+                                                assetId: item.assetId,
                                                 code: item.code,
-                                                iconUrl: item.icon_url,
+                                                iconUrl: item.icon,
                                             }}
                                             active={selected.some(
                                                 (e) =>
-                                                    e.asset_id === item.asset_id
+                                                    e.assetId === item.assetId
                                             )}
                                             disabled={existedAssetIds?.some(
-                                                (id) => id === item.asset_id
+                                                (id) => id === item.assetId
                                             )}
                                             onClick={() => {
                                                 if (
                                                     selected.some(
                                                         (e) =>
-                                                            e.asset_id ===
-                                                            item.asset_id
+                                                            e.assetId ===
+                                                            item.assetId
                                                     )
                                                 ) {
                                                     setSelected([
                                                         ...selected.filter(
                                                             (e) =>
-                                                                e.asset_id !==
-                                                                item.asset_id
+                                                                e.assetId !==
+                                                                item.assetId
                                                         ),
                                                     ])
                                                 } else {

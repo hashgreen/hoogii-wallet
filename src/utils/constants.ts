@@ -27,14 +27,17 @@ export const apiEndpointSets: {
     [key in ChainEnum]: IApiEndpointSet
 } = {
     [ChainEnum.Mainnet]: {
+        newJarvan: 'https://jarvan-api.hash.green/api/v1',
         jarvan: 'https://prod-jarvan.hash.green/api/v1',
         zed: 'https://hash.green/api/v1',
     },
     [ChainEnum.Testnet]: {
+        newJarvan: 'https://uat-jarvan-api.hash.green/api/v1',
         jarvan: 'https://stg-jarvan.hash.green/api/v1',
         zed: 'https://testnet10.hash.green/api/v1',
     },
     [ChainEnum.Develop]: {
+        newJarvan: 'https://uat-jarvan-api.hash.green/api/v1',
         jarvan: 'https://uat-jarvan.hash.green/api/v1',
         zed: 'https://testnet10.hash.green/api/v1',
     },
