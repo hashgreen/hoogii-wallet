@@ -46,16 +46,6 @@ interface GetBalanceRes {
     code: number
     msg: string
 }
-
-/**
- * callPushTransaction [Post]
- */
-export const getCoinRecordsByName = (params: AxiosRequestConfig) =>
-    apiHandler({
-        url: '/rpc/get_coin_record_by_name',
-        method: 'post',
-        ...params,
-    })
 export const getPuzzleAndSolution = (params: AxiosRequestConfig) =>
     apiHandler({
         url: '/rpc/get_puzzle_and_solution',

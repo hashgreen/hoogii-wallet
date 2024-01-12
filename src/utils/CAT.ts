@@ -1,3 +1,4 @@
+import { fetchCoinRecordByName } from '@hashgreen/hg-query/thresh'
 import {
     concatBytes,
     encodeInt,
@@ -7,7 +8,8 @@ import {
 import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
-import { getCoinRecordsByName, getPuzzleAndSolution } from '~/api/api'
+import { getPuzzleAndSolution } from '~/api/api'
+import { getApiEndpoint, transformCoins } from '~/api/utils'
 
 import CoinSpend from './CoinSpend'
 import { puzzles } from './puzzles'
@@ -40,15 +42,14 @@ export class CAT extends Program {
         )
 
     static getLineageProof = async (childCoin: Coin) => {
-        const parentCoinRecord = await getCoinRecordsByName({
-            data: {
-                name: childCoin.parent_coin_info,
-            },
+        const parentCoinRecord = await fetchCoinRecordByName({
+            baseUrl: await getApiEndpoint('thresh'),
+        })({
+            name: childCoin.parent_coin_info,
         })
 
-        const {
-            coin_record: { coin, spent_block_index },
-        } = parentCoinRecord.data
+        const { coin: _coin, spent_block_index } = parentCoinRecord
+        const coin = transformCoins(_coin)
         const coinID = CAT.coinName(coin)
         const puzzleAndSolutionRecord = await getPuzzleAndSolution({
             data: {
