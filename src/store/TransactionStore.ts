@@ -1,10 +1,12 @@
+import { fetchFeeEstimate } from '@hashgreen/hg-query/thresh'
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { addressInfo } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
-import { callGetBalance, getFeesEstimate, sendTx } from '~/api/api'
+import { callGetBalance, sendTx } from '~/api/api'
+import { getApiEndpoint, transformSpendBundles } from '~/api/utils'
 import { CAT } from '~/utils/CAT'
 import { createSpendBundle, ICreateSpendBundleParams } from '~/utils/chia'
 import { mojoToXch } from '~/utils/CoinConverter'
@@ -50,19 +52,15 @@ class TransactionStore {
         ).map(Number)
     ) => {
         try {
-            const data = await getFeesEstimate({
-                data: {
-                    spend_bundle: spendBundle.getObj(),
-                    target_times: targetTimes,
-                },
+            const estimates = await fetchFeeEstimate({
+                baseUrl: await getApiEndpoint('thresh'),
+            })({
+                spendBundle: transformSpendBundles(spendBundle),
+                targetTimes,
             })
             return targetTimes.map((time) => ({
                 time,
-                fee: mojoToXch(
-                    data.data.estimates[data.data.target_times.indexOf(time)]
-                )
-                    .toDecimalPlaces(12)
-                    .toNumber(),
+                fee: mojoToXch(estimates[time]).toDecimalPlaces(12).toNumber(),
             }))
         } catch (error) {
             throw new Error(getErrorMessage(error as AxiosError))

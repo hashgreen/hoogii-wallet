@@ -1,7 +1,11 @@
 import { ChainEnum } from '@hashgreen/hg-models'
-import { Coin as _Coin } from '@hashgreen/hg-models/chia'
+import {
+    Coin as _Coin,
+    SpendBundle as _SpendBundle,
+} from '@hashgreen/hg-models/chia'
 
 import { getStorage } from '~/utils/extension/storage'
+import SpendBundle from '~/utils/SpendBundle'
 import { Coin } from '~/utils/Wallet/types'
 
 import { apiEndpointName, apiEndpointSets } from './constants'
@@ -27,3 +31,7 @@ export const transformCoins = (coin: _Coin): Coin => ({
     puzzle_hash: coin.puzzleHash,
     amount: coin.amount,
 })
+
+export const transformSpendBundles = (spendBundle: SpendBundle) => {
+    return _SpendBundle.fromJSON(spendBundle.getObj())
+}

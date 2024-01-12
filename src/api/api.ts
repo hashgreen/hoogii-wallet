@@ -46,23 +46,6 @@ interface GetBalanceRes {
     code: number
     msg: string
 }
-export const getFeesEstimate = (
-    params: AxiosRequestConfig<{
-        spend_bundle: object
-        target_times: number[]
-    }>
-) => {
-    return apiHandler<{
-        estimates: number[]
-        success: boolean
-        target_times: number[]
-        [key: string]: any
-    }>({
-        url: '/rpc/get_fee_estimate',
-        method: 'POST',
-        ...params,
-    })
-}
 
 /** -------------------------- Full Node API  END-------------------------- */
 /** -----------------------
