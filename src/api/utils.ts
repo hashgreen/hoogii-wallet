@@ -1,9 +1,11 @@
 import { ChainEnum } from '@hashgreen/hg-models'
+import { ICAT } from '@hashgreen/hg-models/apis'
 import {
     Coin as _Coin,
     SpendBundle as _SpendBundle,
 } from '@hashgreen/hg-models/chia'
 
+import { Asset } from '~/types/entities'
 import { getStorage } from '~/utils/extension/storage'
 import SpendBundle from '~/utils/SpendBundle'
 import { Coin } from '~/utils/Wallet/types'
@@ -35,3 +37,12 @@ export const transformCoins = (coin: _Coin): Coin => ({
 export const transformSpendBundles = (spendBundle: SpendBundle) => {
     return _SpendBundle.fromJSON(spendBundle.getObj())
 }
+
+export const transformCATToAsset = ({
+    id,
+    ...rest
+}: Omit<ICAT, 'asset_id'> & { id: string }) =>
+    new Asset({
+        ...rest,
+        asset_id: id,
+    })

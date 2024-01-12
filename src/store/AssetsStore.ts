@@ -1,3 +1,4 @@
+import { fetchCATs } from '@hashgreen/hg-query/jarvan'
 import { fromHex } from '@rigidity/bls-signatures'
 import { liveQuery } from 'dexie'
 import {
@@ -10,9 +11,9 @@ import {
 import {
     callGetBalance,
     callGetBalanceByPuzzleHashes,
-    callGetCATs,
     callGetExchangeRate,
 } from '~/api/api'
+import { getApiEndpoint, transformCATToAsset } from '~/api/utils'
 import { IAsset } from '~/db'
 import rootStore from '~/store'
 import { IExchangeRate, IFetchData } from '~/types/api'
@@ -53,9 +54,13 @@ class AssetsStore {
         onBecomeUnobserved(this, 'existedAssets', this.unsubscribeExistedAssets)
         onBecomeObserved(this, 'availableAssets', async () => {
             try {
-                const assets = await callGetCATs()
+                const assets = await fetchCATs({
+                    baseUrl: await getApiEndpoint('jarvan'),
+                })()
                 runInAction(() => {
-                    this.availableAssets.data = assets || []
+                    this.availableAssets.data = (assets || []).map((asset) =>
+                        transformCATToAsset(asset)
+                    )
                     this.availableAssets.isFetching = false
                 })
             } catch (error) {}
