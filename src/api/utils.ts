@@ -1,12 +1,14 @@
 import { ChainEnum } from '@hashgreen/hg-models'
-import { ICAT } from '@hashgreen/hg-models/apis'
+import { ICAT, ITransaction, TxStatus, TxType } from '@hashgreen/hg-models/apis'
 import {
     Coin as _Coin,
     SpendBundle as _SpendBundle,
 } from '@hashgreen/hg-models/chia'
 
+import { ITxStatus, ITxType } from '~/components/Transaction/type'
 import { Asset } from '~/types/entities'
 import { getStorage } from '~/utils/extension/storage'
+import praseHistory from '~/utils/praseHistory'
 import SpendBundle from '~/utils/SpendBundle'
 import { Coin } from '~/utils/Wallet/types'
 
@@ -46,3 +48,59 @@ export const transformCATToAsset = ({
         ...rest,
         asset_id: id,
     })
+
+export const transformTxStatusToITxStatus = (status: TxStatus): ITxStatus => {
+    switch (status) {
+        case TxStatus.TX_STATUS_UNSPECIFIED:
+            return ITxStatus.TX_STATUS_UNSPECIFIED
+        case TxStatus.TX_STATUS_FAILED:
+            return ITxStatus.TX_STATUS_FAILED
+        case TxStatus.TX_STATUS_INIT:
+            return ITxStatus.TX_STATUS_INIT
+        case TxStatus.TX_STATUS_PUSHED:
+            return ITxStatus.TX_STATUS_PUSHED
+        case TxStatus.TX_STATUS_DROP:
+            return ITxStatus.TX_STATUS_FAILED
+        case TxStatus.TX_STATUS_IN_MEMPOOL:
+            return ITxStatus.TX_STATUS_IN_MEMPOOL
+        case TxStatus.TX_STATUS_ON_CHAIN:
+            return ITxStatus.TX_STATUS_ON_CHAIN
+    }
+}
+
+export const transformITxStatusToTxStatus = (status: ITxStatus): TxStatus => {
+    switch (status) {
+        case ITxStatus.TX_STATUS_UNSPECIFIED:
+            return TxStatus.TX_STATUS_UNSPECIFIED
+        case ITxStatus.TX_STATUS_FAILED:
+            return TxStatus.TX_STATUS_FAILED
+        case ITxStatus.TX_STATUS_INIT:
+            return TxStatus.TX_STATUS_INIT
+        case ITxStatus.TX_STATUS_PUSHED:
+            return TxStatus.TX_STATUS_PUSHED
+        case ITxStatus.TX_STATUS_IN_MEMPOOL:
+            return TxStatus.TX_STATUS_IN_MEMPOOL
+        case ITxStatus.TX_STATUS_ON_CHAIN:
+            return TxStatus.TX_STATUS_ON_CHAIN
+    }
+}
+
+export const transformTransactionToITransactionPrase = (
+    tx: ITransaction
+): Parameters<typeof praseHistory>[0] => {
+    const { type, status, timestamp, balance_changes, ...rest } = tx
+    return {
+        ...rest,
+        type: ITxType[TxType[type]],
+        status: transformTxStatusToITxStatus(status),
+        balance_changes: Object.fromEntries(
+            Object.entries(balance_changes).map(([key, value]) => [
+                key,
+                { asset_balance_change: value.asset_changes },
+            ])
+        ),
+        created_at: timestamp.toString(),
+        updated_at: timestamp.toString(),
+        memos: [],
+    }
+}

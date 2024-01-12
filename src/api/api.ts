@@ -104,19 +104,6 @@ export const callGetBalanceByPuzzleHashes = ({
         params: { puzzle_hashes: puzzleHashes.join(',') },
     })
 
-export const callGetTxByPuzzleHash = (params: {
-    puzzle_hash: string
-    type?: string
-    page?: number
-    size?: number
-    status?: number
-}) =>
-    apiHandler({
-        url: '/transactions',
-        method: 'get',
-        params,
-    })
-
 /**
  * callGetAblyAccessToken [Post]
  */

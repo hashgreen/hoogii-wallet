@@ -54,7 +54,7 @@ class AssetsStore {
         onBecomeUnobserved(this, 'existedAssets', this.unsubscribeExistedAssets)
         onBecomeObserved(this, 'availableAssets', async () => {
             try {
-                const assets = await fetchCATs({
+                const [assets] = await fetchCATs({
                     baseUrl: await getApiEndpoint('jarvan'),
                 })()
                 runInAction(() => {

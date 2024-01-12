@@ -1,12 +1,13 @@
+import { TxType } from '@hashgreen/hg-models/apis'
+import { fetchTransactions } from '@hashgreen/hg-query/jarvan'
 import { makeAutoObservable, onBecomeObserved, runInAction } from 'mobx'
 
-import { callGetTxByPuzzleHash } from '~/api/api'
 import {
-    ITransaction,
-    ITransactionPrase,
-    ITxStatus,
-    IType,
-} from '~/components/Transaction/type'
+    getApiEndpoint,
+    transformITxStatusToTxStatus,
+    transformTransactionToITransactionPrase,
+} from '~/api/utils'
+import { ITransaction, ITxStatus, IType } from '~/components/Transaction/type'
 import WalletStore from '~/store/WalletStore'
 import { add0x } from '~/utils/encryption'
 import praseHistory from '~/utils/praseHistory'
@@ -55,36 +56,40 @@ class HistoryStore {
     }
 
     checkPendingHistory = async () => {
-        const {
-            data: {
-                data: { list: pendingTxHistory, total },
-            },
-        } = await callGetTxByPuzzleHash({
-            puzzle_hash: '0x' + this.walletStore.puzzleHash,
+        const baseUrl = await getApiEndpoint()
+        const [pendingTxHistory, { total }] = await fetchTransactions({
+            baseUrl,
+        })({
+            puzzleHash: add0x(this.walletStore.puzzleHash),
             page: 1,
-            status: ITxStatus.TX_STATUS_IN_MEMPOOL,
+            status: [ITxStatus.TX_STATUS_IN_MEMPOOL].map(
+                transformITxStatusToTxStatus
+            ),
         })
         runInAction(() => {
-            this.pendingHistory = this.formatHistory(pendingTxHistory)
+            this.pendingHistory = this.formatHistory(
+                pendingTxHistory.map(transformTransactionToITransactionPrase)
+            )
         })
         if (this.pendingHistory.length < total) {
-            const {
-                data: {
-                    data: { list },
-                },
-            } = await callGetTxByPuzzleHash({
-                puzzle_hash: '0x' + this.walletStore.puzzleHash,
+            const [list] = await fetchTransactions({ baseUrl })({
+                puzzleHash: add0x(this.walletStore.puzzleHash),
                 page: 1,
-                status: ITxStatus.TX_STATUS_IN_MEMPOOL,
+                status: [ITxStatus.TX_STATUS_IN_MEMPOOL].map(
+                    transformITxStatusToTxStatus
+                ),
                 size: total,
             })
             runInAction(() => {
-                this.pendingHistory = this.formatHistory(list)
+                this.pendingHistory = this.formatHistory(
+                    list.map(transformTransactionToITransactionPrase)
+                )
             })
         }
     }
 
     checkHistory = async () => {
+        const baseUrl = await getApiEndpoint()
         runInAction(() => {
             if (this.page === 1) {
                 this.fetching = true
@@ -92,20 +97,28 @@ class HistoryStore {
                 this.loading = true
             }
         })
-        const typeList = [1, 2, 4, 6]
-        const {
-            data: {
-                data: { list: txHistory, total },
-            },
-        } = await callGetTxByPuzzleHash({
-            type: typeList.join(','),
-            puzzle_hash: '0x' + this.walletStore.puzzleHash,
+        const types = [
+            TxType.TX_TYPE_COINBASE,
+            TxType.TX_TYPE_STANDARD_TRANSFER,
+            TxType.TX_TYPE_CAT_TRANSFER,
+            TxType.TX_TYPE_OFFER1_SWAP,
+        ]
+        const [txHistory, { total }] = await fetchTransactions({ baseUrl })({
+            type: types,
+            puzzleHash: add0x(this.walletStore.puzzleHash),
             page: this.page,
-            status: ITxStatus.TX_STATUS_ON_CHAIN,
+            status: [ITxStatus.TX_STATUS_ON_CHAIN].map(
+                transformITxStatusToTxStatus
+            ),
         })
         runInAction(() => {
             this.total = total
-            this.history = [...this.history, ...this.formatHistory(txHistory)]
+            this.history = [
+                ...this.history,
+                ...this.formatHistory(
+                    txHistory.map(transformTransactionToITransactionPrase)
+                ),
+            ]
             this.loading = false
             this.fetching = false
         })
@@ -125,7 +138,7 @@ class HistoryStore {
         }
     }
 
-    formatHistory = (history: ITransactionPrase[]) => {
+    formatHistory = (history: Parameters<typeof praseHistory>[0][]) => {
         return (
             history?.map((ITransaction) =>
                 praseHistory(ITransaction, add0x(this.walletStore.puzzleHash))

@@ -14,7 +14,10 @@ export const praseHistory = (
         balance_changes,
         updated_at,
         memos,
-    }: ITransactionPrase,
+    }: Omit<
+        ITransactionPrase,
+        'created_by' | 'inmempool_at' | 'onchain_at' | 'cost' | 'tag'
+    >,
     myPuzzleHash: string
 ): ITransaction => {
     const myBalanceChanges =
