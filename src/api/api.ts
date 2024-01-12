@@ -40,11 +40,6 @@ export async function apiHandler<T = any>(
         throw resError
     }
 }
-interface GetBalanceRes {
-    data: number
-    code: number
-    msg: string
-}
 
 /** -------------------------- Full Node API  END-------------------------- */
 /** -----------------------
@@ -80,29 +75,6 @@ export const getSpendableCoins = (
         },
         config
     )
-export const callGetBalance = (
-    params: { puzzle_hash: string },
-    config: RequestConfig = { isShowToast: true }
-) =>
-    apiHandler<GetBalanceRes>(
-        {
-            url: '/addon/get_balance',
-            method: 'get',
-            params,
-        },
-        config
-    )
-
-export const callGetBalanceByPuzzleHashes = ({
-    puzzleHashes,
-}: {
-    puzzleHashes: string[]
-}) =>
-    apiHandler({
-        url: '/addon/get_balance_by_puzzle_hashes',
-        method: 'get',
-        params: { puzzle_hashes: puzzleHashes.join(',') },
-    })
 
 /**
  * callGetAblyAccessToken [Post]

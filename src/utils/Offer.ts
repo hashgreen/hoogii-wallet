@@ -1,3 +1,4 @@
+import { fetchBalances } from '@hashgreen/hg-query/jarvan'
 import {
     AugSchemeMPL,
     bigIntToBytes,
@@ -12,7 +13,7 @@ import { AxiosError } from 'axios'
 import { bech32m } from 'bech32'
 import zlib from 'react-zlib-js'
 
-import { callGetBalance } from '~/api/api'
+import { getApiEndpoint } from '~/api/utils'
 import { ChainEnum } from '~/types/chia'
 import { OfferAsset } from '~/types/extension'
 import { StorageEnum } from '~/types/storage'
@@ -162,12 +163,14 @@ export default class Offer {
                 const balancePuzzleHash = Program.fromBytes(cat.hash()).toHex()
                 // check balance
                 try {
-                    const {
-                        data: { data },
-                    } = await callGetBalance({
-                        puzzle_hash: balancePuzzleHash,
-                    })
-                    if (BigInt(data) < BigInt(offerPayment.amount)) {
+                    const { [balancePuzzleHash]: balance } =
+                        await fetchBalances({
+                            baseUrl: await getApiEndpoint(),
+                        })({
+                            puzzleHashes: [balancePuzzleHash],
+                        })
+
+                    if (BigInt(balance) < BigInt(offerPayment.amount)) {
                         throw new Error("You don't have enough coin to spend")
                     }
                 } catch (error) {
@@ -201,14 +204,15 @@ export default class Offer {
                     isFeePaid = true
                 }
             } else {
-                const {
-                    data: { data },
-                } = await callGetBalance({
-                    puzzle_hash: await getStorage<string>(
-                        StorageEnum.puzzleHash
-                    ),
+                const puzzleHash = await getStorage<string>(
+                    StorageEnum.puzzleHash
+                )
+                const { [puzzleHash]: balance } = await fetchBalances({
+                    baseUrl: await getApiEndpoint(),
+                })({
+                    puzzleHashes: [puzzleHash],
                 })
-                if (BigInt(data) < BigInt(offerPayment.amount)) {
+                if (BigInt(balance) < BigInt(offerPayment.amount)) {
                     throw new Error("You don't have enough xch coin to spend")
                 }
                 const checkFee = !isFeePaid ? BigInt(fee) : 0n

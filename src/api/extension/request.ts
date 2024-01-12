@@ -1,9 +1,11 @@
+import { fetchBalances } from '@hashgreen/hg-query/jarvan'
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 
 import Messaging from '~/api/extension/messaging'
 import { createPopup } from '~/api/extension/v3/extension'
+import { getApiEndpoint } from '~/api/utils'
 import connectedSitesStore from '~/store/ConnectedSitesStore'
 import { ChainEnum } from '~/types/chia'
 import {
@@ -29,7 +31,7 @@ import Secure from '~/utils/Secure'
 import { puzzleHashToAddress } from '~/utils/signature'
 import { Wallet } from '~/utils/Wallet/Wallet'
 
-import { callGetBalance, getSpendableCoins, sendTx } from '../api'
+import { getSpendableCoins, sendTx } from '../api'
 import * as Errors from './errors'
 import { permission } from './permission'
 const connect = async (origin: string): Promise<boolean> => {
@@ -198,13 +200,13 @@ const getAssetBalance = async (params: {
         puzzleHash = cat.hashHex()
     }
 
-    const balance = await callGetBalance(
-        {
-            puzzle_hash: puzzleHash,
-        },
-        { isShowToast: false }
-    )
-    return { spendableCoinCount: balance?.data?.data || 0 }
+    const { [puzzleHash]: balance } = await fetchBalances({
+        baseUrl: await getApiEndpoint(),
+    })({
+        puzzleHashes: [puzzleHash],
+    })
+
+    return { spendableCoinCount: balance }
 }
 
 const sendTransaction = async (params: SendTransactionParams) => {

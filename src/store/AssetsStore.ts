@@ -1,4 +1,4 @@
-import { fetchCATs } from '@hashgreen/hg-query/jarvan'
+import { fetchBalances, fetchCATs } from '@hashgreen/hg-query/jarvan'
 import { fromHex } from '@rigidity/bls-signatures'
 import { liveQuery } from 'dexie'
 import {
@@ -8,11 +8,7 @@ import {
     runInAction,
 } from 'mobx'
 
-import {
-    callGetBalance,
-    callGetBalanceByPuzzleHashes,
-    callGetExchangeRate,
-} from '~/api/api'
+import { callGetExchangeRate } from '~/api/api'
 import { getApiEndpoint, transformCATToAsset } from '~/api/utils'
 import { IAsset } from '~/db'
 import rootStore from '~/store'
@@ -56,7 +52,9 @@ class AssetsStore {
             try {
                 const [assets] = await fetchCATs({
                     baseUrl: await getApiEndpoint('jarvan'),
-                })()
+                })({
+                    size: 0,
+                })
                 runInAction(() => {
                     this.availableAssets.data = (assets || []).map((asset) =>
                         transformCATToAsset(asset)
@@ -155,17 +153,17 @@ class AssetsStore {
         try {
             this.balancesData.isFetching = true
 
-            const res = await callGetBalanceByPuzzleHashes({
+            const balances = await fetchBalances({
+                baseUrl: await getApiEndpoint(),
+            })({
                 puzzleHashes,
             })
-
-            const data = res?.data?.data
 
             runInAction(async () => {
                 this.balancesData.isFetching = false
                 this.balancesData.data = {
                     ...this.balancesData.data,
-                    ...data,
+                    ...balances,
                 }
             })
         } catch (error) {
@@ -240,12 +238,14 @@ class AssetsStore {
         const puzzle_hash = assetId
             ? this.assetIdToPuzzleHash(assetId)
             : this.walletStore.puzzleHash
-        const balanceData = await callGetBalance({
-            puzzle_hash,
+        const { [puzzle_hash]: balance } = await fetchBalances({
+            baseUrl: await getApiEndpoint(),
+        })({
+            puzzleHashes: [puzzle_hash],
         })
 
         runInAction(() => {
-            this.balancesData.data[puzzle_hash] = balanceData.data.data
+            this.balancesData.data[puzzle_hash] = balance
         })
     }
 

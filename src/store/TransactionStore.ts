@@ -1,3 +1,4 @@
+import { fetchBalances } from '@hashgreen/hg-query/jarvan'
 import { fetchFeeEstimate } from '@hashgreen/hg-query/thresh'
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { addressInfo } from '@rigidity/chia'
@@ -5,7 +6,7 @@ import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
-import { callGetBalance, sendTx } from '~/api/api'
+import { sendTx } from '~/api/api'
 import { getApiEndpoint, transformSpendBundles } from '~/api/utils'
 import { CAT } from '~/utils/CAT'
 import { createSpendBundle, ICreateSpendBundleParams } from '~/utils/chia'
@@ -77,13 +78,13 @@ class TransactionStore {
         const { agg_sig_me_additional_data } = chain
         if (!seed) return
         const puzzle = getProgramBySeed(seed)
-        const balance = await callGetBalance(
-            {
-                puzzle_hash: puzzle.hashHex(),
-            },
-            { isShowToast: false }
-        )
-        if (BigInt(balance.data.data) < BigInt(amount) + BigInt(fee)) {
+        const puzzleHash = puzzle.hashHex()
+        const { [puzzleHash]: balance } = await fetchBalances({
+            baseUrl: await getApiEndpoint(),
+        })({
+            puzzleHashes: [puzzleHash],
+        })
+        if (BigInt(balance) < BigInt(amount) + BigInt(fee)) {
             throw new Error("You don't have enough balance to send")
         }
         const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())
@@ -147,13 +148,14 @@ class TransactionStore {
         const assetId = fromHex(asset)
         const cat = new CAT(assetId, wallet)
         const spendableCATList = await Wallet.getCoinList(cat.hashHex())
-        const {
-            data: { data },
-        } = await callGetBalance({
-            puzzle_hash: cat.hashHex(),
+        const puzzleHash = cat.hashHex()
+        const { [puzzleHash]: balance } = await fetchBalances({
+            baseUrl: await getApiEndpoint(),
+        })({
+            puzzleHashes: [puzzleHash],
         })
 
-        if (BigInt(data) < BigInt(amount)) {
+        if (BigInt(balance) < BigInt(amount)) {
             throw new Error("You don't have enough coin to spend")
         }
 
