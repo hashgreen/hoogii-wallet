@@ -279,3 +279,4 @@ release_*.zip
 reports
 ._.DS_Store
 
+.npmrc
