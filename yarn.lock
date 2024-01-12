@@ -962,14 +962,13 @@
     "@rigidity/chia" "^1.7.0"
     "@rigidity/clvm" "^4.0.0"
 
-"@hashgreen/hg-query@^0.0.2":
-  version "0.0.2"
-  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-query/0.0.2/2703907586728005caa1ef842a0bb69691cbf1fd#2703907586728005caa1ef842a0bb69691cbf1fd"
-  integrity sha512-M9fPf7e2pmEepnriRa4kNvWKXPS4PlXVl+dAfsL25FmvzrHL14oCRMNmHpQwJJR+DQ3nv6pwOK19HV3mDlvg0g==
+"@hashgreen/hg-query@^0.0.3":
+  version "0.0.3"
+  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-query/0.0.3/f304f4ad92839ef77defbb3e53e45da4de754e21#f304f4ad92839ef77defbb3e53e45da4de754e21"
+  integrity sha512-VocfzyKD+xyl7Z0F231qOFwe1slTq13wgAxf8ItJkAf/S6BR0u1O2gi+/34b0mjXzsQKbCSrTwdzmcqvFoHLxw==
   dependencies:
     "@hashgreen/hg-models" "*"
     "@reduxjs/toolkit" "1.9.3"
-    ably "^1.2.44"
     query-string "^8.1.0"
 
 "@headlessui/react@^1.6.1":
@@ -2188,15 +2187,6 @@ ably@^1.2.27:
     "@ably/msgpack-js" "^0.4.0"
     got "^11.8.2"
     ws "^5.1"
-
-ably@^1.2.44:
-  version "1.2.48"
-  resolved "https://registry.yarnpkg.com/ably/-/ably-1.2.48.tgz#8095fb8ab031df64ed53c23198439f6760579ce6"
-  integrity sha512-/4HaZR4lu5D60twKN6dQIunxtKJCfcz0a+fuiFWxgqgXMMTiyoChg+IARx1xBK1ZZL3UZ/xdrpml0WBAsu/ZJQ==
-  dependencies:
-    "@ably/msgpack-js" "^0.4.0"
-    got "^11.8.5"
-    ws "^8.14.2"
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -4269,23 +4259,6 @@ got@^11.8.2:
   version "11.8.5"
   resolved "https://registry.yarnpkg.com/got/-/got-11.8.5.tgz#ce77d045136de56e8f024bebb82ea349bc730046"
   integrity sha512-o0Je4NvQObAuZPHLFoRSkdG2lTgtcynqymzg2Vupdx6PorhaT5MCbIyXG6d4D94kk8ZG57QeosgdiqfJWhEhlQ==
-  dependencies:
-    "@sindresorhus/is" "^4.0.0"
-    "@szmarczak/http-timer" "^4.0.5"
-    "@types/cacheable-request" "^6.0.1"
-    "@types/responselike" "^1.0.0"
-    cacheable-lookup "^5.0.3"
-    cacheable-request "^7.0.2"
-    decompress-response "^6.0.0"
-    http2-wrapper "^1.0.0-beta.5.2"
-    lowercase-keys "^2.0.0"
-    p-cancelable "^2.0.0"
-    responselike "^2.0.0"
-
-got@^11.8.5:
-  version "11.8.6"
-  resolved "https://registry.yarnpkg.com/got/-/got-11.8.6.tgz#276e827ead8772eddbcfc97170590b841823233a"
-  integrity sha512-6tfZ91bOr7bOXnK7PRDCGBLa1H4U080YHNaAQ2KsMGlLEzRbk44nsZF2E1IeRc3vtJHPVbKCYgdFbaGO2ljd8g==
   dependencies:
     "@sindresorhus/is" "^4.0.0"
     "@szmarczak/http-timer" "^4.0.5"
@@ -7790,11 +7763,6 @@ ws@^5.1:
   integrity sha512-jZArVERrMsKUatIdnLzqvcfydI85dvd/Fp1u/VOpfdDWQ4c9qWXe+VIeAbQ5FrDwciAkr+lzofXLz3Kuf26AOA==
   dependencies:
     async-limiter "~1.0.0"
-
-ws@^8.14.2:
-  version "8.16.0"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-8.16.0.tgz#d1cd774f36fbc07165066a60e40323eab6446fd4"
-  integrity sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==
 
 xtend@^4.0.2:
   version "4.0.2"

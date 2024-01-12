@@ -46,12 +46,6 @@ interface GetBalanceRes {
     code: number
     msg: string
 }
-export const getPuzzleAndSolution = (params: AxiosRequestConfig) =>
-    apiHandler({
-        url: '/rpc/get_puzzle_and_solution',
-        method: 'post',
-        ...params,
-    })
 export const getFeesEstimate = (
     params: AxiosRequestConfig<{
         spend_bundle: object

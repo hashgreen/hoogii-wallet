@@ -1,4 +1,7 @@
-import { fetchCoinRecordByName } from '@hashgreen/hg-query/thresh'
+import {
+    fetchCoinRecordByName,
+    fetchPuzzleAndSolution,
+} from '@hashgreen/hg-query/thresh'
 import {
     concatBytes,
     encodeInt,
@@ -8,7 +11,6 @@ import {
 import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 
-import { getPuzzleAndSolution } from '~/api/api'
 import { getApiEndpoint, transformCoins } from '~/api/utils'
 
 import CoinSpend from './CoinSpend'
@@ -42,8 +44,9 @@ export class CAT extends Program {
         )
 
     static getLineageProof = async (childCoin: Coin) => {
+        const baseUrl = await getApiEndpoint('thresh')
         const parentCoinRecord = await fetchCoinRecordByName({
-            baseUrl: await getApiEndpoint('thresh'),
+            baseUrl,
         })({
             name: childCoin.parent_coin_info,
         })
@@ -51,20 +54,16 @@ export class CAT extends Program {
         const { coin: _coin, spent_block_index } = parentCoinRecord
         const coin = transformCoins(_coin)
         const coinID = CAT.coinName(coin)
-        const puzzleAndSolutionRecord = await getPuzzleAndSolution({
-            data: {
-                coin_id: Program.fromBytes(coinID).toHex(),
-                height: Number(spent_block_index),
-            },
+        const puzzleAndSolutionRecord = await fetchPuzzleAndSolution({
+            baseUrl,
+        })({
+            coinId: Program.fromBytes(coinID).toHex(),
+            height: Number(spent_block_index),
         })
-        const {
-            data: {
-                coin_solution: { puzzle_reveal },
-            },
-        } = puzzleAndSolutionRecord
+        const { puzzleReveal } = puzzleAndSolutionRecord
 
         const unCurry = Program.deserializeHex(
-            sanitizeHex(puzzle_reveal)
+            sanitizeHex(puzzleReveal)
         ).uncurry()
 
         const innerPuzzleHash = unCurry?.[1][2].hashHex()
