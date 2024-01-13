@@ -4,6 +4,7 @@ import {
     Coin as _Coin,
     SpendBundle as _SpendBundle,
 } from '@hashgreen/hg-models/chia'
+import { sanitizeHex } from '@rigidity/chia/dist/utils/hex'
 
 import { ITxStatus, ITxType } from '~/components/Transaction/type'
 import { Asset } from '~/types/entities'
@@ -46,7 +47,7 @@ export const transformCATToAsset = ({
 }: Omit<ICAT, 'asset_id'> & { id: string }) =>
     new Asset({
         ...rest,
-        asset_id: id,
+        asset_id: sanitizeHex(id),
     })
 
 export const transformTxStatusToITxStatus = (status: TxStatus): ITxStatus => {

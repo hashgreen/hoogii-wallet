@@ -259,6 +259,7 @@ class AssetsStore {
             hardened: true,
             index: 0,
         })
+        console.log('wallet', assetId)
         const cat = new CAT(assetIdHex, wallet)
         return '0x' + cat.hashHex()
     }
