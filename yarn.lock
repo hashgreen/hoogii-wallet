@@ -962,10 +962,10 @@
     "@rigidity/chia" "^1.7.0"
     "@rigidity/clvm" "^4.0.0"
 
-"@hashgreen/hg-query@^0.0.6":
-  version "0.0.6"
-  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-query/0.0.6/5b5b50941d939dfcfca8ad80b2987ec6450dd958#5b5b50941d939dfcfca8ad80b2987ec6450dd958"
-  integrity sha512-3Lkrf2s+AmC9JaGCO9E/hY6SITfUSz5sSf2J4gRwaVarswP6EJIwX/7u3NlOglJCxRVX9pZoV3wPGHrR0AGwjQ==
+"@hashgreen/hg-query@^0.0.7":
+  version "0.0.7"
+  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-query/0.0.7/90837d21b145032f4dbaa7d3809fea586f090c8b#90837d21b145032f4dbaa7d3809fea586f090c8b"
+  integrity sha512-D6F8hJ3p/nP9FmqI2MBw/UTi+G7omAHyOGAoXC4SJhByEq9kPDSWit0htgWDQ1mObG64k/UJGcML6CKd6k4RYw==
   dependencies:
     "@hashgreen/hg-models" "*"
     "@reduxjs/toolkit" "1.9.3"

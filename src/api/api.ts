@@ -45,11 +45,6 @@ export async function apiHandler<T = any>(
 /** -----------------------
  * --- Jarvan addon API -------------------------- */
 
-export const sendTx = (
-    params: AxiosRequestConfig,
-    config: RequestConfig = { isShowToast: false }
-) => apiHandler({ url: '/addon/push_tx', method: 'post', ...params }, config)
-
 export const getParseSpendBundle = (
     params: AxiosRequestConfig,
     config: RequestConfig = { isShowToast: false }

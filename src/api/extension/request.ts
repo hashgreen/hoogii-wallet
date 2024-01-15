@@ -1,4 +1,6 @@
+import { SpendBundle } from '@hashgreen/hg-models/chia'
 import { fetchBalances } from '@hashgreen/hg-query/jarvan'
+import { pushTx } from '@hashgreen/hg-query/thresh'
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
@@ -31,7 +33,7 @@ import Secure from '~/utils/Secure'
 import { puzzleHashToAddress } from '~/utils/signature'
 import { Wallet } from '~/utils/Wallet/Wallet'
 
-import { getSpendableCoins, sendTx } from '../api'
+import { getSpendableCoins } from '../api'
 import * as Errors from './errors'
 import { permission } from './permission'
 const connect = async (origin: string): Promise<boolean> => {
@@ -211,13 +213,13 @@ const getAssetBalance = async (params: {
 
 const sendTransaction = async (params: SendTransactionParams) => {
     try {
-        const res = await sendTx({
-            data: {
-                spend_bundle: params?.spendBundle,
-            },
+        const res = await pushTx({
+            baseUrl: await getApiEndpoint('thresh'),
+        })({
+            spendBundle: SpendBundle.fromJSON(params.spendBundle),
         })
         return {
-            status: res?.data?.data,
+            status: res,
         }
     } catch (error) {
         const resError = error as AxiosError

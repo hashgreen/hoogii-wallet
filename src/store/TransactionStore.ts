@@ -1,12 +1,11 @@
 import { fetchBalances } from '@hashgreen/hg-query/jarvan'
-import { fetchFeeEstimate } from '@hashgreen/hg-query/thresh'
+import { fetchFeeEstimate, pushTx } from '@hashgreen/hg-query/thresh'
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { addressInfo } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 import { makeAutoObservable } from 'mobx'
 
-import { sendTx } from '~/api/api'
 import { getApiEndpoint, transformSpendBundles } from '~/api/utils'
 import { CAT } from '~/utils/CAT'
 import { createSpendBundle, ICreateSpendBundleParams } from '~/utils/chia'
@@ -116,8 +115,10 @@ class TransactionStore {
 
             const spendBundle = new SpendBundle(XCHspendsList, XCHsignatures)
 
-            await sendTx({
-                data: { spend_bundle: spendBundle.getObj() },
+            await pushTx({
+                baseUrl: await getApiEndpoint('thresh'),
+            })({
+                spendBundle: transformSpendBundles(spendBundle),
             })
         } catch (error) {
             throw new Error(getErrorMessage(error as AxiosError))
@@ -213,10 +214,10 @@ class TransactionStore {
             AugSchemeMPL.aggregate(signatureList)
         )
         try {
-            await sendTx({
-                data: {
-                    spend_bundle: spendBundle.getObj(),
-                },
+            await pushTx({
+                baseUrl: await getApiEndpoint('thresh'),
+            })({
+                spendBundle: transformSpendBundles(spendBundle),
             })
         } catch (error) {
             throw new Error(getErrorMessage(error as AxiosError))
