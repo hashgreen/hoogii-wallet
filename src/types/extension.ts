@@ -1,4 +1,4 @@
-import { CoinSpend, SpendBundle } from '@rigidity/chia'
+import { Coin, CoinSpend, SpendBundle } from '@rigidity/chia'
 
 export interface IMessage<T = any> {
     id: string
@@ -220,4 +220,17 @@ export enum MempoolInclusionStatus {
 export interface TransactionResp {
     status: MempoolInclusionStatus
     error?: string
+}
+
+export interface ISpendableCoin {
+    coin: Coin
+    coinName: string
+    puzzle: string
+    confirmedBlockIndex: number
+    locked: boolean
+    lineageProof?: {
+        parentName?: string
+        innerPuzzleHash?: string
+        amount?: number
+    }
 }

@@ -1,5 +1,5 @@
 import { SpendBundle } from '@hashgreen/hg-models/chia'
-import { fetchBalances } from '@hashgreen/hg-query/jarvan'
+import { fetchBalances, fetchCoins } from '@hashgreen/hg-query/jarvan'
 import { pushTx } from '@hashgreen/hg-query/thresh'
 import { AugSchemeMPL, fromHex, PrivateKey } from '@rigidity/bls-signatures'
 import { Program } from '@rigidity/clvm'
@@ -15,6 +15,7 @@ import {
     AssetCoinsTypeEnum,
     GetPublicKeysParams,
     IMessage,
+    ISpendableCoin,
     MempoolInclusionStatus,
     MethodEnum,
     PopupEnum,
@@ -33,7 +34,6 @@ import Secure from '~/utils/Secure'
 import { puzzleHashToAddress } from '~/utils/signature'
 import { Wallet } from '~/utils/Wallet/Wallet'
 
-import { getSpendableCoins } from '../api'
 import * as Errors from './errors'
 import { permission } from './permission'
 const connect = async (origin: string): Promise<boolean> => {
@@ -81,7 +81,9 @@ const getPublicKeys = async (
     const limit = params?.limit ?? publicKeyList.length
     return publicKeyList.slice(offset, offset + limit)
 }
-const getAssetCoins = async (params: AssetCoinsParams) => {
+const getAssetCoins = async (
+    params: AssetCoinsParams
+): Promise<ISpendableCoin[]> => {
     const puzzle = await Secure.getPuzzle()
 
     let puzzleHash = puzzle.hashHex()
@@ -108,31 +110,37 @@ const getAssetCoins = async (params: AssetCoinsParams) => {
         }
     }
 
-    const spendableCoins =
-        (
-            await getSpendableCoins({
-                puzzle_hash: puzzleHash,
-            })
-        ).data?.data ?? []
+    const coinRecords = (
+        (await fetchCoins({
+            baseUrl: await getApiEndpoint(),
+        })({
+            puzzleHash,
+        })) || []
+    ).map((record) => ({
+        ...record,
+        coin: {
+            ...record.coin.toJSON(),
+            amount: BigInt(record.coin.amount),
+        },
+    }))
 
     const offset = params?.offset ?? 0
     const limit = params?.limit ?? 50
     const spendableCoinsWithLineageProof: any[] = []
-    for (let i = offset; i < spendableCoins.length; i++) {
-        const coinInfo = spendableCoins[i]
+    for (let i = offset; i < coinRecords.length; i++) {
+        const coinRecord = coinRecords[i]
+        const coin = coinRecord.coin
 
         let lineageProof
         if (params.assetId) {
-            lineageProof = await CAT.getLineageProof(coinInfo.coin)
+            lineageProof = await CAT.getLineageProof(coin)
         }
         spendableCoinsWithLineageProof.push({
-            coin: { ...coinInfo?.coin, amount: coinInfo?.coin?.amount || 0 },
+            coin,
             locked: false,
-            coinName: `0x${Program.fromBytes(
-                Wallet.coinName(coinInfo.coin)
-            ).toHex()}`,
+            coinName: `0x${Program.fromBytes(Wallet.coinName(coin)).toHex()}`,
             puzzle: `0x${puzzle.hashHex()}`,
-            confirmedBlockIndex: coinInfo.confirmed_block_index,
+            confirmedBlockIndex: coinRecord.confirmed_block_index,
             lineageProof,
         })
         if (spendableCoinsWithLineageProof.length >= limit) {

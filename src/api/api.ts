@@ -58,19 +58,6 @@ export const getParseSpendBundle = (
         config
     )
 
-export const getSpendableCoins = (
-    params: { puzzle_hash: string },
-    config: RequestConfig = { isShowToast: false }
-) =>
-    apiHandler(
-        {
-            url: '/addon/get_coin_records_by_puzzle_hash',
-            method: 'get',
-            params,
-        },
-        config
-    )
-
 /**
  * callGetAblyAccessToken [Post]
  */

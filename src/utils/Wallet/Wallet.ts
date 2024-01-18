@@ -1,3 +1,4 @@
+import { fetchCoins } from '@hashgreen/hg-query/jarvan'
 import {
     AugSchemeMPL,
     bigIntToBytes,
@@ -13,7 +14,7 @@ import { ConditionOpcode, sanitizeHex } from '@rigidity/chia'
 import { Program } from '@rigidity/clvm'
 import { AxiosError } from 'axios'
 
-import { getSpendableCoins } from '~/api/api'
+import { getApiEndpoint } from '~/api/utils'
 
 import CoinSelect from '../CoinSelect'
 import CoinSpend from '../CoinSpend'
@@ -243,15 +244,15 @@ export class Wallet extends Program {
         puzzle_hash: string
     ): Promise<Coin[]> => {
         try {
-            const res = await getSpendableCoins({
-                puzzle_hash,
+            const coinRecords = await fetchCoins({
+                baseUrl: await getApiEndpoint(),
+            })({
+                puzzleHash: puzzle_hash,
             })
-            return (
-                res?.data?.data?.map((record) => ({
-                    ...record.coin,
-                    amount: BigInt(record.coin.amount || 0),
-                })) ?? []
-            )
+            return coinRecords.map((record) => ({
+                ...record.coin.toJSON(),
+                amount: BigInt(record.coin.amount || 0),
+            }))
         } catch (error) {
             throw new Error(
                 `${getErrorMessage(
