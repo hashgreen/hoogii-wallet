@@ -238,7 +238,7 @@ class AssetsStore {
         const puzzle_hash = assetId
             ? this.assetIdToPuzzleHash(assetId)
             : this.walletStore.puzzleHash
-        const { [puzzle_hash]: balance } = await fetchBalances({
+        const { [puzzle_hash]: balance = 0 } = await fetchBalances({
             baseUrl: await getApiEndpoint(),
         })({
             puzzleHashes: [puzzle_hash],

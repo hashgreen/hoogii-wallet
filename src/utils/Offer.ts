@@ -163,11 +163,11 @@ export default class Offer {
                 const balancePuzzleHash = Program.fromBytes(cat.hash()).toHex()
                 // check balance
                 try {
-                    const { [balancePuzzleHash]: balance } =
+                    const { [add0x(balancePuzzleHash)]: balance = 0 } =
                         await fetchBalances({
                             baseUrl: await getApiEndpoint(),
                         })({
-                            puzzleHashes: [balancePuzzleHash],
+                            puzzleHashes: [add0x(balancePuzzleHash)],
                         })
 
                     if (BigInt(balance) < BigInt(offerPayment.amount)) {
@@ -207,7 +207,8 @@ export default class Offer {
                 const puzzleHash = await getStorage<string>(
                     StorageEnum.puzzleHash
                 )
-                const { [puzzleHash]: balance } = await fetchBalances({
+
+                const { [puzzleHash]: balance = 0 } = await fetchBalances({
                     baseUrl: await getApiEndpoint(),
                 })({
                     puzzleHashes: [puzzleHash],

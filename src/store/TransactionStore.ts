@@ -10,6 +10,7 @@ import { getApiEndpoint, transformSpendBundles } from '~/api/utils'
 import { CAT } from '~/utils/CAT'
 import { createSpendBundle, ICreateSpendBundleParams } from '~/utils/chia'
 import { mojoToXch } from '~/utils/CoinConverter'
+import { add0x } from '~/utils/encryption'
 import { getErrorMessage } from '~/utils/errorMessage'
 import { getProgramBySeed } from '~/utils/signature'
 import SpendBundle from '~/utils/SpendBundle'
@@ -78,10 +79,10 @@ class TransactionStore {
         if (!seed) return
         const puzzle = getProgramBySeed(seed)
         const puzzleHash = puzzle.hashHex()
-        const { [puzzleHash]: balance } = await fetchBalances({
+        const { [add0x(puzzleHash)]: balance = 0 } = await fetchBalances({
             baseUrl: await getApiEndpoint(),
         })({
-            puzzleHashes: [puzzleHash],
+            puzzleHashes: [add0x(puzzleHash)],
         })
         if (BigInt(balance) < BigInt(amount) + BigInt(fee)) {
             throw new Error("You don't have enough balance to send")
@@ -150,12 +151,12 @@ class TransactionStore {
         const cat = new CAT(assetId, wallet)
         const spendableCATList = await Wallet.getCoinList(cat.hashHex())
         const puzzleHash = cat.hashHex()
-        const { [puzzleHash]: balance } = await fetchBalances({
+        const { [add0x(puzzleHash)]: balance = 0 } = await fetchBalances({
             baseUrl: await getApiEndpoint(),
         })({
-            puzzleHashes: [puzzleHash],
+            puzzleHashes: [add0x(puzzleHash)],
         })
-
+        console.log('balance', balance, spendableCATList)
         if (BigInt(balance) < BigInt(amount)) {
             throw new Error("You don't have enough coin to spend")
         }
@@ -182,6 +183,7 @@ class TransactionStore {
             )
         )
         const signatureList = [CATsignatures]
+        console.log('fee', fee)
         // Add fee by standardTx coinSpend
         if (BigInt(fee) > 0n) {
             const spendableCoinList = await Wallet.getCoinList(puzzle.hashHex())

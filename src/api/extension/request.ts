@@ -210,10 +210,10 @@ const getAssetBalance = async (params: {
         puzzleHash = cat.hashHex()
     }
 
-    const { [puzzleHash]: balance } = await fetchBalances({
+    const { [add0x(puzzleHash)]: balance = 0 } = await fetchBalances({
         baseUrl: await getApiEndpoint(),
     })({
-        puzzleHashes: [puzzleHash],
+        puzzleHashes: [add0x(puzzleHash)],
     })
 
     return { spendableCoinCount: balance }
