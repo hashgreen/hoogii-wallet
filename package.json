@@ -30,6 +30,7 @@
         "@emotion/react": "^11.10.0",
         "@emotion/styled": "^11.10.0",
         "@extend-chrome/storage": "^1.5.0",
+        "@hashgreen/hg-models": "^0.0.4",
         "@hashgreen/hg-query": "^0.0.8",
         "@headlessui/react": "^1.6.1",
         "@hookform/resolvers": "^2.9.7",

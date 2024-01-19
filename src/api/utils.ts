@@ -100,8 +100,8 @@ export const transformTransactionToITransactionPrase = (
                 { asset_balance_change: value.asset_changes },
             ])
         ),
-        created_at: timestamp.toString(),
-        updated_at: timestamp.toString(),
+        created_at: (timestamp || 0).toString(),
+        updated_at: (timestamp || 0).toString(),
         memos: [],
     }
 }

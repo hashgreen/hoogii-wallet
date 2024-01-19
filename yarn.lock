@@ -962,6 +962,15 @@
     "@rigidity/chia" "^1.7.0"
     "@rigidity/clvm" "^4.0.0"
 
+"@hashgreen/hg-models@^0.0.4":
+  version "0.0.4"
+  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-models/0.0.4/f084a140d52211635854f0e9fe0e9f587f0bfc01#f084a140d52211635854f0e9fe0e9f587f0bfc01"
+  integrity sha512-Wu+fxt9qgmOLGaxBT7bvTsUE1FQSd5hBf1PcTjoFjn8HLqqJSl0FiryyQfQUhT2hK+8U30BCz9TJ5M+NwtMyQA==
+  dependencies:
+    "@rigidity/bls-signatures" "^2.0.5"
+    "@rigidity/chia" "^1.7.0"
+    "@rigidity/clvm" "^4.0.0"
+
 "@hashgreen/hg-query@^0.0.8":
   version "0.0.8"
   resolved "https://npm.pkg.github.com/download/@hashgreen/hg-query/0.0.8/e43170e187a8b77737763c58ec603d64e924cc43#e43170e187a8b77737763c58ec603d64e924cc43"

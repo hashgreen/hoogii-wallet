@@ -111,6 +111,7 @@ class HistoryStore {
                 transformITxStatusToTxStatus
             ),
         })
+        console.log([...txHistory])
         runInAction(() => {
             this.total = total
             this.history = [
