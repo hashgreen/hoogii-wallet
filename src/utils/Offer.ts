@@ -174,10 +174,10 @@ export default class Offer {
                         throw new Error("You don't have enough coin to spend")
                     }
                 } catch (error) {
-                    const resError = error as AxiosError
+                    const resError = error as Error
                     console.log(error)
                     throw new Error(
-                        `${resError?.response?.data?.msg}(puzzle_hash:${balancePuzzleHash} asset_id:assetId)`
+                        `${resError.stack}(puzzle_hash:${balancePuzzleHash} asset_id:assetId)`
                     )
                 }
 

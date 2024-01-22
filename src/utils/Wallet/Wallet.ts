@@ -256,7 +256,7 @@ export class Wallet extends Program {
         } catch (error) {
             throw new Error(
                 `${getErrorMessage(
-                    error as AxiosError
+                    error as Error
                 )}(get coin list puzzle_hash:${puzzle_hash}_`
             )
         }

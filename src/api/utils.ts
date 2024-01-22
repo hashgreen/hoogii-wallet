@@ -14,6 +14,8 @@ import SpendBundle from '~/utils/SpendBundle'
 import { Coin } from '~/utils/Wallet/types'
 
 import { apiEndpointName, apiEndpointSets } from './constants'
+import { getErrorMessage, toastOption } from '~/utils/errorMessage'
+import { toast } from 'react-toastify'
 
 export const getApiEndpointSet = (chain: ChainEnum) => {
     const apiEndpointSet = apiEndpointSets[chain]
@@ -101,4 +103,13 @@ export const transformTransactionToITransactionPrase = (
             ])
         ),
     }
+}
+
+export const errorToastHandler = (_error: unknown) => {
+    const error = _error as Error
+    const message = getErrorMessage(error)
+    toast.error(message, {
+        ...toastOption,
+        toastId: message || 'none',
+    })
 }

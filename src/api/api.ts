@@ -3,7 +3,7 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { registerMessageHandler } from 'axios-chrome-messaging-adapter'
 import { toast } from 'react-toastify'
 
-import { IResponseData, ITransaction, RequestConfig } from '~/types/api'
+import { RequestConfig } from '~/types/api'
 import { ChainEnum } from '~/types/chia'
 import { apiEndpointSets } from '~/utils/constants'
 import { getErrorMessage, toastOption } from '~/utils/errorMessage'

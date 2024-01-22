@@ -1,20 +1,16 @@
-import { AxiosError } from 'axios'
 import { Slide, toast, ToastOptions } from 'react-toastify'
 
 const API_ERROR_MESSAGE = 'Api error'
 const API_TIME_OUT = 'Connection timed out'
 
-export const getErrorMessage = (error: AxiosError) => {
-    const errorKey = error?.response?.data?.code
-    const message = error?.response?.data?.msg
+export const getErrorMessage = (error: Error) => {
+    const errorKey = error.message
+    const message = error.stack || API_ERROR_MESSAGE
     // use backend error code
     if (errorKey && message) {
         return `${errorKey} ${message}`
     }
 
-    if (error?.response?.status) {
-        return `${error?.response?.status} ${message || API_ERROR_MESSAGE}`
-    }
     if (error.message) {
         return `${error.message}`
     }

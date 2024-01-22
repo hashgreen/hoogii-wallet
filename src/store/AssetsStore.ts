@@ -9,7 +9,11 @@ import {
 } from 'mobx'
 
 import { callGetExchangeRate } from '~/api/api'
-import { getApiEndpoint, transformCATToAsset } from '~/api/utils'
+import {
+    errorToastHandler,
+    getApiEndpoint,
+    transformCATToAsset,
+} from '~/api/utils'
 import { IAsset } from '~/db'
 import rootStore from '~/store'
 import { IExchangeRate, IFetchData } from '~/types/api'
@@ -61,7 +65,9 @@ class AssetsStore {
                     )
                     this.availableAssets.isFetching = false
                 })
-            } catch (error) {}
+            } catch (error) {
+                errorToastHandler(error)
+            }
         })
     }
 
@@ -167,10 +173,10 @@ class AssetsStore {
                 }
             })
         } catch (error) {
+            errorToastHandler(error)
             runInAction(() => {
                 this.balancesData.isFetching = false
             })
-            console.error(error)
         }
     }
 
@@ -238,15 +244,19 @@ class AssetsStore {
         const puzzle_hash = assetId
             ? this.assetIdToPuzzleHash(assetId)
             : this.walletStore.puzzleHash
-        const { [puzzle_hash]: balance = 0 } = await fetchBalances({
-            baseUrl: await getApiEndpoint(),
-        })({
-            puzzleHashes: [puzzle_hash],
-        })
+        try {
+            const { [puzzle_hash]: balance = 0 } = await fetchBalances({
+                baseUrl: await getApiEndpoint(),
+            })({
+                puzzleHashes: [puzzle_hash],
+            })
 
-        runInAction(() => {
-            this.balancesData.data[puzzle_hash] = balance
-        })
+            runInAction(() => {
+                this.balancesData.data[puzzle_hash] = balance
+            })
+        } catch (error) {
+            errorToastHandler(error)
+        }
     }
 
     assetIdToPuzzleHash = (assetId: string) => {

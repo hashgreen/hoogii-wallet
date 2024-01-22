@@ -3,6 +3,7 @@ import { fetchTransactions } from '@hashgreen/hg-query/jarvan'
 import { makeAutoObservable, onBecomeObserved, runInAction } from 'mobx'
 
 import {
+    errorToastHandler,
     getApiEndpoint,
     transformITxStatusToTxStatus,
     transformTransactionToITransactionPrase,
@@ -57,34 +58,40 @@ class HistoryStore {
 
     checkPendingHistory = async () => {
         const baseUrl = await getApiEndpoint()
-        const [pendingTxHistory, { total }] = await fetchTransactions({
-            baseUrl,
-        })({
-            puzzleHash: add0x(this.walletStore.puzzleHash),
-            page: 1,
-            status: [ITxStatus.TX_STATUS_IN_MEMPOOL].map(
-                transformITxStatusToTxStatus
-            ),
-        })
-        runInAction(() => {
-            this.pendingHistory = this.formatHistory(
-                pendingTxHistory.map(transformTransactionToITransactionPrase)
-            )
-        })
-        if (this.pendingHistory.length < total) {
-            const [list] = await fetchTransactions({ baseUrl })({
+        try {
+            const [pendingTxHistory, { total }] = await fetchTransactions({
+                baseUrl,
+            })({
                 puzzleHash: add0x(this.walletStore.puzzleHash),
                 page: 1,
                 status: [ITxStatus.TX_STATUS_IN_MEMPOOL].map(
                     transformITxStatusToTxStatus
                 ),
-                size: total,
             })
             runInAction(() => {
                 this.pendingHistory = this.formatHistory(
-                    list.map(transformTransactionToITransactionPrase)
+                    pendingTxHistory.map(
+                        transformTransactionToITransactionPrase
+                    )
                 )
             })
+            if (this.pendingHistory.length < total) {
+                const [list] = await fetchTransactions({ baseUrl })({
+                    puzzleHash: add0x(this.walletStore.puzzleHash),
+                    page: 1,
+                    status: [ITxStatus.TX_STATUS_IN_MEMPOOL].map(
+                        transformITxStatusToTxStatus
+                    ),
+                    size: total,
+                })
+                runInAction(() => {
+                    this.pendingHistory = this.formatHistory(
+                        list.map(transformTransactionToITransactionPrase)
+                    )
+                })
+            }
+        } catch (error) {
+            errorToastHandler(error)
         }
     }
 
@@ -103,26 +110,31 @@ class HistoryStore {
             TxType.TX_TYPE_CAT_TRANSFER,
             TxType.TX_TYPE_OFFER1_SWAP,
         ]
-        const [txHistory, { total }] = await fetchTransactions({ baseUrl })({
-            type: types,
-            puzzleHash: add0x(this.walletStore.puzzleHash),
-            page: this.page,
-            status: [ITxStatus.TX_STATUS_ON_CHAIN].map(
-                transformITxStatusToTxStatus
-            ),
-        })
-        console.log([...txHistory])
-        runInAction(() => {
-            this.total = total
-            this.history = [
-                ...this.history,
-                ...this.formatHistory(
-                    txHistory.map(transformTransactionToITransactionPrase)
-                ),
-            ]
-            this.loading = false
-            this.fetching = false
-        })
+        try {
+            const [txHistory, { total }] = await fetchTransactions({ baseUrl })(
+                {
+                    type: types,
+                    puzzleHash: add0x(this.walletStore.puzzleHash),
+                    page: this.page,
+                    status: [ITxStatus.TX_STATUS_ON_CHAIN].map(
+                        transformITxStatusToTxStatus
+                    ),
+                }
+            )
+            runInAction(() => {
+                this.total = total
+                this.history = [
+                    ...this.history,
+                    ...this.formatHistory(
+                        txHistory.map(transformTransactionToITransactionPrase)
+                    ),
+                ]
+                this.loading = false
+                this.fetching = false
+            })
+        } catch (error) {
+            errorToastHandler(error)
+        }
     }
 
     completeHistory = (data) => {
