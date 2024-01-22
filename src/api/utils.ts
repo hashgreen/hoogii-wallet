@@ -89,7 +89,7 @@ export const transformITxStatusToTxStatus = (status: ITxStatus): TxStatus => {
 export const transformTransactionToITransactionPrase = (
     tx: ITransaction
 ): Parameters<typeof praseHistory>[0] => {
-    const { type, status, timestamp, balance_changes, ...rest } = tx
+    const { type, status, balance_changes, ...rest } = tx
     return {
         ...rest,
         type: ITxType[TxType[type]],
@@ -100,8 +100,5 @@ export const transformTransactionToITransactionPrase = (
                 { asset_balance_change: value.asset_changes },
             ])
         ),
-        created_at: (timestamp || 0).toString(),
-        updated_at: (timestamp || 0).toString(),
-        memos: [],
     }
 }

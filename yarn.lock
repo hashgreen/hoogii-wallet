@@ -954,27 +954,18 @@
     "@hapi/hoek" "^9.0.0"
 
 "@hashgreen/hg-models@*":
-  version "0.0.2"
-  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-models/0.0.2/8384ef90b643dbd129871857237bb018bc8d7bdd#8384ef90b643dbd129871857237bb018bc8d7bdd"
-  integrity sha512-JExHN1cXVyryYNBKcwbiKMpnCZ3vQ16wj09R5sTkCckbI6EnS4nvNvFK39TuDfA1Uu5ErcPzcBhFJg0ycKtWzA==
+  version "0.0.5"
+  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-models/0.0.5/17473f739d0271c7e2ba6a3aef05ee9867a3f6c9#17473f739d0271c7e2ba6a3aef05ee9867a3f6c9"
+  integrity sha512-O1GDFmu/an0ArAkFe0RbM0rmmqODmb0h4+YPvxJBiElrfp7xtIvwLMsM6ZBYPnGcaYDfeaHqUadohMoBGHvITw==
   dependencies:
     "@rigidity/bls-signatures" "^2.0.5"
     "@rigidity/chia" "^1.7.0"
     "@rigidity/clvm" "^4.0.0"
 
-"@hashgreen/hg-models@^0.0.4":
-  version "0.0.4"
-  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-models/0.0.4/f084a140d52211635854f0e9fe0e9f587f0bfc01#f084a140d52211635854f0e9fe0e9f587f0bfc01"
-  integrity sha512-Wu+fxt9qgmOLGaxBT7bvTsUE1FQSd5hBf1PcTjoFjn8HLqqJSl0FiryyQfQUhT2hK+8U30BCz9TJ5M+NwtMyQA==
-  dependencies:
-    "@rigidity/bls-signatures" "^2.0.5"
-    "@rigidity/chia" "^1.7.0"
-    "@rigidity/clvm" "^4.0.0"
-
-"@hashgreen/hg-query@^0.0.8":
-  version "0.0.8"
-  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-query/0.0.8/e43170e187a8b77737763c58ec603d64e924cc43#e43170e187a8b77737763c58ec603d64e924cc43"
-  integrity sha512-DIEM1xbMYoEEAKvkDJl7ColHGw9biqT7GBU/6844efy7PKmaY7nMk96AMHcCs+5KnwJGE/RW6aGSgko7Wu+HjQ==
+"@hashgreen/hg-query@^0.0.10":
+  version "0.0.10"
+  resolved "https://npm.pkg.github.com/download/@hashgreen/hg-query/0.0.10/5fc5c9a00d558b805aa98302658c01129d21c093#5fc5c9a00d558b805aa98302658c01129d21c093"
+  integrity sha512-crjJ+iMLvrBkCrogQ5G/Heta4cbfIV77JuoiXsihAnufXDwM8WLO9S5lhcdlq6RNnJnyAsR9DjidyDJ9tbrwgA==
   dependencies:
     "@hashgreen/hg-models" "*"
     "@reduxjs/toolkit" "1.9.3"

@@ -33,8 +33,6 @@ export const createMockOffer = () =>
     createMockRequest(RequestMethodEnum.CREATE_OFFER, {
         offerAssets: [
             {
-                assetId:
-                    '73dd418ff67e6079f06c7cc8cee637c7adc314210dca26997d634692f6c16087',
                 amount: '1000',
             },
             {
@@ -44,6 +42,11 @@ export const createMockOffer = () =>
             },
         ],
         requestAssets: [
+            {
+                assetId:
+                    '5a4743ac88b052f387c1b5f969938c0d122f248616c769bb075dfecbe88ea471',
+                amount: '1000',
+            },
             {
                 assetId: '',
                 amount: '10000000',

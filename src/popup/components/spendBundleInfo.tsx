@@ -1,12 +1,13 @@
+import { ITransaction } from '@hashgreen/hg-models/apis'
+import { parseSpendBundle } from '@hashgreen/hg-query/jarvan'
 import { t } from 'i18next'
 import { useEffect, useMemo, useState } from 'react'
 import { JsonView } from 'react-json-view-lite'
 
-import { getParseSpendBundle } from '~/api/api'
+import { getApiEndpoint } from '~/api/utils'
 import AssetIcon from '~/components/AssetIcon'
 import MemoDisplay from '~/components/Transaction/MemoDisplay'
 import rootStore from '~/store'
-import { ITransaction } from '~/types/api'
 import { MethodEnum, RequestMethodEnum } from '~/types/extension'
 import { shortenHash } from '~/utils'
 import { mojoToBalance } from '~/utils/CoinConverter'
@@ -16,35 +17,29 @@ import { IPopupPageProps } from '../types'
 function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
     const [parseBundle, setParseBundle] = useState<ITransaction | undefined>()
 
-    const { metadata } = parseBundle || {}
-
-    const memos = useMemo(() => {
-        if (metadata?.memos) {
-            if (metadata?.asset_id) {
-                return metadata?.memos?.slice(1)
-            } else {
-                return metadata?.memos
-            }
-        }
-
-        return []
-    }, [metadata])
-
     const {
+        walletStore: { puzzleHash },
         assetsStore: { XCH, availableAssets },
     } = rootStore
 
-    const finsAsset = availableAssets?.data?.find(
-        (availableAsset) => metadata?.asset_id === availableAsset.assetId
-    )
+    const assetChanges = Object.values(
+        parseBundle?.balance_changes[add0x(puzzleHash)].asset_changes || {}
+    ).map((assetChange) => ({
+        ...availableAssets.data?.find(
+            (availableAsset) => assetChange.asset_id === availableAsset.assetId
+        ),
+        amount: assetChange.amount,
+    }))
+    const memos = parseBundle?.memos || []
+
     const onGetParseSpendBundle = async (spendBundle) => {
         try {
-            const res = await getParseSpendBundle({
-                data: {
-                    spend_bundle: spendBundle,
-                },
+            const res = await parseSpendBundle({
+                baseUrl: await getApiEndpoint(),
+            })({
+                spendBundle,
             })
-            setParseBundle(res?.data.data)
+            setParseBundle(res)
         } catch (error) {}
     }
 
@@ -75,40 +70,39 @@ function spendBundleInfo({ request }: IPopupPageProps<MethodEnum.REQUEST>) {
                             <div className="text-left text-caption text-primary-100">
                                 {t('send-title')}
                             </div>
-                            <div className="flex-row-center justify-between mb-1">
-                                <div className="flex-row-center">
-                                    <AssetIcon
-                                        src={finsAsset?.icon}
-                                        assetId={
-                                            metadata?.asset_id || XCH.assetId
-                                        }
-                                        className="w-6 h-6 mr-1"
-                                    />
+                            {assetChanges.map(
+                                ({ icon, assetId, name, amount }) => (
+                                    <div className="flex-row-center justify-between mb-1">
+                                        <div className="flex-row-center">
+                                            <AssetIcon
+                                                src={icon}
+                                                assetId={assetId || XCH.assetId}
+                                                className="w-6 h-6 mr-1"
+                                            />
 
-                                    {metadata?.asset_id
-                                        ? finsAsset?.name ||
-                                          `CAT ${shortenHash(
-                                              metadata?.asset_id
-                                          )}`
-                                        : XCH.code}
-                                </div>
-                                <div className="text-status-send">
-                                    -
-                                    {mojoToBalance(
-                                        parseBundle.metadata?.amount || 0,
-                                        parseBundle?.metadata.asset_id
-                                    )}
-                                </div>
-                            </div>
+                                            {assetId
+                                                ? name ||
+                                                  `CAT ${shortenHash(assetId)}`
+                                                : XCH.code}
+                                        </div>
+                                        <div className="text-status-send">
+                                            -
+                                            {mojoToBalance(
+                                                amount || 0,
+                                                assetId
+                                            )}
+                                        </div>
+                                    </div>
+                                )
+                            )}
                         </div>
-
                         {memos.length > 0 && (
                             <>
                                 <div className="mt-2 mb-1 text-left text-caption text-primary-100">
                                     {t('transaction-memo')}
                                 </div>
                                 <div className="flex flex-col gap-1 px-2 py-3 rounded-sm bg-box shrink">
-                                    {memos?.map((memo, index) => (
+                                    {memos.map((memo, index) => (
                                         <MemoDisplay
                                             key={`${index}-${memo}`}
                                             id="spendBundleInfo"

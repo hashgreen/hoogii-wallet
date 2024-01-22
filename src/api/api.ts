@@ -41,23 +41,6 @@ export async function apiHandler<T = any>(
     }
 }
 
-/** -------------------------- Full Node API  END-------------------------- */
-/** -----------------------
- * --- Jarvan addon API -------------------------- */
-
-export const getParseSpendBundle = (
-    params: AxiosRequestConfig,
-    config: RequestConfig = { isShowToast: false }
-) =>
-    apiHandler<IResponseData<ITransaction>>(
-        {
-            url: '/addon/parse_spend_bundle ',
-            method: 'post',
-            ...params,
-        },
-        config
-    )
-
 /**
  * callGetAblyAccessToken [Post]
  */
