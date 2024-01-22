@@ -41,15 +41,6 @@ export async function apiHandler<T = any>(
     }
 }
 
-/**
- * callGetAblyAccessToken [Post]
- */
-export const callGetAblyAccessToken = (formData) =>
-    apiHandler({
-        url: '/auth',
-        method: 'post',
-        data: formData,
-    })
 /** -------------------------- Jarvan addon API END -------------------------- */
 
 /** -------------------------- Spacescan API -------------------------- */
